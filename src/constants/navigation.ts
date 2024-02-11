@@ -1,6 +1,6 @@
 export default {
-  ScreenName: {
-    Main: 'main',
-    Profile: 'profile'
-  }
+	ScreenName: {
+		Main: 'main',
+		Profile: 'profile'
+	}
 }
