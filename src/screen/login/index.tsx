@@ -1,22 +1,14 @@
 import { Button, StyleSheet, View } from 'react-native'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 
-import { useMMKVBoolean } from 'react-native-mmkv'
-import { useNavigation } from '@react-navigation/native'
+import useStorage from '../../hooks/useStorage'
 
 const Login = (): React.ReactNode => {
-	const [login, setLogin] = useMMKVBoolean('isLogin')
-	const { navigate } = useNavigation()
+	const { onSetLogin } = useStorage()
 
 	const handleLogin = useCallback(() => {
-		setLogin(true)
+		onSetLogin()
 	}, [])
-
-	useEffect(() => {
-		if (login ?? false) {
-			navigate('main' as never)
-		}
-	}, [login])
 
 	return (
 		<View style={ styles.container }>
@@ -25,7 +17,7 @@ const Login = (): React.ReactNode => {
 	)
 }
 
-export default Login
+export default React.memo(Login)
 
 const styles = StyleSheet.create({
 	container: {

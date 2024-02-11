@@ -1,13 +1,14 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 import { type Products } from '../../models/products'
+import baseQuery from '../../utils/base.query'
 
 export const productsApi = createApi({
 	reducerPath: 'productsApi',
 	tagTypes: ['Products'],
-	baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
+	baseQuery: baseQuery(),
 	endpoints: builder => ({
 		getProducts: builder.query<Products[], void | null>({
-			query: () => '/products',
+			query: () => ({ url: '/products' }),
 			providesTags: result => {
 				if (result) {
 					return [
@@ -19,12 +20,12 @@ export const productsApi = createApi({
 			}
 		}),
 		getProductByID: builder.query<Products[], string>({
-			query: id => `/products/${id}`
+			query: id => ({ url: `/products/${id}` })
 		}),
 		addProduct: builder.mutation<Products, Partial<Products>>({
 			query: body => ({
 				url: '/products',
-				method: 'POST',
+				method: 'post',
 				body
 			}),
 			invalidatesTags: [{ type: 'Products', id: 'LIST' }],

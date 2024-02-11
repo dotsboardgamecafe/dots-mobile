@@ -4,21 +4,29 @@ import {
 import React, { useCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
-import Constants from '../../constants/navigation'
 import { useGetProductsQuery } from '../../store/products'
 import { useDispatch, useSelector } from 'react-redux'
 import { type RootState } from '../../store'
 import { onHasLandingAction } from '../../store/misc'
+import navigationConstant from '../../constants/navigation'
+import useStorage from '../../hooks/useStorage'
+
+const { screenName } = navigationConstant
 
 const Main = ():React.ReactNode => {
+	const { onSetLogout } = useStorage()
 	const misc = useSelector((state:RootState) => state.misc)
 	const dispatch = useDispatch()
 	const navigation = useNavigation()
 	const { data } = useGetProductsQuery()
 
 	const navigateToProfile = useCallback(() => {
-		navigation.navigate(Constants.ScreenName.Profile as never)
+		navigation.navigate(screenName.main as never)
 		dispatch(onHasLandingAction('main'))
+	}, [])
+
+	const handleLogout = useCallback(() => {
+		onSetLogout()
 	}, [])
 
 	useEffect(() => {
@@ -42,6 +50,7 @@ const Main = ():React.ReactNode => {
 				ItemSeparatorComponent={ () => <View style={ { borderWidth: 1, marginVertical: 10, borderColor: '#ddd' } } /> }
 			/>
 			<Button title='Navigate to Profile' onPress={ navigateToProfile }  />
+			<Button title='Logout' onPress={ handleLogout }  />
 		</View>
 	)
 }

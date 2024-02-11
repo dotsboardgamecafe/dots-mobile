@@ -1,6 +1,10 @@
-export default {
-	ScreenName: {
-		Main: 'main',
-		Profile: 'profile'
+const navigationConstant = {
+	screenName: {
+		main: 'main',
+		profile: 'profile',
+		login: 'login',
+		register: 'register'
 	}
 }
+
+export default navigationConstant
