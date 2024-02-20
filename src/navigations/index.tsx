@@ -22,7 +22,7 @@ const {
 
 const Stack = createNativeStackNavigator()
 
-const publicNavigations = ():React.ReactNode => {
+const publicNavigations = (): React.ReactNode => {
 	return (
 		<Stack.Group>
 			<Stack.Screen
@@ -37,7 +37,7 @@ const publicNavigations = ():React.ReactNode => {
 	)
 }
 
-const privateNavigations = ():ReactNode => {
+const privateNavigations = (): ReactNode => {
 	return (
 		<Stack.Group>
 			<Stack.Screen
