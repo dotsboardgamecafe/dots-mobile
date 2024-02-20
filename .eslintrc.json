@@ -37,6 +37,7 @@
 		"@typescript-eslint/no-invalid-void-type": "off",
 		"@typescript-eslint/strict-boolean-expressions": "off",
 		"@typescript-eslint/naming-convention": "off",
+		"@typescript-eslint/no-floating-promises": "off",
 		"object-curly-spacing": [1, "always"],
 		"jsx-quotes": [1, "prefer-single"],
 		"quotes": [1, "single"],

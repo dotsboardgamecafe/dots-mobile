@@ -2,9 +2,14 @@ import { Button, StyleSheet, View } from 'react-native'
 import React, { useCallback } from 'react'
 
 import useStorage from '../../hooks/useStorage'
+import { useTranslation } from 'react-i18next'
+import { Text, useTheme } from 'react-native-paper'
+import { type ThemeType } from '../../models/theme'
 
 const Login = (): React.ReactNode => {
-	const { onSetLogin } = useStorage()
+	const { t } = useTranslation()
+	const { onSetLogin, onSetLangEN, onSetLangID } = useStorage()
+	const { colors } = useTheme<ThemeType>()
 
 	const handleLogin = useCallback(() => {
 		onSetLogin()
@@ -12,7 +17,11 @@ const Login = (): React.ReactNode => {
 
 	return (
 		<View style={ styles.container }>
-			<Button title='Login' onPress={ handleLogin } />
+			<Text style={ { color: colors.textColor } }>{ t('login-page.greetings') }</Text>
+			<Text>{ t('login-page.greetings') }</Text>
+			<Button title='Translate to english' onPress={ onSetLangEN } />
+			<Button title='Translate to bahasa' onPress={ onSetLangID } />
+			<Button title={ t('login-page.button') } onPress={ handleLogin } />
 		</View>
 	)
 }
