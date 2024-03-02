@@ -21,7 +21,7 @@ const Main = ():React.ReactNode => {
 	const { data } = useGetProductsQuery()
 
 	const navigateToProfile = useCallback(() => {
-		navigation.navigate(screenName.main as never)
+		navigation.navigate(screenName.profile as never)
 		dispatch(onHasLandingAction('main'))
 	}, [])
 

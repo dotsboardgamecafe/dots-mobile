@@ -2,6 +2,23 @@
   "translation": {
     "login-page": {
       "greetings": "Hello"
+    },
+
+    "main-page": {
+      "home": "Home",
+      "discover": "Discover",
+      "play": "Play",
+      "champion": "Champion",
+      "profile": "Profile",
+      "popular": "Popular"
+    },
+
+    "discover-page": {
+      "slot": "Slot",
+      "level": "Level",
+      "duration": "Duration",
+      "person": "Person",
+      "minute": "min"
     }
   }
 }

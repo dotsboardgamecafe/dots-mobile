@@ -3,6 +3,23 @@
     "login-page": {
       "greetings": "Halo",
       "button": "Login"
+    },
+
+    "main-page": {
+      "home": "Home",
+      "discover": "Discover",
+      "play": "Play",
+      "champion": "Champion",
+      "profile": "Profil",
+      "popular": "Populer"
+    },
+
+    "discover-page": {
+      "slot": "Slot",
+      "level": "Level",
+      "duration": "Durasi",
+      "person": "Orang",
+      "minute": "menit"
     }
   }
 }

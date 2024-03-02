@@ -8,4 +8,5 @@ export interface Games {
     collection_url: string
     status: string
     created_date: string
+    is_popular: boolean
 }

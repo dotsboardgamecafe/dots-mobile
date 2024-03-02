@@ -1,21 +1,29 @@
 import React from 'react'
-import { SafeAreaView, StatusBar, View, ViewProps } from 'react-native'
+import { ImageBackground, SafeAreaView, StatusBar, View } from 'react-native'
 
 import styles from './styles'
+import { ContainerProps } from './type'
+import { BG } from '../../assets/images'
 
-const Container: React.FC<ViewProps> = ({ children }) => {
+const Container = ({ children, containerStyle, contentStyle }: ContainerProps) => {
 
     return (
-        <View style={styles.container}>
-            <SafeAreaView>
+        <ImageBackground
+            source={BG}
+            resizeMode='cover'
+            style={styles.bg}
+        >
+            <SafeAreaView style={[styles.container, containerStyle]}>
                 <StatusBar
                     barStyle='dark-content'
                     backgroundColor='transparent'
                     translucent
                 />
-                {children}
+                <View style={[styles.content, contentStyle]}>
+                    {children}
+                </View>
             </SafeAreaView>
-        </View>
+        </ImageBackground>
     )
 }
 

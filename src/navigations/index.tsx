@@ -10,6 +10,7 @@ import Login from '../screen/login'
 import navigationConstant from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
+import MainTab from './main'
 
 const { screenName, } = navigationConstant
 
@@ -26,12 +27,12 @@ const publicNavigations = (): React.ReactNode => {
 	return (
 		<Stack.Group>
 			<Stack.Screen
-				name={ screenName.login }
-				component={ Login }
+				name={screenName.login}
+				component={Login}
 			/>
 			<Stack.Screen
-				name={ screenName.register }
-				component={ Login }
+				name={screenName.register}
+				component={Login}
 			/>
 		</Stack.Group>
 	)
@@ -40,25 +41,28 @@ const publicNavigations = (): React.ReactNode => {
 const privateNavigations = (): ReactNode => {
 	return (
 		<Stack.Group>
+			<Stack.Screen name='main2' component={MainTab} options={{ headerShown: false }} />
 			<Stack.Screen
-				name={ screenName.main }
-				component={ Main }
+				name={screenName.main}
+				component={Main}
 			/>
 			<Stack.Screen
-				name={ screenName.profile }
-				component={ Profile }
+				name={screenName.profile}
+				component={Profile}
 			/>
 		</Stack.Group>
 	)
 }
 
-const Navigations = ():React.ReactNode => {
+const Navigations = (): React.ReactNode => {
 	const colorScheme = useColorScheme()
 	const { isLoggedIn } = useStorage({ init: true })
 
 	const themeFactory = useMemo(() => {
-		const paperTheme = colorScheme === 'dark' ? paperThemeDark : paperThemeLight
-		const navigationTheme = colorScheme === 'dark' ? navigationThemeDark : navigationThemeLight
+		const paperTheme = paperThemeLight
+		const navigationTheme = navigationThemeLight
+		// const paperTheme = colorScheme === 'dark' ? paperThemeDark : paperThemeLight
+		// const navigationTheme = colorScheme === 'dark' ? navigationThemeDark : navigationThemeLight
 
 		return {
 			paperTheme,
@@ -74,10 +78,10 @@ const Navigations = ():React.ReactNode => {
 	}, [isLoggedIn])
 
 	return (
-		<PaperProvider theme={ themeFactory.paperTheme }>
-			<NavigationContainer theme={ themeFactory.navigationTheme }>
-				<Stack.Navigator initialRouteName={ screenName.login }>
-					{ renderScreenContent }
+		<PaperProvider theme={themeFactory.paperTheme}>
+			<NavigationContainer theme={themeFactory.navigationTheme}>
+				<Stack.Navigator initialRouteName={screenName.login}>
+					{renderScreenContent}
 				</Stack.Navigator>
 			</NavigationContainer>
 		</PaperProvider>

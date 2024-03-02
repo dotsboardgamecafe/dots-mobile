@@ -1,0 +1,1 @@
+export const BG = require('./bg-concrete.jpg')
