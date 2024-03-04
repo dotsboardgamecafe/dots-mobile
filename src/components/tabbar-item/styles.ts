@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
+import { scaleHeight } from "../../utils/pixel.ratio";
 
 const styles = StyleSheet.create({
   itemContainer: {
-    height: 64,
+    height: scaleHeight(64),
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingVertical: 4
+    paddingVertical: scaleHeight(4)
   },
 
   label: {

@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+import { scaleFont, scaleHeight, scaleWidth } from "../../utils/pixel.ratio";
+import { ThemeType } from "../../models/theme";
+
+const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
   image: {
     borderRadius: 11,
     width: '100%',
@@ -9,44 +12,50 @@ const styles = StyleSheet.create({
 
   popularContainer: {
     position: 'absolute',
-    bottom: 10,
-    start: 12,
-    backgroundColor: 'white',
+    bottom: scaleHeight(10),
+    start: scaleWidth(12),
+    backgroundColor: colors.background,
     borderRadius: 12,
-    paddingVertical: 2,
-    paddingHorizontal: 8
+    paddingVertical: scaleHeight(2),
+    paddingHorizontal: scaleWidth(8)
   },
 
   popularTag: {
-    fontWeight: 'bold',
-    color: 'red',
-    fontSize: 10
+    fontWeight: '700',
+    color: colors.redAccent,
+    fontSize: scaleFont(10)
   },
 
   title: {
-    fontWeight: 'bold',
-    marginTop: 8
+    fontWeight: '700',
+    fontSize: scaleFont(16),
+    marginVertical: scaleHeight(8)
   },
 
-  info: {
-    fontWeight: 'normal',
-    fontSize: 12,
+  row: {
+    flexDirection: 'row',
+    alignContent: 'center'
+  },
+
+  textInfo: {
+    flex: 1,
+    marginStart: scaleWidth(4)
   },
 
   tagContainer: {
     alignSelf: 'flex-start',
-    backgroundColor: 'blue',
+    backgroundColor: colors.blueAccent,
     borderRadius: 12,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    marginTop: 8
+    paddingVertical: scaleHeight(2),
+    paddingHorizontal: scaleWidth(8),
+    marginTop: scaleHeight(8)
   },
 
   gameTag: {
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: '600',
+    color: colors.background,
+    fontSize: scaleFont(12)
   },
-
 })
 
-export default styles
+export default createStyle

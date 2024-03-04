@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -17,9 +17,8 @@ const TabBarItem = ({ label, isFocused, onPress }: TabBarItemProps) => {
 
   return (
     <TouchableOpacity
-      id={label}
       onPress={onPress}
-      style={{ flex: 1 }}
+      style={{ flex: 1, borderRadius: 40 }}
     >
       <View
         style={styles.itemContainer}

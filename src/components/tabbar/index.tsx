@@ -37,6 +37,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 
           return (
             <TabbarItem
+              key={label as string}
               label={label as string}
               isFocused={isFocused}
               onPress={onPress}

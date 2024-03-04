@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { scaleHeight } from "../../utils/pixel.ratio";
 
 const styles = StyleSheet.create({
   tabBarContainer: {
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
 
   whiteBg: {
     backgroundColor: 'white',
-    height: 48,
+    height: scaleHeight(48),
     position: 'absolute',
     left: 0,
     right: 0,
