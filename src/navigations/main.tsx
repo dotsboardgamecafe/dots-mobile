@@ -20,12 +20,12 @@ const MainTab = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        freezeOnBlur: true,
+        freezeOnBlur: false,
       }}
       tabBar={props => <TabBar {...props} />}
     >
       <Tab.Screen name={t('main-page.home')} component={Home} />
-      <Tab.Screen name={t('main-page.discover')} component={Discover} />
+      <Tab.Screen name={t('main-page.discover')} component={Discover} options={{ lazy: false }} />
       <Tab.Screen name={t('main-page.play')} component={Play} />
       <Tab.Screen name={t('main-page.champion')} component={Champion} />
       <Tab.Screen name={t('main-page.profile')} component={Profile} />

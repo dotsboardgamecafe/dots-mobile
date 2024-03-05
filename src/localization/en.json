@@ -14,6 +14,11 @@
     },
 
     "discover-page": {
+      "search-game": "Search for a game...",
+      "filter-game": "Filter",
+      "filter-game-type": "Game Type",
+      "filter-game-mechanics": "Mechanics",
+      "filter-game-location": "Location",
       "slot": "Slot",
       "level": "Level",
       "duration": "Duration",

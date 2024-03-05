@@ -11,6 +11,7 @@ import navigationConstant from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 const { screenName, } = navigationConstant
 
@@ -79,11 +80,13 @@ const Navigations = (): React.ReactNode => {
 
 	return (
 		<PaperProvider theme={themeFactory.paperTheme}>
-			<NavigationContainer theme={themeFactory.navigationTheme}>
-				<Stack.Navigator initialRouteName={screenName.login}>
-					{renderScreenContent}
-				</Stack.Navigator>
-			</NavigationContainer>
+			<GestureHandlerRootView style={{flex: 1}}>
+				<NavigationContainer theme={themeFactory.navigationTheme}>
+					<Stack.Navigator initialRouteName={screenName.login}>
+						{renderScreenContent}
+					</Stack.Navigator>
+				</NavigationContainer>
+			</GestureHandlerRootView>
 		</PaperProvider>
 	)
 }

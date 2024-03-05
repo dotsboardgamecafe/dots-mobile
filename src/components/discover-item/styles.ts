@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { scaleFont, scaleHeight, scaleWidth } from "../../utils/pixel.ratio";
 import { ThemeType } from "../../models/theme";
 
-const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
+export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
   image: {
     borderRadius: 11,
     width: '100%',
@@ -57,5 +57,3 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
     fontSize: scaleFont(12)
   },
 })
-
-export default createStyle

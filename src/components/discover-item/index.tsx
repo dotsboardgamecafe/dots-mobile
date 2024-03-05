@@ -4,7 +4,7 @@ import { Text, useTheme } from "react-native-paper"
 import { useTranslation } from "react-i18next"
 import { Clock, Level, Profile2User } from "iconsax-react-native"
 
-import createStyle from "./styles"
+import { createStyle } from "./styles"
 import RoundedBorder from "../rounded-border"
 import { Games } from "../../models/games"
 import { scaleWidth } from "../../utils/pixel.ratio"
@@ -39,7 +39,7 @@ const DiscoverItem = (item: Games): React.ReactNode => {
   }
 
   return (
-    <RoundedBorder radius={12} borderWidth={1}>
+    <RoundedBorder radius={12} borderWidth={1} key={item.game_code}>
       {renderImage()}
 
       <Text style={style.title}>{item.name}</Text>
@@ -66,4 +66,7 @@ const DiscoverItem = (item: Games): React.ReactNode => {
   )
 }
 
-export default React.memo(DiscoverItem)
+export default React.memo(
+  DiscoverItem,
+  (prev, next) => prev.game_code == next.game_code
+)

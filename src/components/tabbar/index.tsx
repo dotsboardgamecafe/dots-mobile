@@ -1,11 +1,17 @@
-import React from "react";
+import React, {  } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 
 import styles from "./styles";
 import TabbarItem from "../tabbar-item";
+import { useKeyboardShown } from "../../utils/keyboard";
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+  const isKeyboardShown = useKeyboardShown()
+
+  if (isKeyboardShown)
+    return (<View />)
+
   return (
     <View style={styles.tabBarContainer}>
 

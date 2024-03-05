@@ -15,6 +15,11 @@
     },
 
     "discover-page": {
+      "search-game": "Cari game...",
+      "filter-game": "Filter",
+      "filter-game-type": "Tipe Game",
+      "filter-game-mechanics": "Mekanik",
+      "filter-game-location": "Lokasi",
       "slot": "Slot",
       "level": "Level",
       "duration": "Durasi",
