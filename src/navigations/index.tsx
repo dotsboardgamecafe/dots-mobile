@@ -3,6 +3,7 @@ import { useColorScheme } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { PaperProvider } from 'react-native-paper'
+import BootSplash from 'react-native-bootsplash'
 
 import Main from '../screen/main'
 import Profile from '../screen/profile'
@@ -80,8 +81,13 @@ const Navigations = (): React.ReactNode => {
 
 	return (
 		<PaperProvider theme={themeFactory.paperTheme}>
-			<GestureHandlerRootView style={{flex: 1}}>
-				<NavigationContainer theme={themeFactory.navigationTheme}>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<NavigationContainer
+					theme={themeFactory.navigationTheme}
+					onReady={() => {
+						BootSplash.hide();
+					}}
+				>
 					<Stack.Navigator initialRouteName={screenName.login}>
 						{renderScreenContent}
 					</Stack.Navigator>
