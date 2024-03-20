@@ -27,7 +27,7 @@ const Stack = createNativeStackNavigator()
 
 const publicNavigations = (): React.ReactNode => {
 	return (
-		<Stack.Group>
+		<Stack.Group screenOptions={{ headerShown: false }}>
 			<Stack.Screen
 				name={screenName.login}
 				component={Login}
@@ -84,9 +84,7 @@ const Navigations = (): React.ReactNode => {
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<NavigationContainer
 					theme={themeFactory.navigationTheme}
-					onReady={() => {
-						BootSplash.hide();
-					}}
+					onReady={BootSplash.hide}
 				>
 					<Stack.Navigator initialRouteName={screenName.login}>
 						{renderScreenContent}

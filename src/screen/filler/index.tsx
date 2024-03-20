@@ -8,8 +8,8 @@ const Filler = ({ id }: ViewProps) => {
   const { onSetLogout } = useStorage()
 
   return (
-    <Container>
-      <Text>{id}</Text>
+    <Container contentStyle={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontWeight: 'bold' }}>{id}</Text>
       <Button onPress={onSetLogout}>Logout</Button>
     </Container>
   )

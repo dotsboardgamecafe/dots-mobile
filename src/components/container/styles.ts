@@ -1,10 +1,11 @@
+import { SCREEN_HEIGHT } from "@gorhom/bottom-sheet";
 import { Platform, StatusBar, StyleSheet } from "react-native";
 
 const statusBarHeight = Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
 
 const styles = StyleSheet.create({
     bg: {
-        height: '100%',
+        height: SCREEN_HEIGHT,
         paddingTop: statusBarHeight
     },
 

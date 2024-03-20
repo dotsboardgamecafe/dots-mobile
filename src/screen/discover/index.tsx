@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { Text, useTheme } from "react-native-paper"
-import { FlatList, Pressable, TextInput, View } from "react-native"
+import { FlatList, View } from "react-native"
 import { ArrowDown2, SearchNormal, Setting4 } from "iconsax-react-native"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { useTranslation } from "react-i18next"
@@ -8,8 +8,9 @@ import { useTranslation } from "react-i18next"
 import Container from "../../components/container"
 import FilterItem from "../../components/filter-item"
 import DiscoverItem from "../../components/discover-item"
+import TextInput from "../../components/text-input"
 import { Games } from "../../models/games"
-import { scaleWidth } from "../../utils/pixel.ratio"
+import { scaleHeight, scaleWidth } from "../../utils/pixel.ratio"
 import { ThemeType } from "../../models/theme"
 import { createStyle } from "./styles"
 import { useKeyboardShown } from "../../utils/keyboard"
@@ -44,17 +45,20 @@ const Discover = (): React.ReactNode => {
 
   return (
     <Container>
-      <View style={styles.searchContainer}>
-        <SearchNormal size={scaleWidth(16)} color={theme.colors.gray} />
-        <TextInput
-          style={styles.search}
-          placeholder={t('discover-page.search-game')}
-          placeholderTextColor={theme.colors.gray}
-          enterKeyHint="search"
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
+      <TextInput
+        containerStyle={{
+          marginHorizontal: scaleWidth(10),
+          marginTop: scaleHeight(16),
+        }}
+        prefix={<SearchNormal size={scaleWidth(16)} color={theme.colors.gray} />}
+        inputProps={{
+          placeholder: t('discover-page.search-game'),
+          placeholderTextColor: theme.colors.gray,
+          enterKeyHint: "search",
+          value: search,
+          onChangeText: setSearch
+        }}
+      />
 
       <View style={styles.filterContainer}>
         <FilterItem

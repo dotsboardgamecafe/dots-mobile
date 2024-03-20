@@ -4,16 +4,8 @@ import { scaleHeight, scaleWidth } from "../../utils/pixel.ratio";
 
 export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginHorizontal: scaleWidth(10),
     marginTop: scaleHeight(16),
-    paddingHorizontal: scaleWidth(16),
-    borderRadius: 12,
-    borderColor: colors.background,
-    borderWidth: 1,
-    backgroundColor: colors.surface,
-    height: scaleHeight(48),
   },
 
   search: {
