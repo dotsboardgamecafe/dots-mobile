@@ -1,7 +1,32 @@
 {
   "translation": {
     "login-page": {
-      "greetings": "Hello"
+      "greetings": "Hello",
+      "title": "Log In to Your Account",
+      "email-label": "Email",
+      "email-hint": "Enter your email address",
+      "password-label": "Password",
+      "password-hint": "Enter your password",
+      "forgot-label": "Forgot the Password?",
+      "sign-in": "Sign In",
+      "dont-have-account": "Do not have an account?",
+      "sign-up": "Sign Up Here"
+    },
+
+    "register-page": {
+      "title": "Sign Up",
+      "subtitle": "Sign Up to continue using DOTS",
+      "name-label": "Name",
+      "name-hint": "Enter your name",
+      "phone-label": "Phone Number",
+      "phone-hint": "Enter your phone number",
+      "password-info": "Password must be at least 8 characters long",
+      "confirm-password-label": "Confirm Password",
+      "confirm-password-hint": "Enter your passsword confirmation",
+      "confirm-password-info": "Make sure your password matches the password above",
+      "sign-up": "Sign Up",
+      "have-account": "Already have an account?",
+      "sign-in": "Sign In Here"
     },
 
     "main-page": {

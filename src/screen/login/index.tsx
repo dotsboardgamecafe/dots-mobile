@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { View, Image, TouchableOpacity } from "react-native"
 import { Text, useTheme } from "react-native-paper"
 import { Eye, EyeSlash, IconProps, Lock, Sms } from "iconsax-react-native"
-import { scaleWidth } from "../../utils/pixel.ratio"
+import { useTranslation } from "react-i18next"
+import { useNavigation } from "@react-navigation/native"
 
+import { scaleWidth } from "../../utils/pixel.ratio"
 import Container from "../../components/container"
 import { LOGO } from "../../assets/images"
 import TextInput from "../../components/text-input"
@@ -11,10 +13,14 @@ import useStorage from "../../hooks/useStorage"
 import { ThemeType } from "../../models/theme"
 import ActionButton from "../../components/action-button"
 import styles from "./styles"
+import navigationConstant from "../../constants/navigation"
 
 const Login = (): React.ReactNode => {
+  const { t } = useTranslation()
   const { onSetLogin } = useStorage()
-  const theme = useTheme<ThemeType>()
+  const { colors } = useTheme<ThemeType>()
+  const navigation = useNavigation()
+  const { screenName } = navigationConstant
 
   const [showPass, setShowPass] = useState(false)
 
@@ -22,7 +28,7 @@ const Login = (): React.ReactNode => {
     const props: IconProps = {
       variant: "Bold",
       size: scaleWidth(16),
-      color: theme.colors.gray,
+      color: colors.gray,
       onPress: () => setShowPass(!showPass)
     }
 
@@ -31,68 +37,75 @@ const Login = (): React.ReactNode => {
     return <EyeSlash {...props} />
   }, [showPass])
 
+  const navigateToRegister = useCallback(() => {
+    navigation.navigate(screenName.register as never)
+  }, [])
+
   return (
     <Container contentStyle={styles.container}>
 
       <Image source={LOGO} style={styles.headerImage} />
 
-      <Text style={styles.headerTitle}>Log In to Your Account</Text>
+      <Text style={styles.headerTitle}>{t('login-page.title')}</Text>
 
-      <Text style={styles.emailLabel}>Email</Text>
+      <Text style={styles.emailLabel}>{t('login-page.email-label')}</Text>
 
       <TextInput
         containerStyle={styles.input}
-        borderFocusColor={theme.colors.blueAccent}
+        borderFocusColor={colors.blueAccent}
 
         prefix={<Sms
           variant="Bold"
           size={scaleWidth(16)}
-          color={theme.colors.gray}
+          color={colors.gray}
         />}
 
         inputProps={{
-          placeholder: 'Enter your email address',
-          placeholderTextColor: theme.colors.gray,
+          placeholder: t('login-page.email-hint'),
+          placeholderTextColor: colors.gray,
           keyboardType: 'email-address'
         }}
       />
 
-      <Text style={styles.passwordLabel}>Password</Text>
+      <Text style={styles.passwordLabel}>{t('login-page.password-label')}</Text>
 
       <TextInput
         containerStyle={styles.input}
-        borderFocusColor={theme.colors.blueAccent}
+        borderFocusColor={colors.blueAccent}
 
         prefix={<Lock
           variant="Bold"
           size={scaleWidth(16)}
-          color={theme.colors.gray}
+          color={colors.gray}
         />}
 
         suffix={passSuffix}
 
         inputProps={{
-          placeholder: 'Enter your password',
-          placeholderTextColor: theme.colors.gray,
+          placeholder: t('login-page.password-hint'),
+          placeholderTextColor: colors.gray,
           keyboardType: 'default',
           secureTextEntry: !showPass
         }}
       />
 
-      <Text style={styles.forgotLabel}>Forgot the Password?</Text>
+      <Text style={styles.forgotLabel}>{t('login-page.forgot-label')}</Text>
 
       <ActionButton
         style={styles.actionButton}
         onPress={onSetLogin}
-        label='Sign In'
+        label={t('login-page.sign-in')}
       />
 
       <View style={styles.footer}>
         <View style={styles.registerContainer}>
-          <Text style={styles.registerInfo}>Do not have an account?</Text>
+          <Text style={styles.registerInfo}>{t('login-page.dont-have-account')}</Text>
 
-          <TouchableOpacity style={styles.registerButton}>
-            <Text style={styles.registerLabel}>Sign Up Here</Text>
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={navigateToRegister}
+          >
+            <Text style={styles.registerLabel}>{t('login-page.sign-up')}</Text>
           </TouchableOpacity>
         </View>
       </View>

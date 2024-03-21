@@ -2,7 +2,32 @@
   "translation": {
     "login-page": {
       "greetings": "Halo",
-      "button": "Login"
+      "button": "Login",
+      "title": "Masuk ke Akunmu",
+      "email-label": "Email",
+      "email-hint": "Masukkan alamat email",
+      "password-label": "Password",
+      "password-hint": "Masukkan password",
+      "forgot-label": "Lupa Password?",
+      "sign-in": "Masuk",
+      "dont-have-account": "Tidak punya akun?",
+      "sign-up": "Daftar disini"
+    },
+
+    "register-page": {
+      "title": "Sign Up",
+      "subtitle": "Sign Up to continue using DOTS",
+      "name-label": "Name",
+      "name-hint": "Enter your name",
+      "phone-label": "Phone Number",
+      "phone-hint": "Enter your phone number",
+      "password-info": "Password must be at least 8 characters long",
+      "confirm-password-label": "Confirm Password",
+      "confirm-password-hint": "Enter your passsword confirmation",
+      "confirm-password-info": "Make sure your password matches the password above",
+      "sign-up": "Sign Up",
+      "have-account": "Already have an account?",
+      "sign-in": "Sign In Here"
     },
 
     "main-page": {

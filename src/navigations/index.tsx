@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { PaperProvider } from 'react-native-paper'
 import BootSplash from 'react-native-bootsplash'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import Main from '../screen/main'
 import Profile from '../screen/profile'
@@ -12,7 +13,7 @@ import navigationConstant from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import Register from '../screen/register'
 
 const { screenName, } = navigationConstant
 
@@ -34,7 +35,7 @@ const publicNavigations = (): React.ReactNode => {
 			/>
 			<Stack.Screen
 				name={screenName.register}
-				component={Login}
+				component={Register}
 			/>
 		</Stack.Group>
 	)
