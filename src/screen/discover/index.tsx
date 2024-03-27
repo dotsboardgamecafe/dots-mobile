@@ -1,21 +1,23 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import { Text, useTheme } from "react-native-paper"
+import { Button, Text, useTheme } from "react-native-paper"
 import { FlatList, View } from "react-native"
 import { ArrowDown2, SearchNormal, Setting4 } from "iconsax-react-native"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { useTranslation } from "react-i18next"
+import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet"
 
 import Container from "../../components/container"
 import FilterItem from "../../components/filter-item"
 import DiscoverItem from "../../components/discover-item"
 import TextInput from "../../components/text-input"
-import { Games } from "../../models/games"
 import { scaleHeight, scaleWidth } from "../../utils/pixel.ratio"
 import { ThemeType } from "../../models/theme"
 import { createStyle } from "./styles"
 import { useKeyboardShown } from "../../utils/keyboard"
 import { FilterItemType } from "../../components/filter-item/type"
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
+import { gameTypes, games } from "./data"
+import FilterTag from "../../components/filter-tag"
+import ActionButton from "../../components/action-button"
 
 const Discover = (): React.ReactNode => {
   const theme = useTheme<ThemeType>()
@@ -24,11 +26,27 @@ const Discover = (): React.ReactNode => {
   const isKeyboardShown = useKeyboardShown()
   const [search, setSearch] = useState('')
   const { t } = useTranslation()
-  const bottomSheetRef = useRef<BottomSheet>(null)
+  const bottomSheetRef = useRef<BottomSheetModal>(null)
+  const bottomSheetBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        opacity={.5}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+      />
+    ),
+    []
+  )
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, [])
+  const [selectedGameType, setSelectedGameType] = useState<Array<number>>([])
+  const switchSelected = useCallback((id: number) => {
+    if (selectedGameType.includes(id)) {
+      setSelectedGameType(selectedGameType.filter((i) => i != id))
+    } else {
+      setSelectedGameType([...selectedGameType, id])
+    }
+  }, [selectedGameType])
 
   const arrowDown = <ArrowDown2
     variant="Linear"
@@ -71,7 +89,7 @@ const Discover = (): React.ReactNode => {
               style={{ marginEnd: 4 }}
             />
           }
-          onPress={() => bottomSheetRef.current?.snapToIndex(0)}
+          onPress={() => bottomSheetRef.current?.present()}
         />
 
         <FlatList
@@ -84,7 +102,7 @@ const Discover = (): React.ReactNode => {
       </View>
 
       <FlatList
-        data={dummyData}
+        data={games}
         keyExtractor={item => item.game_code}
         renderItem={({ item }) => <DiscoverItem {...item} />}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
@@ -96,32 +114,89 @@ const Discover = (): React.ReactNode => {
         numColumns={2}
       />
 
-      <BottomSheet
+      <BottomSheetModal
         ref={bottomSheetRef}
-        onChange={handleSheetChanges}
-        index={-1}
+        index={0}
         enablePanDownToClose
         enableDynamicSizing
+        backdropComponent={bottomSheetBackdrop}
+        handleIndicatorStyle={{ display: 'none' }}
       >
-        <BottomSheetView style={{ height: 200 }}>
-          <Text>Awesome 🎉</Text>
+        <BottomSheetView style={styles.bottomSheet}>
+
+          <View style={styles.bsHead}>
+            <Text style={styles.bsTitle}>{t('discover-page.filter-game')}</Text>
+            <Button
+              onPress={() => { }}
+              labelStyle={styles.filterReset}
+            >
+              Reset
+            </Button>
+          </View>
+
+          <Text style={styles.filterSecTitle}>{t('discover-page.filter-game-type')}</Text>
+
+          <FlatList
+            data={gameTypes}
+            extraData={selectedGameType}
+            renderItem={({ item }) => <FilterTag
+              id={item.id}
+              icon={item.icon}
+              label={item.name}
+              active={selectedGameType.includes(item.id)}
+              onClick={switchSelected}
+            />
+            }
+            ItemSeparatorComponent={() => <View style={{ height: scaleHeight(8) }} />}
+
+            contentContainerStyle={styles.wrapList}
+          />
+
+          <Text style={styles.filterSecTitle}>{t('discover-page.filter-game-mechanics')}</Text>
+
+          <FlatList
+            data={gameTypes}
+            extraData={selectedGameType}
+            renderItem={({ item }) => <FilterTag
+              id={item.id}
+              icon={item.icon}
+              label={item.name}
+              active={selectedGameType.includes(item.id)}
+              onClick={switchSelected}
+            />
+            }
+            ItemSeparatorComponent={() => <View style={{ height: scaleHeight(8) }} />}
+
+            contentContainerStyle={styles.wrapList}
+          />
+
+          <Text style={styles.filterSecTitle}>{t('discover-page.filter-game-location')}</Text>
+
+          <FlatList
+            data={gameTypes}
+            extraData={selectedGameType}
+            renderItem={({ item }) => <FilterTag
+              id={item.id}
+              label={item.name}
+              active={selectedGameType.includes(item.id)}
+              onClick={switchSelected}
+            />
+            }
+            ItemSeparatorComponent={() => <View style={{ height: scaleHeight(8) }} />}
+
+            contentContainerStyle={styles.wrapList}
+          />
+
+          <ActionButton
+            style={styles.filterAction}
+            label='Show 56 result'
+            onPress={() => bottomSheetRef.current?.dismiss()}
+          />
+
         </BottomSheetView>
-      </BottomSheet>
+      </BottomSheetModal>
     </Container>
   )
 }
-
-const dummyData: Array<Games> = Array.from({ length: 30 }, (_, i) => ({
-  game_code: `CODE-${i + 1}`,
-  game_type: 'War Game',
-  cafe_id: 1,
-  name: `Rising Game ${i + 1}`,
-  image_url: 'https://picsum.photos/200',
-  description: '',
-  collection_url: '',
-  status: 'ok',
-  created_date: '01-01-2024',
-  is_popular: i < 4
-}))
 
 export default React.memo(Discover)

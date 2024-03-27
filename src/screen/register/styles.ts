@@ -85,6 +85,31 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 
   loginContent: {
     fontWeight: '700'
+  },
+
+  bottomSheetHandle: {
+    display: 'none'
+  },
+
+  bottomSheetView: {
+    alignItems: 'center',
+    marginHorizontal: scaleWidth(16),
+    paddingBottom: scaleHeight(16),
+  },
+
+  successTitle: {
+    fontWeight: 'bold',
+    fontSize: scaleFont(20),
+    lineHeight: scaleFont(25),
+  },
+
+  successInfo: {
+    marginTop: scaleHeight(8),
+    color: colors.gray
+  },
+
+  successAction: {
+    marginTop: scaleHeight(16)
   }
 })
 

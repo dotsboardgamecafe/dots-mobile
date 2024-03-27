@@ -14,6 +14,7 @@ import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
 import Register from '../screen/register'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const { screenName, } = navigationConstant
 
@@ -83,14 +84,16 @@ const Navigations = (): React.ReactNode => {
 	return (
 		<PaperProvider theme={themeFactory.paperTheme}>
 			<GestureHandlerRootView style={{ flex: 1 }}>
-				<NavigationContainer
-					theme={themeFactory.navigationTheme}
-					onReady={BootSplash.hide}
-				>
-					<Stack.Navigator initialRouteName={screenName.login}>
-						{renderScreenContent}
-					</Stack.Navigator>
-				</NavigationContainer>
+				<BottomSheetModalProvider>
+					<NavigationContainer
+						theme={themeFactory.navigationTheme}
+						onReady={BootSplash.hide}
+					>
+						<Stack.Navigator initialRouteName={screenName.login}>
+							{renderScreenContent}
+						</Stack.Navigator>
+					</NavigationContainer>
+				</BottomSheetModalProvider>
 			</GestureHandlerRootView>
 		</PaperProvider>
 	)

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export interface Games {
     game_code: string
     game_type: string
@@ -9,4 +11,11 @@ export interface Games {
     status: string
     created_date: string
     is_popular: boolean
+}
+
+export interface GameType {
+    id: number;
+    name: string;
+    selected?: boolean | undefined;
+    icon?: ReactNode | undefined;
 }

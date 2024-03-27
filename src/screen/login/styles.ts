@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
     paddingVertical: scaleHeight(16)
   },
 
+  keyboardView: {
+    flex: 1,
+    flexGrow: 1,
+  },
+
+  scrollView: {
+    alignItems: 'center',
+    paddingHorizontal: scaleWidth(16),
+    // flex: 1,
+    // flexGrow: 1,
+  },
+
   headerImage: {
     width: scaleWidth(72),
     height: scaleHeight(64),
@@ -51,7 +63,8 @@ const styles = StyleSheet.create({
   footer: {
     flex: 1,
     justifyContent: 'flex-end',
-    marginBottom: scaleHeight(24)
+    marginTop: scaleHeight(24),
+    marginBottom: scaleHeight(24),
   },
 
   registerContainer: {

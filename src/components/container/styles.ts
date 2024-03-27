@@ -6,7 +6,6 @@ const statusBarHeight = Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
 const styles = StyleSheet.create({
     bg: {
         height: SCREEN_HEIGHT,
-        paddingTop: statusBarHeight
     },
 
     container: {
@@ -15,7 +14,8 @@ const styles = StyleSheet.create({
     },
 
     content: {
-        flex: 1
+        flex: 1,
+        marginTop: statusBarHeight
     }
 })
 

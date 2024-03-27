@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { scaleHeight, scaleWidth } from "../../utils/pixel.ratio";
 
 const styles = StyleSheet.create({
   border: {
@@ -7,7 +8,8 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1, 
-    padding: 8, 
+    paddingVertical: scaleHeight(8), 
+    paddingHorizontal: scaleWidth(8),
     backgroundColor: 'white'
   },
 })

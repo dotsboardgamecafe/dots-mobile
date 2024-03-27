@@ -26,7 +26,10 @@
       "confirm-password-info": "Make sure your password matches the password above",
       "sign-up": "Sign Up",
       "have-account": "Already have an account?",
-      "sign-in": "Sign In Here"
+      "sign-in": "Sign In Here",
+      "success-title": "Kindly Check Your Email",
+      "success-info": "The verification link has been sent to your email. Please check your inbox/spam folder and click the \"Verify Now\" button to activate your account.",
+      "open-email": "Open Email"
     },
 
     "main-page": {

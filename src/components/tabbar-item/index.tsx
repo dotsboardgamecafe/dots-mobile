@@ -4,9 +4,9 @@ import { Text } from "react-native-paper";
 
 import { TabBarItemProps } from "./type";
 import { scaleWidth } from "../../utils/pixel.ratio";
-import CupActive from "../icons/cup-active";
-import Cup from "../icons/cup";
 import styles from "./styles";
+import CupActive from "../../assets/svg/cup-active";
+import Cup from "../../assets/svg/cup";
 
 const TabBarItem = ({ label, isFocused, onPress }: TabBarItemProps) => {
 

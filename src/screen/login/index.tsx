@@ -4,6 +4,7 @@ import { Text, useTheme } from "react-native-paper"
 import { Eye, EyeSlash, IconProps, Lock, Sms } from "iconsax-react-native"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@react-navigation/native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 import { scaleWidth } from "../../utils/pixel.ratio"
 import Container from "../../components/container"
@@ -42,73 +43,82 @@ const Login = (): React.ReactNode => {
   }, [])
 
   return (
-    <Container contentStyle={styles.container}>
+    <Container>
 
-      <Image source={LOGO} style={styles.headerImage} />
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        enableOnAndroid
+      >
 
-      <Text style={styles.headerTitle}>{t('login-page.title')}</Text>
+        <Image source={LOGO} style={styles.headerImage} />
 
-      <Text style={styles.emailLabel}>{t('login-page.email-label')}</Text>
+        <Text style={styles.headerTitle}>{t('login-page.title')}</Text>
 
-      <TextInput
-        containerStyle={styles.input}
-        borderFocusColor={colors.blueAccent}
+        <Text style={styles.emailLabel}>{t('login-page.email-label')}</Text>
 
-        prefix={<Sms
-          variant="Bold"
-          size={scaleWidth(16)}
-          color={colors.gray}
-        />}
+        <TextInput
+          containerStyle={styles.input}
+          borderFocusColor={colors.blueAccent}
 
-        inputProps={{
-          placeholder: t('login-page.email-hint'),
-          placeholderTextColor: colors.gray,
-          keyboardType: 'email-address'
-        }}
-      />
+          prefix={<Sms
+            variant="Bold"
+            size={scaleWidth(16)}
+            color={colors.gray}
+          />}
 
-      <Text style={styles.passwordLabel}>{t('login-page.password-label')}</Text>
+          inputProps={{
+            placeholder: t('login-page.email-hint'),
+            placeholderTextColor: colors.gray,
+            keyboardType: 'email-address'
+          }}
+        />
 
-      <TextInput
-        containerStyle={styles.input}
-        borderFocusColor={colors.blueAccent}
+        <Text style={styles.passwordLabel}>{t('login-page.password-label')}</Text>
 
-        prefix={<Lock
-          variant="Bold"
-          size={scaleWidth(16)}
-          color={colors.gray}
-        />}
+        <TextInput
+          containerStyle={styles.input}
+          borderFocusColor={colors.blueAccent}
 
-        suffix={passSuffix}
+          prefix={<Lock
+            variant="Bold"
+            size={scaleWidth(16)}
+            color={colors.gray}
+          />}
 
-        inputProps={{
-          placeholder: t('login-page.password-hint'),
-          placeholderTextColor: colors.gray,
-          keyboardType: 'default',
-          secureTextEntry: !showPass
-        }}
-      />
+          suffix={passSuffix}
 
-      <Text style={styles.forgotLabel}>{t('login-page.forgot-label')}</Text>
+          inputProps={{
+            placeholder: t('login-page.password-hint'),
+            placeholderTextColor: colors.gray,
+            keyboardType: 'default',
+            secureTextEntry: !showPass
+          }}
+        />
 
-      <ActionButton
-        style={styles.actionButton}
-        onPress={onSetLogin}
-        label={t('login-page.sign-in')}
-      />
+        <Text style={styles.forgotLabel}>{t('login-page.forgot-label')}</Text>
 
-      <View style={styles.footer}>
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerInfo}>{t('login-page.dont-have-account')}</Text>
+        <ActionButton
+          style={styles.actionButton}
+          onPress={onSetLogin}
+          label={t('login-page.sign-in')}
+        />
 
-          <TouchableOpacity
-            style={styles.registerButton}
-            onPress={navigateToRegister}
-          >
-            <Text style={styles.registerLabel}>{t('login-page.sign-up')}</Text>
-          </TouchableOpacity>
+        <View style={styles.footer}>
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerInfo}>{t('login-page.dont-have-account')}</Text>
+
+            <TouchableOpacity
+              style={styles.registerButton}
+              onPress={navigateToRegister}
+            >
+              <Text style={styles.registerLabel}>{t('login-page.sign-up')}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+
+      </KeyboardAwareScrollView>
 
     </Container>
   )
