@@ -9,12 +9,12 @@ import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 
 import { LOGO } from '../../assets/images'
-import { scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import TextInput from '../../components/text-input'
 import { type ThemeType } from '../../models/theme'
 import ActionButton from '../../components/action-button'
 import createStyle from './styles'
-import MailSent from '../../assets/svg/mail-sent'
+import MailSent from '../../assets/svg/MailSent.svg'
 
 const Register = (): React.ReactNode => {
 
@@ -194,7 +194,7 @@ const Register = (): React.ReactNode => {
 				handleIndicatorStyle={ styles.bottomSheetHandle }
 			>
 				<BottomSheetView style={ styles.bottomSheetView }>
-					<MailSent size={ scaleWidth(140) } />
+					<MailSent width={ scaleWidth(140) } height={ scaleHeight(108) } />
 					<Text style={ styles.successTitle }>{ t('register-page.success-title') }</Text>
 					<Text style={ styles.successInfo }>{ t('register-page.success-info') }</Text>
 					<ActionButton

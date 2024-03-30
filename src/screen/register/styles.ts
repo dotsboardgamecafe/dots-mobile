@@ -99,6 +99,7 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 	},
 
 	successTitle: {
+		marginTop: scaleHeight(16),
 		fontWeight: 'bold',
 		fontSize: scaleFont(20),
 		lineHeight: scaleFont(25),
@@ -106,7 +107,8 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 
 	successInfo: {
 		marginTop: scaleHeight(8),
-		color: colors.gray
+		color: colors.gray,
+		textAlign: 'center',
 	},
 
 	successAction: {

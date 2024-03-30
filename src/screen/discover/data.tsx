@@ -1,7 +1,7 @@
 import React from 'react'
-import Domino from '../../assets/svg/games/domino'
+import GiDominoTiles from '../../assets/svg/GiDominoTiles.svg'
 import { type GameType, type Games } from '../../models/games'
-import { scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 
 export const games: Games[] = Array.from({ length: 30 }, (_, i) => ({
 	game_code: `CODE-${i + 1}`,
@@ -20,26 +20,26 @@ export const gameTypes: GameType[] = [
 	{
 		id: 0,
 		name: 'Board Game',
-		icon: <Domino size={ scaleWidth(17) } />
+		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 1,
 		name: 'Cards',
-		icon: <Domino size={ scaleWidth(17) } />
+		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) }/>
 	},
 	{
 		id: 2,
 		name: 'Party',
-		icon: <Domino size={ scaleWidth(17) } />
+		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 3,
 		name: 'Party',
-		icon: <Domino size={ scaleWidth(17) } />
+		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 4,
 		name: 'Party',
-		icon: <Domino size={ scaleWidth(17) } />
+		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) }/>
 	},
 ]

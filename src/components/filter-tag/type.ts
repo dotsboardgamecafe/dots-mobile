@@ -1,9 +1,9 @@
-import { type ReactNode } from 'react'
+import type React from 'react'
 
 export interface FilterTagType {
   id: number,
   active?: boolean | undefined,
-  icon?: ReactNode | undefined,
+  icon?: React.ReactNode | undefined,
   label: string,
   onClick?: (id: number) => void | undefined
 }

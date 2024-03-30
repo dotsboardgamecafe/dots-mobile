@@ -1,13 +1,69 @@
-import React, {  } from 'react'
+import React, { useCallback } from 'react'
 import { type BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { useTranslation } from 'react-i18next'
 import { SafeAreaView, View } from 'react-native'
 
 import styles from './styles'
 import TabbarItem from '../tabbar-item'
 import { useKeyboardShown } from '../../utils/keyboard'
+import Home from '../../assets/svg/Home.svg'
+import HomeActive from '../../assets/svg/HomeActive.svg'
+import Discover from '../../assets/svg/Discover.svg'
+import DiscoverActive from '../../assets/svg/DiscoverActive.svg'
+import Game from '../../assets/svg/Game.svg'
+import GameActive from '../../assets/svg/GameActive.svg'
+import Cup from '../../assets/svg/Cup.svg'
+import CupActive from '../../assets/svg/CupActive.svg'
+import Profile from '../../assets/svg/Profile.svg'
+import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.ReactNode => {
 	const isKeyboardShown = useKeyboardShown()
+	const { t } = useTranslation()
+
+	const getIcon = useCallback((label: string) => {
+		const props = {
+			width: scaleWidth(28),
+			height: scaleHeight(28)
+		}
+		const propsActive = {
+			width: scaleWidth(36),
+			height: scaleHeight(36)
+		}
+
+		switch (label) {
+			case t('main-page.home'): {
+				return {
+					icon: <Home { ...props } />,
+					iconActive: <HomeActive { ...propsActive } />
+				}
+			}
+			case t('main-page.discover'): {
+				return {
+					icon: <Discover { ...props } />,
+					iconActive: <DiscoverActive { ...propsActive } />
+				}
+			}
+			case t('main-page.play'): {
+				return {
+					icon: <Game { ...props } />,
+					iconActive: <GameActive { ...propsActive } />
+				}
+			}
+			case t('main-page.champion'): {
+				return {
+					icon: <Cup { ...props } />,
+					iconActive: <CupActive { ...propsActive } />
+				}
+			}
+			default: {
+				return {
+					icon: <Profile { ...props } />,
+					iconActive: <HomeActive { ...propsActive } />
+				}
+			}
+		}
+	}, [])
 
 	if (isKeyboardShown)
 		return (<View />)
@@ -18,7 +74,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.Re
 				{ state.routes.map((route, index) => {
 					const { options } = descriptors[route.key]
 					const label =
-            options.tabBarLabel ?? options.title ?? route.name
+						options.tabBarLabel ?? options.title ?? route.name
 					const isFocused = state.index === index
 
 					const onPress = (): void => {
@@ -37,6 +93,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.Re
 							label={ label as string }
 							isFocused={ isFocused }
 							onPress={ onPress }
+							{ ...getIcon(label as string) }
 						/>
 					)
 				}) }
