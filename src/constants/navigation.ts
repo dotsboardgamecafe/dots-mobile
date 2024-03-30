@@ -3,7 +3,12 @@ const navigationConstant = {
 		main: 'main',
 		profile: 'profile',
 		login: 'login',
-		register: 'register'
+		bottomNav: 'bottomNav',
+		register: 'register',
+		gameDetail: 'gameDetail',
+		roomDetail: 'roomDetail',
+		paymentSuccess: 'paymentSuccess',
+		webview: 'webview'
 	}
 }
 

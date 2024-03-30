@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { Button, Text, useTheme } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
 import { ArrowDown2, SearchNormal, Setting4 } from 'iconsax-react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { useTranslation } from 'react-i18next'
 import { BottomSheetBackdrop, type BottomSheetBackdropProps, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet'
 
 import Container from '../../components/container'
@@ -18,14 +17,13 @@ import { type FilterItemType } from '../../components/filter-item/type'
 import { gameTypes, games } from './data'
 import FilterTag from '../../components/filter-tag'
 import ActionButton from '../../components/action-button'
+import withCommon from '../../hoc/withCommon'
 
-const Discover = (): React.ReactNode => {
-	const theme = useTheme<ThemeType>()
+const Discover = ({ theme, t }: any): React.ReactNode => {
 	const styles = useMemo(() => createStyle(theme), [theme])
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
 	const [search, setSearch] = useState('')
-	const { t } = useTranslation()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const bottomSheetBackdrop = useCallback(
 		(props: BottomSheetBackdropProps) => (
@@ -194,4 +192,4 @@ const Discover = (): React.ReactNode => {
 	)
 }
 
-export default React.memo(Discover)
+export default withCommon(React.memo(Discover))

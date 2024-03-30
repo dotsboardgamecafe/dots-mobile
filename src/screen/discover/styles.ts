@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native'
 import { type ThemeType } from '../../models/theme'
 import { scaleFont, scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { type StyleProps } from 'react-native-reanimated'
+import { colorsTheme } from '../../constants/theme'
 
 export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 	searchContainer: {
@@ -13,7 +14,7 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 		flex: 1,
 		marginStart: scaleWidth(4),
 		borderWidth: 0,
-		color: colors.onBackground,
+		color: 'red',
 		fontFamily: 'FuturaPTBook'
 	},
 
@@ -36,6 +37,7 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 		alignItems: 'stretch',
 		paddingHorizontal: scaleWidth(16),
 		paddingBottom: scaleHeight(16),
+		zIndex: 99
 	},
 
 	bsHead: {
@@ -54,7 +56,7 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 		fontWeight: 'bold',
 		fontSize: scaleFont(16),
 		lineHeight: scaleHeight(20),
-		color: colors.blueAccent
+		color: colorsTheme.blueAccent
 	},
 
 	filterSecTitle: {

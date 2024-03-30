@@ -1,3 +1,3 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-export const BG = require('./bg-concrete.jpg')
+export const BG = require('./default-background/default-background.png')
 export const LOGO = require('./logo.png')

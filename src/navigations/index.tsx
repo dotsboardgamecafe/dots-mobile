@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { PaperProvider } from 'react-native-paper'
 import BootSplash from 'react-native-bootsplash'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 import Main from '../screen/main'
 import Profile from '../screen/profile'
@@ -14,7 +15,9 @@ import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
 import Register from '../screen/register'
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import PaymentSuccess from '../screen/payment-success'
+import GameDetail from '../screen/game-detail'
+import RoomDetail from '../screen/room-detail'
 
 const { screenName, } = navigationConstant
 
@@ -43,7 +46,11 @@ const publicNavigations = (): React.ReactNode => {
 const privateNavigations = (): ReactNode => {
 	return (
 		<Stack.Group>
-			<Stack.Screen name='main2' component={ MainTab } options={ { headerShown: false } } />
+			<Stack.Screen
+				name={ screenName.bottomNav }
+				component={ MainTab }
+				options={ { headerShown: false } }
+			 />
 			<Stack.Screen
 				name={ screenName.main }
 				component={ Main }
@@ -51,6 +58,22 @@ const privateNavigations = (): ReactNode => {
 			<Stack.Screen
 				name={ screenName.profile }
 				component={ Profile }
+			/>
+			<Stack.Screen
+				name={ screenName.gameDetail }
+				component={ GameDetail }
+			/>
+			<Stack.Screen
+				name={ screenName.roomDetail }
+				component={ RoomDetail }
+			/>
+			<Stack.Screen
+				name={ screenName.paymentSuccess }
+				component={ PaymentSuccess }
+			/>
+			<Stack.Screen
+				name={ screenName.webview }
+				component={ Profile } // todo webview
 			/>
 		</Stack.Group>
 	)

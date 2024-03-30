@@ -76,4 +76,13 @@ const themeConstant = {
 	navigationThemeLight
 }
 
+export const mergeTheme = ({
+	...paperThemeLight,
+	...navigationThemeLight
+})
+
+export const colorsTheme  = {
+	...mergeTheme.colors
+}
+
 export default themeConstant
