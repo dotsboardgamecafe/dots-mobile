@@ -1306,7 +1306,7 @@
   dependencies:
     cross-spawn "^7.0.3"
 
-"@gorhom/bottom-sheet@^5":
+"@gorhom/bottom-sheet@4.6.1":
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.6.1.tgz#e45e2183246e338cf732fe4f8f2c91875b22ddce"
   integrity sha512-sXqsYqX1/rAbmCC5fb9o6hwSF3KXriC0EGUGvLlhFvjaEEMBrRKFTNndiluRK1HmpUzazVaYdTm/lLkSiA2ooQ==

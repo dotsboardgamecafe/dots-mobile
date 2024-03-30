@@ -9,7 +9,7 @@ import {
 	MD3DarkTheme,
 	MD3LightTheme,
 } from 'react-native-paper'
-import { MD3Type } from 'react-native-paper/lib/typescript/types'
+import { type MD3Type } from 'react-native-paper/lib/typescript/types'
 
 import colors from './colors'
 import { scaleFont } from '../utils/pixel.ratio'

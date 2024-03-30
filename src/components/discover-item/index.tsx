@@ -27,7 +27,6 @@ const DiscoverItem = (item: Games): React.ReactNode => {
 			return (
 				<View>
 					{ image }
-
 					<View style={ style.popularContainer }>
 						<Text style={ style.popularTag }>{ t('main-page.popular') }</Text>
 					</View>
@@ -41,24 +40,19 @@ const DiscoverItem = (item: Games): React.ReactNode => {
 	return (
 		<RoundedBorder radius={ 12 } borderWidth={ 1 } key={ item.game_code }>
 			{ renderImage() }
-
 			<Text style={ style.title }>{ item.name }</Text>
-
 			<View style={ style.row }>
 				<Profile2User size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
 				<Text style={ style.textInfo }>{ t('discover-page.slot') }: 3-5 { t('discover-page.person') }</Text>
 			</View>
-
 			<View style={ [style.row, { marginTop: 4 }] }>
 				<Level size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
 				<Text style={ style.textInfo }>{ t('discover-page.level') }: { item.cafe_id }</Text>
 			</View>
-
 			<View style={ [style.row, { marginTop: 4 }] }>
 				<Clock size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
 				<Text style={ style.textInfo }>{ t('discover-page.duration') }: 20 { t('discover-page.minute') }</Text>
 			</View>
-
 			<View style={ style.tagContainer }>
 				<Text style={ style.gameTag }>{ item.game_type }</Text>
 			</View>

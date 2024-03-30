@@ -7,7 +7,7 @@ const {
 
 const defaultScaleWidth = SCREEN_WIDTH / 375
 
-const defaultScaleHeight = SCREEN_HEIGHT / 812
+const defaultScaleHeight = SCREEN_HEIGHT / 852
 
 const scaleWidth = (size: number):number => {
 	const newSize = size * defaultScaleWidth

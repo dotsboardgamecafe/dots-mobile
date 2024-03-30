@@ -1,6 +1,6 @@
-import React from "react"
+import type React from 'react'
 
-export type FilterItemType = {
+export interface FilterItemType {
   label: string,
   prefix?: React.ReactNode,
   suffix?: React.ReactNode,

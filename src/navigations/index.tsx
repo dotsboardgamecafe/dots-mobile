@@ -19,9 +19,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 const { screenName, } = navigationConstant
 
 const {
-	paperThemeDark,
 	paperThemeLight,
-	navigationThemeDark,
 	navigationThemeLight
 } = themeConstant
 
@@ -29,14 +27,14 @@ const Stack = createNativeStackNavigator()
 
 const publicNavigations = (): React.ReactNode => {
 	return (
-		<Stack.Group screenOptions={{ headerShown: false }}>
+		<Stack.Group screenOptions={ { headerShown: false } }>
 			<Stack.Screen
-				name={screenName.login}
-				component={Login}
+				name={ screenName.login }
+				component={ Login }
 			/>
 			<Stack.Screen
-				name={screenName.register}
-				component={Register}
+				name={ screenName.register }
+				component={ Register }
 			/>
 		</Stack.Group>
 	)
@@ -45,14 +43,14 @@ const publicNavigations = (): React.ReactNode => {
 const privateNavigations = (): ReactNode => {
 	return (
 		<Stack.Group>
-			<Stack.Screen name='main2' component={MainTab} options={{ headerShown: false }} />
+			<Stack.Screen name='main2' component={ MainTab } options={ { headerShown: false } } />
 			<Stack.Screen
-				name={screenName.main}
-				component={Main}
+				name={ screenName.main }
+				component={ Main }
 			/>
 			<Stack.Screen
-				name={screenName.profile}
-				component={Profile}
+				name={ screenName.profile }
+				component={ Profile }
 			/>
 		</Stack.Group>
 	)
@@ -82,15 +80,15 @@ const Navigations = (): React.ReactNode => {
 	}, [isLoggedIn])
 
 	return (
-		<PaperProvider theme={themeFactory.paperTheme}>
-			<GestureHandlerRootView style={{ flex: 1 }}>
+		<PaperProvider theme={ themeFactory.paperTheme }>
+			<GestureHandlerRootView style={ { flex: 1 } }>
 				<BottomSheetModalProvider>
 					<NavigationContainer
-						theme={themeFactory.navigationTheme}
-						onReady={BootSplash.hide}
+						theme={ themeFactory.navigationTheme }
+						onReady={ BootSplash.hide }
 					>
-						<Stack.Navigator initialRouteName={screenName.login}>
-							{renderScreenContent}
+						<Stack.Navigator initialRouteName={ screenName.login }>
+							{ renderScreenContent }
 						</Stack.Navigator>
 					</NavigationContainer>
 				</BottomSheetModalProvider>

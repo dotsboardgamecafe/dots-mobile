@@ -1,4 +1,4 @@
-import { AnimatableNumericValue, StyleProp, ViewProps, ViewStyle } from "react-native"
+import { type StyleProp, type ViewProps, type ViewStyle } from 'react-native'
 
 export type RoundedBorderProps = ViewProps & {
   contentStyle?: StyleProp<ViewStyle> | undefined,

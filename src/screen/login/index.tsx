@@ -53,13 +53,9 @@ const Login = (): React.ReactNode => {
 				bounces={ false }
 				enableOnAndroid
 			>
-
 				<Image source={ LOGO } style={ styles.headerImage } />
-
 				<Text style={ styles.headerTitle }>{ t('login-page.title') }</Text>
-
 				<Text style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
-
 				<TextInput
 					containerStyle={ styles.input }
 					borderFocusColor={ colors.blueAccent }
@@ -74,9 +70,7 @@ const Login = (): React.ReactNode => {
 						keyboardType: 'email-address'
 					} }
 				/>
-
 				<Text style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
-
 				<TextInput
 					containerStyle={ styles.input }
 					borderFocusColor={ colors.blueAccent }
@@ -93,15 +87,12 @@ const Login = (): React.ReactNode => {
 						secureTextEntry: !showPass
 					} }
 				/>
-
 				<Text style={ styles.forgotLabel }>{ t('login-page.forgot-label') }</Text>
-
 				<ActionButton
 					style={ styles.actionButton }
 					onPress={ onSetLogin }
 					label={ t('login-page.sign-in') }
 				/>
-
 				<View style={ styles.footer }>
 					<View style={ styles.registerContainer }>
 						<Text style={ styles.registerInfo }>{ t('login-page.dont-have-account') }</Text>
@@ -114,9 +105,7 @@ const Login = (): React.ReactNode => {
 						</TouchableOpacity>
 					</View>
 				</View>
-
 			</KeyboardAwareScrollView>
-
 		</Container>
 	)
 }
