@@ -1,127 +1,124 @@
-import React, { useCallback, useMemo, useState } from "react"
-import { View, Image, TouchableOpacity } from "react-native"
-import { Text, useTheme } from "react-native-paper"
-import { Eye, EyeSlash, IconProps, Lock, Sms } from "iconsax-react-native"
-import { useTranslation } from "react-i18next"
-import { useNavigation } from "@react-navigation/native"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import React, { useCallback, useMemo, useState } from 'react'
+import { View, Image, TouchableOpacity } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
+import {
+	Eye, EyeSlash, type IconProps, Lock, Sms
+} from 'iconsax-react-native'
+import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { scaleWidth } from "../../utils/pixel.ratio"
-import Container from "../../components/container"
-import { LOGO } from "../../assets/images"
-import TextInput from "../../components/text-input"
-import useStorage from "../../hooks/useStorage"
-import { ThemeType } from "../../models/theme"
-import ActionButton from "../../components/action-button"
-import styles from "./styles"
-import navigationConstant from "../../constants/navigation"
+import { scaleWidth } from '../../utils/pixel.ratio'
+import Container from '../../components/container'
+import { LOGO } from '../../assets/images'
+import TextInput from '../../components/text-input'
+import useStorage from '../../hooks/useStorage'
+import { type ThemeType } from '../../models/theme'
+import ActionButton from '../../components/action-button'
+import styles from './styles'
+import navigationConstant from '../../constants/navigation'
 
 const Login = (): React.ReactNode => {
-  const { t } = useTranslation()
-  const { onSetLogin } = useStorage()
-  const { colors } = useTheme<ThemeType>()
-  const navigation = useNavigation()
-  const { screenName } = navigationConstant
+	const { t } = useTranslation()
+	const { onSetLogin } = useStorage()
+	const { colors } = useTheme<ThemeType>()
+	const navigation = useNavigation()
+	const { screenName } = navigationConstant
 
-  const [showPass, setShowPass] = useState(false)
+	const [showPass, setShowPass] = useState(false)
 
-  const passSuffix = useMemo(() => {
-    const props: IconProps = {
-      variant: "Bold",
-      size: scaleWidth(16),
-      color: colors.gray,
-      onPress: () => setShowPass(!showPass)
-    }
+	const passSuffix = useMemo(() => {
+		const props: IconProps = {
+			variant: 'Bold',
+			size: scaleWidth(16),
+			color: colors.gray,
+			onPress: () => { setShowPass(!showPass) }
+		}
 
-    if (showPass) return <Eye {...props} />
+		if (showPass) return <Eye { ...props } />
 
-    return <EyeSlash {...props} />
-  }, [showPass])
+		return <EyeSlash { ...props } />
+	}, [showPass])
 
-  const navigateToRegister = useCallback(() => {
-    navigation.navigate(screenName.register as never)
-  }, [])
+	const navigateToRegister = useCallback(() => {
+		navigation.navigate(screenName.register as never)
+	}, [])
 
-  return (
-    <Container>
+	return (
+		<Container>
 
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        enableOnAndroid
-      >
+			<KeyboardAwareScrollView
+				contentContainerStyle={ styles.scrollView }
+				showsVerticalScrollIndicator={ false }
+				bounces={ false }
+				enableOnAndroid
+			>
 
-        <Image source={LOGO} style={styles.headerImage} />
+				<Image source={ LOGO } style={ styles.headerImage } />
 
-        <Text style={styles.headerTitle}>{t('login-page.title')}</Text>
+				<Text style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 
-        <Text style={styles.emailLabel}>{t('login-page.email-label')}</Text>
+				<Text style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
 
-        <TextInput
-          containerStyle={styles.input}
-          borderFocusColor={colors.blueAccent}
+				<TextInput
+					containerStyle={ styles.input }
+					borderFocusColor={ colors.blueAccent }
+					prefix={ <Sms
+						variant='Bold'
+						size={ scaleWidth(16) }
+						color={ colors.gray }
+					/> }
+					inputProps={ {
+						placeholder: t('login-page.email-hint'),
+						placeholderTextColor: colors.gray,
+						keyboardType: 'email-address'
+					} }
+				/>
 
-          prefix={<Sms
-            variant="Bold"
-            size={scaleWidth(16)}
-            color={colors.gray}
-          />}
+				<Text style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
 
-          inputProps={{
-            placeholder: t('login-page.email-hint'),
-            placeholderTextColor: colors.gray,
-            keyboardType: 'email-address'
-          }}
-        />
+				<TextInput
+					containerStyle={ styles.input }
+					borderFocusColor={ colors.blueAccent }
+					prefix={ <Lock
+						variant='Bold'
+						size={ scaleWidth(16) }
+						color={ colors.gray }
+					/> }
+					suffix={ passSuffix }
+					inputProps={ {
+						placeholder: t('login-page.password-hint'),
+						placeholderTextColor: colors.gray,
+						keyboardType: 'default',
+						secureTextEntry: !showPass
+					} }
+				/>
 
-        <Text style={styles.passwordLabel}>{t('login-page.password-label')}</Text>
+				<Text style={ styles.forgotLabel }>{ t('login-page.forgot-label') }</Text>
 
-        <TextInput
-          containerStyle={styles.input}
-          borderFocusColor={colors.blueAccent}
+				<ActionButton
+					style={ styles.actionButton }
+					onPress={ onSetLogin }
+					label={ t('login-page.sign-in') }
+				/>
 
-          prefix={<Lock
-            variant="Bold"
-            size={scaleWidth(16)}
-            color={colors.gray}
-          />}
+				<View style={ styles.footer }>
+					<View style={ styles.registerContainer }>
+						<Text style={ styles.registerInfo }>{ t('login-page.dont-have-account') }</Text>
 
-          suffix={passSuffix}
+						<TouchableOpacity
+							style={ styles.registerButton }
+							onPress={ navigateToRegister }
+						>
+							<Text style={ styles.registerLabel }>{ t('login-page.sign-up') }</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
 
-          inputProps={{
-            placeholder: t('login-page.password-hint'),
-            placeholderTextColor: colors.gray,
-            keyboardType: 'default',
-            secureTextEntry: !showPass
-          }}
-        />
+			</KeyboardAwareScrollView>
 
-        <Text style={styles.forgotLabel}>{t('login-page.forgot-label')}</Text>
-
-        <ActionButton
-          style={styles.actionButton}
-          onPress={onSetLogin}
-          label={t('login-page.sign-in')}
-        />
-
-        <View style={styles.footer}>
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerInfo}>{t('login-page.dont-have-account')}</Text>
-
-            <TouchableOpacity
-              style={styles.registerButton}
-              onPress={navigateToRegister}
-            >
-              <Text style={styles.registerLabel}>{t('login-page.sign-up')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-      </KeyboardAwareScrollView>
-
-    </Container>
-  )
+		</Container>
+	)
 }
 
 export default React.memo(Login)

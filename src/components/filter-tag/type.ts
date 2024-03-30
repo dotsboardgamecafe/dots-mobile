@@ -1,7 +1,6 @@
-import { PropsWithChildren, ReactNode } from 'react'
-import { GameType } from '../../models/games'
+import { type ReactNode } from 'react'
 
-export type FilterTagType = {
+export interface FilterTagType {
   id: number,
   active?: boolean | undefined,
   icon?: ReactNode | undefined,
