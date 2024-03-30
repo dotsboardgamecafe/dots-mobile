@@ -1,3 +1,3 @@
-export type IconType = {
+export interface IconType {
   size: number
 }

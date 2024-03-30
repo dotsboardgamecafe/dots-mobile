@@ -46,7 +46,6 @@ const Login = (): React.ReactNode => {
 
 	return (
 		<Container>
-
 			<KeyboardAwareScrollView
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
@@ -96,7 +95,6 @@ const Login = (): React.ReactNode => {
 				<View style={ styles.footer }>
 					<View style={ styles.registerContainer }>
 						<Text style={ styles.registerInfo }>{ t('login-page.dont-have-account') }</Text>
-
 						<TouchableOpacity
 							style={ styles.registerButton }
 							onPress={ navigateToRegister }
