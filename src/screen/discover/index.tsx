@@ -10,16 +10,18 @@ import FilterItem from '../../components/filter-item'
 import DiscoverItem from '../../components/discover-item'
 import TextInput from '../../components/text-input'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
 import { createStyle } from './styles'
 import { useKeyboardShown } from '../../utils/keyboard'
 import { type FilterItemType } from '../../components/filter-item/type'
 import { gameTypes, games } from './data'
 import FilterTag from '../../components/filter-tag'
 import ActionButton from '../../components/action-button'
-import withCommon from '../../hoc/withCommon'
+import withCommon from '../../hoc/with-common'
+import { type NavigationProps } from '../../models/navigation'
 
-const Discover = ({ theme, t }: any): React.ReactNode => {
+type Props = NavigationProps<'Discover'>
+
+const Discover = ({ theme, t }: Props): React.ReactNode => {
 	const styles = useMemo(() => createStyle(theme), [theme])
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
