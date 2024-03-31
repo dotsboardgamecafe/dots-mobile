@@ -45,11 +45,10 @@ const publicNavigations = (): React.ReactNode => {
 
 const privateNavigations = (): ReactNode => {
 	return (
-		<Stack.Group>
+		<Stack.Group screenOptions={ { headerShown: false } }>
 			<Stack.Screen
 				name={ screenName.bottomNav }
 				component={ MainTab }
-				options={ { headerShown: false } }
 			 />
 			<Stack.Screen
 				name={ screenName.main }

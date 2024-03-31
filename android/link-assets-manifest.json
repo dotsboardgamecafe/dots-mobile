@@ -2,6 +2,26 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/assets/fonts/FuturaPT-Bold.ttf",
+      "sha1": "e3a20c35ba1fea981c58e7c25fba05ed68c4c2ce"
+    },
+    {
+      "path": "src/assets/fonts/FuturaPT-Book.ttf",
+      "sha1": "ff60b06311a60549c358b24c71d74962e42161e3"
+    },
+    {
+      "path": "src/assets/fonts/FuturaPT-Demi.ttf",
+      "sha1": "5f18959eb53472225f76969bb94ce5453a5cbb2a"
+    },
+    {
+      "path": "src/assets/fonts/FuturaPT-Heavy.ttf",
+      "sha1": "cf831136cfbd688abcfee7342782e80be26cc0d1"
+    },
+    {
+      "path": "src/assets/fonts/FuturaPT-Medium.ttf",
+      "sha1": "5b4c9383b7f6a2a2883b8e3b74a54a367193f64e"
+    },
+    {
       "path": "src/assets/fonts/FuturaPTBook.otf",
       "sha1": "d633453cd20a2fe9bb6ed0067b2188500b3562d3"
     }

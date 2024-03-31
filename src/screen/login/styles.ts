@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
 		marginTop: scaleHeight(SCREEN_HEIGHT * .1)
 	},
 	headerTitle: {
-		fontWeight: 'bold',
-		fontSize: scaleFont(24),
-		lineHeight: scaleFont(32),
-		marginTop: scaleHeight(12)
+		// fontWeight: 'bold',
+		// fontSize: scaleFont(24),
+		// lineHeight: scaleFont(32),
+		// marginTop: scaleHeight(12)
 	},
 	emailLabel: {
 		fontWeight: 'bold',

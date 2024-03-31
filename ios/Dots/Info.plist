@@ -32,7 +32,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -50,6 +50,11 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>FuturaPTBook.otf</string>
+		<string>FuturaPT-Bold.ttf</string>
+		<string>FuturaPT-Book.ttf</string>
+		<string>FuturaPT-Medium.ttf</string>
+		<string>FuturaPT-Demi.ttf</string>
+		<string>FuturaPT-Heavy.ttf</string>
 	</array>
 </dict>
 </plist>
