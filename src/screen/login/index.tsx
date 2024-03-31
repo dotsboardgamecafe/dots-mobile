@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
-import { Text, useTheme } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
@@ -17,6 +17,7 @@ import { type ThemeType } from '../../models/theme'
 import ActionButton from '../../components/action-button'
 import styles from './styles'
 import navigationConstant from '../../constants/navigation'
+import Text from '../../components/text'
 
 const Login = (): React.ReactNode => {
 	const { t } = useTranslation()
@@ -53,7 +54,7 @@ const Login = (): React.ReactNode => {
 				enableOnAndroid
 			>
 				<Image source={ LOGO } style={ styles.headerImage } />
-				<Text style={ styles.headerTitle }>{ t('login-page.title') }</Text>
+				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 				<Text style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
 				<TextInput
 					containerStyle={ styles.input }

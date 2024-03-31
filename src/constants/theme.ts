@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import {
 	DefaultTheme as NavigationLightTheme,
 	DarkTheme as NavigationDarkTheme
@@ -9,25 +8,18 @@ import {
 	MD3DarkTheme,
 	MD3LightTheme,
 } from 'react-native-paper'
-import { type MD3Type } from 'react-native-paper/lib/typescript/types'
 
 import colors from './colors'
-import { scaleFont } from '../utils/pixel.ratio'
+import defaultFontConfigs from './fonts'
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
 	reactNavigationLight: NavigationLightTheme,
 	reactNavigationDark: NavigationDarkTheme
 })
 
-const fontConfig: MD3Type = {
-	fontFamily: Platform.select({
-		default: 'FuturaPTBook',
-	}),
-	fontWeight: '400',
-	letterSpacing: 0,
-	lineHeight: scaleFont(18),
-	fontSize: scaleFont(14),
-}
+const fontConfig = {
+	...defaultFontConfigs
+} as const as any
 
 const paperThemeDark = {
 	...MD3DarkTheme,

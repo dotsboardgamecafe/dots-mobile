@@ -21,7 +21,7 @@ import { type NavigationProps } from '../../models/navigation'
 
 type Props = NavigationProps<'discover'>
 
-const Discover = ({ theme, t }: Props): React.ReactNode => {
+const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const styles = useMemo(() => createStyle(theme), [theme])
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
@@ -89,7 +89,10 @@ const Discover = ({ theme, t }: Props): React.ReactNode => {
 							style={ { marginEnd: 4 } }
 						/>
 					}
-					onPress={ () => bottomSheetRef.current?.present() }
+					onPress={ () => {
+						// bottomSheetRef.current?.present()
+						navigation.navigate('paymentSuccess')
+					} }
 				/>
 
 				<FlatList
