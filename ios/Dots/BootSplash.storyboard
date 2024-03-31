@@ -3,7 +3,7 @@
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,6 +16,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_background" translatesAutoresizingMaskIntoConstraints="NO" id="Q2i-T4-918">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
                             <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="BootSplashLogo" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
                                 <rect key="frame" x="112.5" y="251.5" width="150" height="164"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -24,19 +27,26 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
-                        <color key="backgroundColor" red="1.00000000000000" green="1.00000000000000" blue="1.00000000000000" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Fh9-Fy-1nT"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="HYZ-HR-98I"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" id="KOV-80-ToK"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="XUk-dV-euw"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="cIR-8A-49B"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="keg-Qu-f1U"/>
                             <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="nvB-Ic-PnI"/>
+                            <constraint firstItem="Q2i-T4-918" firstAttribute="trailing" secondItem="Bcu-3y-fUS" secondAttribute="trailing" id="z6m-3m-EDJ"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="0.0"/>
+            <point key="canvasLocation" x="-0.80000000000000004" y="-0.44977511244377816"/>
         </scene>
     </scenes>
     <resources>
         <image name="BootSplashLogo" width="150" height="164"/>
+        <image name="default_background" width="375" height="812"/>
     </resources>
 </document>
