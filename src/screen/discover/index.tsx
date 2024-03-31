@@ -19,7 +19,7 @@ import ActionButton from '../../components/action-button'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 
-type Props = NavigationProps<'Discover'>
+type Props = NavigationProps<'discover'>
 
 const Discover = ({ theme, t }: Props): React.ReactNode => {
 	const styles = useMemo(() => createStyle(theme), [theme])
