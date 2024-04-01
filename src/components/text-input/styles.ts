@@ -8,18 +8,18 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingHorizontal: scaleWidth(16),
-		borderRadius: 12,
+		borderRadius: 8,
 		borderColor: colors.background,
 		borderWidth: 1,
 		backgroundColor: colors.surface,
-		height: scaleHeight(48),
+		height: scaleHeight(42),
 	},
 
 	input: {
 		flex: 1,
 		borderWidth: 0,
 		color: colors.onBackground,
-		fontFamily: 'FuturaPTBook'
+		fontFamily: 'FuturaPT-Book'
 	},
 
 	isPrefix: { marginStart: scaleWidth(4) },

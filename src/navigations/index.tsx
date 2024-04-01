@@ -18,6 +18,8 @@ import Register from '../screen/register'
 import PaymentSuccess from '../screen/payment-success'
 import GameDetail from '../screen/game-detail'
 import RoomDetail from '../screen/room-detail'
+import ForgotPassword from '../screen/forgot-password'
+import UpdatePassword from '../screen/update-password'
 
 const { screenName, } = navigationConstant
 
@@ -38,6 +40,14 @@ const publicNavigations = (): React.ReactNode => {
 			<Stack.Screen
 				name={ screenName.register }
 				component={ Register }
+			/>
+			<Stack.Screen
+				name={ screenName.forgotPassword }
+				component={ ForgotPassword }
+			/>
+			<Stack.Screen
+				name={ screenName.updatePassword }
+				component={ UpdatePassword }
 			/>
 		</Stack.Group>
 	)

@@ -30,17 +30,17 @@ const styles = StyleSheet.create({
 	},
 
 	rectangle2: {
-		width: SCREEN_WIDTH / 2,
+		width: SCREEN_WIDTH,
 		height: SCREEN_WIDTH / 2,
 		backgroundColor: '#232526',
 		position: 'absolute',
-		top: '-250%',
-		start: '55%',
-		transform: [{ rotate: '45deg' }]
+		top: '-400%',
+		start: '20%',
+		transform: [{ rotate: '25deg' }]
 	},
 
 	label: {
-		fontWeight: 'bold',
+		// fontWeight: 'bold',
 		color: 'white'
 	},
 })

@@ -32,6 +32,20 @@
       "open-email": "Open Email"
     },
 
+    "forgot-password-page": {
+      "title": "Forgot Password",
+      "desc": "Enter the email associated with your account and we’ll send you an email with instruction for reseting your password.",
+      "verification": "Verification",
+      "success-title": "Verification Link Sent",
+      "success-info": "We have sent a link recovery for your password to your email address "
+    },
+
+    "update-password-page": {
+      "title": "Update Your Password",
+      "desc": "Your password must be different with the previous password.",
+      "submit": "Submit"
+    },
+
     "main-page": {
       "home": "Home",
       "discover": "Discover",

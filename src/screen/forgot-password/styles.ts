@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
 
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -19,26 +19,16 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	title: {
 		marginTop: scaleHeight(12)
 	},
+	desc: {
+		color: colors.gray,
+		marginTop: scaleVertical(8)
+	},
 	mt8: {
 		marginTop: scaleHeight(8)
 	},
 	nameLabel: {
 		marginTop: scaleHeight(36),
 		alignSelf: 'flex-start'
-	},
-	inputLabel: {
-		marginTop: scaleHeight(24),
-		alignSelf: 'flex-start'
-	},
-	inputInfo: {
-		marginTop: scaleHeight(6),
-		color: colors.gray
-	},
-	countryCode: {
-		color: colors.gray
-	},
-	phonePrefixArrow: {
-		marginStart: scaleWidth(2)
 	},
 	actionButton: {
 		marginTop: scaleHeight(32)
@@ -74,7 +64,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		textAlign: 'center',
 	},
 	successAction: {
-		marginTop: scaleHeight(32)
+		marginTop: scaleHeight(16)
 	}
 })
 
