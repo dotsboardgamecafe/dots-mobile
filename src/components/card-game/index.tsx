@@ -10,7 +10,7 @@ import { type Games } from '../../models/games'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
 
-const DiscoverItem = (item: Games): React.ReactNode => {
+const CardGame = (item: Games): React.ReactNode => {
 
 	const { t } = useTranslation()
 	const theme = useTheme<ThemeType>()
@@ -61,6 +61,6 @@ const DiscoverItem = (item: Games): React.ReactNode => {
 }
 
 export default React.memo(
-	DiscoverItem,
+	CardGame,
 	(prev, next) => prev.game_code === next.game_code
 )
