@@ -7,7 +7,7 @@ import { BottomSheetBackdrop, type BottomSheetBackdropProps, BottomSheetModal, B
 
 import Container from '../../components/container'
 import FilterItem from '../../components/filter-item'
-import DiscoverItem from '../../components/discover-item'
+import CardGame from '../../components/card-game'
 import TextInput from '../../components/text-input'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { createStyle } from './styles'
@@ -107,7 +107,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			<FlatList
 				data={ games }
 				keyExtractor={ item => item.game_code }
-				renderItem={ ({ item }) => <DiscoverItem { ...item } /> }
+				renderItem={ ({ item }) => <CardGame { ...item } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 				style={ styles.list }
 				columnWrapperStyle={ styles.columnWrapper }
