@@ -1,11 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
-import { useTheme } from 'react-native-paper'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
-import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { scaleWidth } from '../../utils/pixel.ratio'
@@ -13,17 +10,17 @@ import Container from '../../components/container'
 import { LOGO } from '../../assets/images'
 import TextInput from '../../components/text-input'
 import useStorage from '../../hooks/useStorage'
-import { type ThemeType } from '../../models/theme'
 import ActionButton from '../../components/action-button'
 import styles from './styles'
 import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
+import { type NavigationProps } from '../../models/navigation'
+import withCommon from '../../hoc/with-common'
 
-const Login = (): React.ReactNode => {
-	const { t } = useTranslation()
+type Props = NavigationProps<'login'>
+
+const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const { onSetLogin } = useStorage()
-	const { colors } = useTheme<ThemeType>()
-	const navigation = useNavigation()
 	const { screenName } = navigationConstant
 
 	const [showPass, setShowPass] = useState(false)
@@ -32,7 +29,7 @@ const Login = (): React.ReactNode => {
 		const props: IconProps = {
 			variant: 'Bold',
 			size: scaleWidth(16),
-			color: colors.gray,
+			color: theme.colors.gray,
 			onPress: () => { setShowPass(!showPass) }
 		}
 
@@ -45,6 +42,10 @@ const Login = (): React.ReactNode => {
 		navigation.navigate(screenName.register as never)
 	}, [])
 
+	const navigateToForgotPass = useCallback(() => {
+		navigation.navigate(screenName.forgotPassword as never)
+	}, [])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
@@ -55,39 +56,45 @@ const Login = (): React.ReactNode => {
 			>
 				<Image source={ LOGO } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
-				<Text style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
+				<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
 				<TextInput
 					containerStyle={ styles.input }
-					borderFocusColor={ colors.blueAccent }
+					borderFocusColor={ theme.colors.blueAccent }
 					prefix={ <Sms
 						variant='Bold'
 						size={ scaleWidth(16) }
-						color={ colors.gray }
+						color={ theme.colors.gray }
 					/> }
 					inputProps={ {
 						placeholder: t('login-page.email-hint'),
-						placeholderTextColor: colors.gray,
+						placeholderTextColor: theme.colors.gray,
 						keyboardType: 'email-address'
 					} }
 				/>
-				<Text style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
+				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
 				<TextInput
 					containerStyle={ styles.input }
-					borderFocusColor={ colors.blueAccent }
+					borderFocusColor={ theme.colors.blueAccent }
 					prefix={ <Lock
 						variant='Bold'
 						size={ scaleWidth(16) }
-						color={ colors.gray }
+						color={ theme.colors.gray }
 					/> }
 					suffix={ passSuffix }
 					inputProps={ {
 						placeholder: t('login-page.password-hint'),
-						placeholderTextColor: colors.gray,
+						placeholderTextColor: theme.colors.gray,
 						keyboardType: 'default',
 						secureTextEntry: !showPass
 					} }
 				/>
-				<Text style={ styles.forgotLabel }>{ t('login-page.forgot-label') }</Text>
+				<Text
+					variant='bodyMiddleMedium'
+					style={ styles.forgotLabel }
+					onPress={ navigateToForgotPass }
+				>
+					{ t('login-page.forgot-label') }
+				</Text>
 				<ActionButton
 					style={ styles.actionButton }
 					onPress={ onSetLogin }
@@ -95,12 +102,12 @@ const Login = (): React.ReactNode => {
 				/>
 				<View style={ styles.footer }>
 					<View style={ styles.registerContainer }>
-						<Text style={ styles.registerInfo }>{ t('login-page.dont-have-account') }</Text>
+						<Text variant='bodyMiddleRegular'>{ t('login-page.dont-have-account') }</Text>
 						<TouchableOpacity
 							style={ styles.registerButton }
 							onPress={ navigateToRegister }
 						>
-							<Text style={ styles.registerLabel }>{ t('login-page.sign-up') }</Text>
+							<Text variant='bodyMiddleBold'>{ t('login-page.sign-up') }</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -109,4 +116,4 @@ const Login = (): React.ReactNode => {
 	)
 }
 
-export default React.memo(Login)
+export default withCommon(React.memo(Login))
