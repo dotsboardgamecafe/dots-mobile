@@ -3,6 +3,8 @@ const navigationConstant = {
 		main: 'main',
 		profile: 'profile',
 		login: 'login',
+		forgotPassword: 'forgotPassword',
+		updatePassword: 'updatePassword',
 		bottomNav: 'bottomNav',
 		register: 'register',
 		gameDetail: 'gameDetail',
