@@ -1,9 +1,7 @@
-import { type ReactNode } from 'react'
 import { type GestureResponderEvent, type StyleProp, type ViewStyle } from 'react-native'
 
-export interface ActionButtonProps {
+export interface ActionButton2Props {
   style?: StyleProp<ViewStyle> | undefined,
   onPress?: ((event: GestureResponderEvent) => void) | undefined,
-  label?: string | undefined,
-  suffix?: ReactNode | undefined
+  label?: string | undefined
 }

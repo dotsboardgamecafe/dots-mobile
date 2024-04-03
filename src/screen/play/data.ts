@@ -4,7 +4,7 @@ export const sections = [
 		data: [
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'tourney'
+				type: 'Tournament'
 			}
 		]
 	},
@@ -13,11 +13,11 @@ export const sections = [
 		data: [
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'event'
+				type: 'Event'
 			},
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'event'
+				type: 'Event'
 			},
 		]
 	},
@@ -26,15 +26,15 @@ export const sections = [
 		data: [
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'room'
+				type: 'Room'
 			},
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'room'
+				type: 'Room'
 			},
 			{
 				img: 'https://picsum.photos/320/140',
-				type: 'room'
+				type: 'Room'
 			},
 		]
 	},
