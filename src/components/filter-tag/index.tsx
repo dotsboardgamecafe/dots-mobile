@@ -1,11 +1,12 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Text, useTheme } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 
 import RoundedBorder from '../rounded-border'
 import { type ThemeType } from '../../models/theme'
 import createStyle from './styles'
 import { type FilterTagType } from './type'
+import Text from '../text'
 
 const FilterTag = ({
 	id,
@@ -18,20 +19,18 @@ const FilterTag = ({
 	const theme = useTheme<ThemeType>()
 	const style = createStyle(theme)
 
-	const onPress = useCallback(() => {
-		if (onClick) onClick(id)
-	}, [onClick])
-
 	const content = useMemo(() => (
 		<TouchableOpacity
 			style={ [
 				style.content,
-				!active && style.inactive
+				!active && style.inactive,
+				!onClick && { backgroundColor: theme.colors.background }
 			] }
-			onPress={ onPress }
+			onPress={ () => onClick && onClick(id) }
+			disabled={ onClick !== null }
 		>
 			{ icon }
-			<Text style={ icon ? style.hasIcon : {} }>{ label }</Text>
+			<Text variant='bodyMiddleRegular' style={ icon ? style.hasIcon : {} }>{ label }</Text>
 		</TouchableOpacity>
 	), [active])
 

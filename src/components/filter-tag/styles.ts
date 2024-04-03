@@ -30,7 +30,7 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 		paddingVertical: scaleHeight(8),
 	},
 	hasIcon: {
-		marginStart: scaleWidth(8)
+		marginStart: scaleWidth(4)
 	}
 })
 
