@@ -18,6 +18,7 @@ import Register from '../screen/register'
 import PaymentSuccess from '../screen/payment-success'
 import GameDetail from '../screen/game-detail'
 import RoomDetail from '../screen/room-detail'
+import Webview from '../screen/webview'
 
 const { screenName, } = navigationConstant
 
@@ -72,7 +73,7 @@ const privateNavigations = (): ReactNode => {
 			/>
 			<Stack.Screen
 				name={ screenName.webview }
-				component={ Profile } // todo webview
+				component={ Webview }
 			/>
 		</Stack.Group>
 	)

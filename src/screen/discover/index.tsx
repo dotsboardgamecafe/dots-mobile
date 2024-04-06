@@ -91,7 +91,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					}
 					onPress={ () => {
 						// bottomSheetRef.current?.present()
-						navigation.navigate('paymentSuccess')
+						navigation.navigate('webview', {
+							link: 'https://checkout-staging.xendit.co/web/6611c674c3e7b9c2a2e71a19'
+						})
 					} }
 				/>
 

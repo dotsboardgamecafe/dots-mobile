@@ -12,7 +12,9 @@ export type RootStackParamList =  {
   gameDetail: undefined,
   roomDetail: undefined,
   paymentSuccess: undefined,
-  webview: undefined,
+  webview: {
+    link: string
+  },
   home: undefined,
   discover: undefined,
   play: undefined,
