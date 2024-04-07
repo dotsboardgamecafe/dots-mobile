@@ -1,19 +1,11 @@
 import { StyleSheet } from 'react-native'
-import { scaleWidth, scaleHeight, scaleFont } from '../../utils/pixel.ratio'
+import { scaleWidth, scaleHeight } from '../../utils/pixel.ratio'
 import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
 
 const styles = StyleSheet.create({
-	container: {
-		alignItems: 'center',
-		paddingHorizontal: scaleWidth(16),
-		paddingVertical: scaleHeight(16)
-	},
-	keyboardView: {
-		flex: 1,
-		flexGrow: 1,
-	},
 	scrollView: {
 		alignItems: 'center',
+		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
 	},
 	headerImage: {
@@ -22,13 +14,9 @@ const styles = StyleSheet.create({
 		marginTop: scaleHeight(SCREEN_HEIGHT * .1)
 	},
 	headerTitle: {
-		// fontWeight: 'bold',
-		// fontSize: scaleFont(24),
-		// lineHeight: scaleFont(32),
-		// marginTop: scaleHeight(12)
+		marginTop: scaleHeight(12)
 	},
 	emailLabel: {
-		fontWeight: 'bold',
 		marginTop: scaleHeight(64),
 		alignSelf: 'flex-start'
 	},
@@ -36,12 +24,10 @@ const styles = StyleSheet.create({
 		marginTop: scaleHeight(8)
 	},
 	passwordLabel: {
-		fontWeight: 'bold',
 		marginTop: scaleHeight(24),
 		alignSelf: 'flex-start'
 	},
 	forgotLabel: {
-		fontWeight: 'bold',
 		marginTop: scaleHeight(24),
 		alignSelf: 'flex-end'
 	},
@@ -59,14 +45,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-	registerInfo: {
-		fontSize: scaleFont(16)
-	},
 	registerButton: {
 		marginStart: 3
-	},
-	registerLabel: {
-		fontWeight: '700'
 	},
 })
 

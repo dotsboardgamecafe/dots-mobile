@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 import Filler from '../screen/filler'
 import TabBar from '../components/tabbar'
 import Discover from '../screen/discover'
+import Play from '../screen/play'
 
 const Home = (): React.ReactNode => <Filler id='Home' />
-const Play = (): React.ReactNode => <Filler id='Play' />
 const Champion = (): React.ReactNode => <Filler id='Champion' />
 const Profile = (): React.ReactNode => <Filler id='Profile' />
 

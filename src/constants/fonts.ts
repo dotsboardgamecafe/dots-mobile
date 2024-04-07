@@ -92,7 +92,7 @@ const bodyConfigs = {
 	},
 	bodyMiddleMedium: {
 		fontFamily: 'FuturaPT-Medium',
-		fontWeight: '400',
+		fontWeight: '500',
 		fontSize: scaleFont(14),
 	},
 	bodyMiddleBold: {
@@ -110,7 +110,7 @@ const bodyConfigs = {
 	},
 	bodySmallMedium: {
 		fontFamily: 'FuturaPT-Medium',
-		fontWeight: '400',
+		fontWeight: '500',
 		fontSize: scaleFont(12),
 	},
 	bodySmallBold: {
