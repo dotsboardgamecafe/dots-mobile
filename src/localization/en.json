@@ -66,6 +66,17 @@
       "duration": "Duration",
       "person": "Person",
       "minute": "min"
+    },
+
+    "champion-page": {
+      "mvp": "Most VP",
+      "unique": "Most Unique Game",
+      "hof": "Hall of Fame",
+      "see-more": "See More",
+      "filter-loc": "Filter Location",
+      "filter-month": "Filter Month",
+      "filter-year": "Filter Year",
+      "filter-reset": "Reset"
     }
   }
 }

@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native'
+import { type DimensionValue, StyleSheet } from 'react-native'
 import { scaleHeight, scaleVertical } from '../../utils/pixel.ratio'
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 
 const styles = StyleSheet.create({
 	container: {
@@ -23,9 +22,9 @@ const styles = StyleSheet.create({
 	shade2: {
 		position: 'absolute',
 		zIndex: 1,
-		left: '-27%',
-		width: SCREEN_WIDTH * .5,
-		height: SCREEN_WIDTH * .5,
+		left: '-42%' as DimensionValue,
+		width: '100%',
+		height: '400%',
 		top: 0,
 		backgroundColor: '#C4C4C450',
 		transform: [{ rotate: '25deg' }]

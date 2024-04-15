@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native'
 import { type ThemeType } from '../../models/theme'
 import { scaleFont, scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type StyleProps } from 'react-native-reanimated'
 import { colorsTheme } from '../../constants/theme'
 
-export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	searchContainer: {
 		marginHorizontal: scaleWidth(10),
 		marginTop: scaleHeight(16),
