@@ -20,6 +20,11 @@ export type RootStackParamList =  {
   play: undefined,
   champion: undefined,
   popular: undefined,
+  mvp: {
+    unique?: boolean
+  },
+  unique: undefined,
+  hallOfFame: undefined,
 }
 
 export interface WithCommonProps {

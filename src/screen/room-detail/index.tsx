@@ -147,7 +147,7 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 				<View style={ [styles.ph, styles.mv32] }>
 					<Text variant='bodyLargeMedium'>Tournament Rules</Text>
 					<Text variant='paragraphMiddleRegular' style={ styles.mt8 }>
-						In Apiary, each player controls one of twenty unique factions. Your faction starts the game with a hive, a few resources, and worker bees. A worker-placement, hive-building challenge awaits you: explore planets, gather resources, develop technologies, and create carvings to demonstrate your faction`s strengths (measured in victory points) over one year's Flow. However, the Dearth quickly approaches, and your workers can take only a few actions before they must hibernate! Can you thrive or merely survive?
+						In Apiary, each player controls one of twenty unique factions. Your faction starts the game with a hive, a few resources, and worker bees. A worker-placement, hive-building challenge awaits you: explore planets, gather resources, develop technologies, and create carvings to demonstrate your faction`s strengths (measured in victory points) over one year`s Flow. However, the Dearth quickly approaches, and your workers can take only a few actions before they must hibernate! Can you thrive or merely survive?
 					</Text>
 				</View>
 			)
