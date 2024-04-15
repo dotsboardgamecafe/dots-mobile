@@ -1,27 +1,22 @@
 import React from 'react'
-import { type FilterItemType } from './type'
 import { TouchableOpacity } from 'react-native'
 import { useTheme } from 'react-native-paper'
+
+import { type FilterItemType } from './type'
 import { type ThemeType } from '../../models/theme'
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import Text from '../text'
+import createStyle from './styles'
 
 const FilterItem = ({ label, style, prefix, suffix, onPress }: FilterItemType): React.ReactNode => {
-	const { colors } = useTheme<ThemeType>()
+	const theme = useTheme<ThemeType>()
+	const styles = createStyle(theme)
 
 	return (
 		<TouchableOpacity
 			onPress={ onPress }
-			style={ [{
-				flexDirection: 'row',
-				alignItems: 'center',
-				borderRadius: 16,
-				backgroundColor: colors.background,
-				paddingHorizontal: scaleWidth(12),
-				paddingVertical: scaleHeight(8)
-			}, style] }>
+			style={ [styles.container, style] }>
 			{ prefix }
-			<Text variant='bodyMiddleRegular' style={ { color: colors.onBackground } }>{ label }</Text>
+			<Text variant='bodyMiddleRegular' style={ styles.label }>{ label }</Text>
 			{ suffix }
 		</TouchableOpacity>
 	)
