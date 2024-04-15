@@ -1,13 +1,10 @@
 import React, {  useEffect, useMemo, useRef } from 'react'
 import { type BlushProps } from './type'
 import { Shadow } from 'react-native-shadow-2'
-import createStyle from './styles'
-import { useTheme } from 'react-native-paper'
-import { type ThemeType } from '../../models/theme'
 import { Animated } from 'react-native'
+import styles from './styles'
 
 const Blush = ({ color, distance, style, opacity = 1 }: BlushProps): React.ReactNode => {
-	const styles = createStyle(useTheme<ThemeType>())
 	const opAnim = useRef(new Animated.Value(1)).current
 
 	const opStyle = useMemo(() => {

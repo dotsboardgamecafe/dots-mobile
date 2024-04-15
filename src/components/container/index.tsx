@@ -5,7 +5,12 @@ import styles from './styles'
 import { type ContainerProps } from './type'
 import { BG } from '../../assets/images'
 
-const Container = ({ children, containerStyle, contentStyle }: ContainerProps): React.ReactNode => {
+const Container = ({
+	children,
+	containerStyle,
+	contentStyle,
+	barStyle = 'dark-content'
+}: ContainerProps): React.ReactNode => {
 
 	return (
 		<ImageBackground
@@ -15,7 +20,7 @@ const Container = ({ children, containerStyle, contentStyle }: ContainerProps): 
 		>
 			<SafeAreaView style={ [styles.container, containerStyle] }>
 				<StatusBar
-					barStyle='dark-content'
+					barStyle={ barStyle }
 					backgroundColor='transparent'
 					translucent
 				/>
