@@ -4,6 +4,7 @@ import { MMKV } from 'react-native-mmkv'
 
 import instance from './instance'
 import { BASE_URL } from '@env'
+import { EnumLogin } from '../hooks/useStorage'
 
 interface BaseQueryType {
   baseUrl: string
@@ -25,7 +26,7 @@ BaseQueryFn<
   unknown
 > =>
 	async({ url, method = 'get', data, params, headers, isPrivate = true }) => {
-		const isLoggedIn = storage.getBoolean('isLogin')
+		const isLoggedIn = storage.getNumber('loginType') === EnumLogin.IS_LOGGED_IN
 		try {
 			const config = {
 				url: baseUrl + url,
@@ -37,17 +38,18 @@ BaseQueryFn<
 			if (isPrivate && isLoggedIn) {
 				config.headers = {
 					...headers,
-					Authorization: ''
+					Authorization: storage.getString('token')
 				}
 			}
 			const result = await instance(config)
 			return { data: result.data }
 		} catch (axiosError) {
 			const err = axiosError as AxiosError
+			const msg = (err.response?.data as {stat_msg: string}).stat_msg
 			return {
 				error: {
 					status: err.response?.status,
-					data: err.response?.data || err.message,
+					data: msg || err.message,
 				},
 			}
 		}
