@@ -1,12 +1,13 @@
 import React from 'react'
-import BottomSheet from '../bottom-sheet'
-import { type ShareBottomSheetProps } from './type'
-import Text from '../text'
 import { TouchableOpacity, View } from 'react-native'
-import { scaleHorizontal, scaleWidth } from '../../utils/pixel.ratio'
 import {
 	Facebook, Instagram, Link, Whatsapp, Xrp
 } from 'iconsax-react-native'
+
+import BottomSheet from '../bottom-sheet'
+import { type ShareBottomSheetProps } from './type'
+import Text from '../text'
+import { scaleHorizontal, scaleWidth } from '../../utils/pixel.ratio'
 import { useTheme } from 'react-native-paper'
 import { type ThemeType } from '../../models/theme'
 import createStyle from './styles'

@@ -1,16 +1,27 @@
+import { type Users } from './users'
+
 export interface Rooms {
-  game_master_id: number
-  game_id: number
-  room_code: string
-  room_type: string
-  name: string
-  description: string
-  minimal_participant: number
-  maximum_participant: number
-  booking_price: number
-  reward_point: number
-  instagram_link: string
-  status: string
-  difficulty: string
-  created_date: string
+  cafe_code: string,
+  cafe_name: string,
+  cafe_address: string,
+  room_code: string,
+  room_type: string,
+  room_img_url: string,
+  name: string,
+  description: string,
+  difficulty: string,
+  start_date: string,
+  end_date: string,
+  maximum_participant: number,
+  instagram_link: string,
+  game_master_code?: string,
+  game_master_name?: string,
+  game_master_img_url?: string,
+  game_code?: string,
+  game_name?: string,
+  game_img_url?: string,
+  booking_price: number,
+  reward_point: number,
+  current_used_slot: number,
+  room_participants?: Users[]
 }

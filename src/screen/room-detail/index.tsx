@@ -1,43 +1,47 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Shadow } from 'react-native-shadow-2'
+import {
+	FlatList, type ListRenderItemInfo, ScrollView, View,
+	ActivityIndicator
+} from 'react-native'
+import { ArrowLeft, CloseCircle, ExportCurve } from 'iconsax-react-native'
+import { type BottomSheetModal, SCREEN_WIDTH } from '@gorhom/bottom-sheet'
+import moment from 'moment'
 
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
 import Container from '../../components/container'
 import Text from '../../components/text'
-import {
-	FlatList, Image, type ListRenderItemInfo, ScrollView, View
-} from 'react-native'
-import { ArrowLeft, CloseCircle, ExportCurve } from 'iconsax-react-native'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import createStyle from './styles'
-import { type BottomSheetModal, SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import ActionButton2 from '../../components/action-button2'
 import Rank1ST from '../../assets/svg/Rank1ST.svg'
 import Rank2ND from '../../assets/svg/Rank2ND.svg'
 import Rank3RD from '../../assets/svg/Rank3RD.svg'
 import VP from '../../assets/svg/VP.svg'
-import { gameMasters } from '../game-detail/data'
-import { type GameMaster } from '../../models/games'
 import ActionButton from '../../components/action-button'
 import ShareBottomSheet from '../../components/share-bottom-sheet'
 import Modal from '../../components/modal'
+import { useGetRoomDetailQuery } from '../../store/room'
+import { type Users } from '../../models/users'
+import Image from '../../components/image'
 
 type Props = NavigationProps<'roomDetail'>
 
-const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
-	const { type } = route.params as unknown as { type: string }
+const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => {
+	const params = route.params
 	const styles = createStyle(theme)
 	const playerColors = ['#1EA0DFc0', '#D0C210c0', '#FB1515c0', '#4B0B8Bc0']
 	const shareRef = useRef<BottomSheetModal>(null)
 	const [regModalVisible, setRegModalVisible] = useState(false)
+	const { data, isLoading } = useGetRoomDetailQuery(params.room_code ?? '')
 
 	const quotePrize = useMemo(() => {
-		if (type === 'Room' || type === 'Event') {
+		if (data?.room_type === 'normal' || data?.room_type === 'special_event') {
 			return (
 				<View style={ styles.ph }>
 					<Text variant='paragraphMiddleRegular' style={ styles.quote }>
-						“Join me for a thrilling adventure in the world of Rising Sun -  Let’s play together and have a blast!”
+						{ data?.description }
 					</Text>
 				</View>
 			)
@@ -119,43 +123,52 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 				</View>
 			</View>
 		)
-	}, [])
+	}, [data])
+
+	const schedule = useMemo(() => {
+		const startDate = moment(data?.start_date?.substring(0, 19) ?? '')
+		const endDate = moment(data?.end_date?.substring(0, 19) ?? '')
+		return startDate.format('MMM, Do [at] h:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'h:mm' : 'MMM, Do [at] h:mm')
+	}, [data])
 
 	const detail = useMemo(() => {
 		return (
 			<View style={ styles.ph }>
-				<Text variant='bodyLargeMedium'>{ type === 'Tournament' ? type : 'Room' } Details</Text>
+				<Text variant='bodyLargeMedium'>{ data?.room_type === 'special_event' ? 'Event' : 'Room' } { t('room-detail.details') }</Text>
 				<View style={ styles.rowDetail }>
-					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>Schedule</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>Nov, 25th at 11:00 - 14:00</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.schedule') }</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ schedule }
+					</Text>
 				</View>
 				<View style={ styles.rowDetail }>
-					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>Location</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>Bandung City, Paskal 23 Mall</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.location') }</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>
+						{ data?.cafe_name }, { data?.cafe_address }
+					</Text>
 				</View>
 				<View style={ styles.rowDetail }>
-					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>Level</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>Beginner</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.level') }</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ data?.difficulty }</Text>
 				</View>
 			</View>
 		)
-	}, [])
+	}, [data])
 
 	const tourneyDesc = useMemo(() => {
-		if (type === 'Tournament') {
+		if (data?.room_type === 'Tournament') {
 			return (
 				<View style={ [styles.ph, styles.mv32] }>
 					<Text variant='bodyLargeMedium'>Tournament Rules</Text>
 					<Text variant='paragraphMiddleRegular' style={ styles.mt8 }>
-						In Apiary, each player controls one of twenty unique factions. Your faction starts the game with a hive, a few resources, and worker bees. A worker-placement, hive-building challenge awaits you: explore planets, gather resources, develop technologies, and create carvings to demonstrate your faction`s strengths (measured in victory points) over one year's Flow. However, the Dearth quickly approaches, and your workers can take only a few actions before they must hibernate! Can you thrive or merely survive?
+						In Apiary, each player controls one of twenty unique factions. Your faction starts the game with a hive, a few resources, and worker bees. A worker-placement, hive-building challenge awaits you: explore planets, gather resources, develop technologies, and create carvings to demonstrate your faction`s strengths (measured in victory points) over one year`s Flow. However, the Dearth quickly approaches, and your workers can take only a few actions before they must hibernate! Can you thrive or merely survive?
 					</Text>
 				</View>
 			)
 		}
-	}, [])
+	}, [data])
 
 	const gameInfoAction = useMemo(() => {
-		if (type !== 'Event')
+		if (data?.room_type !== 'special_event')
 			return (
 				<ActionButton2
 					label='Game Info'
@@ -163,9 +176,9 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 					onPress={ () => { navigation.navigate('gameDetail') } }
 				/>
 			)
-	}, [])
+	}, [data])
 
-	const gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMaster>) => {
+	const players = useCallback(({ item, index }: ListRenderItemInfo<Users>) => {
 		return (
 			<View style={ styles.playerContainer }>
 				<Shadow
@@ -181,15 +194,15 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 					>
 						<View style={ styles.playerBorder } />
 						<Image
-							source={ { uri: item.photo } }
+							source={ { uri: item.user_image_url ?? '' } }
 							style={ styles.player }
 						/>
 					</Shadow>
 				</Shadow>
-				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.name }</Text>
+				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.user_name }</Text>
 			</View>
 		)
-	}, [playerColors])
+	}, [playerColors, data])
 
 	const showRegModal = useCallback(() => { setRegModalVisible(true) }, [])
 	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
@@ -204,7 +217,7 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 					onPress={ navigation.goBack }
 				/>
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
-					Rising Sun Game { type }
+					{ data?.name ?? params.name }
 				</Text>
 				<ExportCurve
 					variant='Linear'
@@ -213,53 +226,56 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 					onPress={ () => shareRef.current?.present() }
 				/>
 			</View>
-
-			<ScrollView
-				showsVerticalScrollIndicator={ false }
-			>
-				<Image
-					source={ { uri: 'https://picsum.photos/320/210' } }
-					resizeMode='cover'
-					style={ {
-						width: SCREEN_WIDTH,
-						height: scaleHeight(210)
-					} }
-				/>
-				<View style={ styles.imageInfo }>
-					<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>Rp350.000</Text>
-					<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>Slot 3/5</Text>
-				</View>
-				{ quotePrize }
-				{ detail }
-				{ tourneyDesc }
-				{ gameInfoAction }
-				<View style={ [styles.ph, styles.mv32] }>
-					<Text variant='bodyLargeMedium'>Joined Players</Text>
-					<FlatList
-						scrollEnabled={ false }
-						data={ gameMasters }
-						renderItem={ gameMaster }
-						ItemSeparatorComponent={ () => <View style={ styles.h8 } /> }
-						contentContainerStyle={ [styles.wrapList] }
-					/>
-				</View>
-
-			</ScrollView>
-			<View style={ styles.actionJoin }>
-				<ActionButton
-					label='Join Room - Get 10'
-					suffix={ <VP width={ scaleWidth(20) } /> }
-					onPress={ showRegModal }
-				/>
-			</View>
-
+			{ isLoading && <View style={ {
+				flex: 1, justifyContent: 'center', alignItems: 'center'
+			} }><ActivityIndicator size='large' /></View> }
+			{ !isLoading &&
+				<>
+					<ScrollView showsVerticalScrollIndicator={ false }>
+						<Image
+							source={ { uri: params.room_img_url ?? '' } }
+							resizeMode='cover'
+							style={ {
+								width: SCREEN_WIDTH,
+								height: scaleHeight(210)
+							} }
+						/>
+						<View style={ styles.imageInfo }>
+							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.currency') }{ data?.booking_price }</Text>
+							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.slot') } { data?.current_used_slot }/{ data?.maximum_participant }</Text>
+						</View>
+						{ quotePrize }
+						{ detail }
+						{ tourneyDesc }
+						{ gameInfoAction }
+						<View style={ [styles.ph, styles.mv32] }>
+							{ (data?.room_participants?.length ?? 0) > 0 &&
+								<Text variant='bodyLargeMedium'>{ t('room-detail.players') }</Text>
+							}
+							<FlatList
+								scrollEnabled={ false }
+								data={ data?.room_participants }
+								renderItem={ players }
+								ItemSeparatorComponent={ () => <View style={ styles.h8 } /> }
+								contentContainerStyle={ [styles.wrapList] }
+							/>
+						</View>
+					</ScrollView>
+					<View style={ styles.actionJoin }>
+						<ActionButton
+							label={ `${t('room-detail.join')} ${data?.reward_point}` }
+							suffix={ <VP width={ scaleWidth(20) } /> }
+							onPress={ showRegModal }
+						/>
+					</View>
+				</>
+			}
 			<ShareBottomSheet
 				sRef={ shareRef }
 				onShare={ (type: string) => {
 					shareRef.current?.dismiss()
 				} }
 			/>
-
 			<Modal
 				visible={ regModalVisible }
 				onDismiss={ hideRegModal }
@@ -272,26 +288,26 @@ const RoomDetail = ({ route, navigation, theme }: Props): React.ReactNode => {
 					onPress={ hideRegModal }
 					style={ { alignSelf: 'flex-end' } }
 				/>
-				<Text variant='bodyExtraLargeHeavy' style={ styles.mt16 }>Booking Confirmation</Text>
+				<Text variant='bodyExtraLargeHeavy' style={ styles.mt16 }>{ t('room-detail.booking') }</Text>
 				<Image
 					source={ { uri: 'https://picsum.photos/84' } }
 					style={ styles.bookingImage }
 				/>
-				<Text variant='bodyLargeBold' style={ styles.bookingTitle }>Rising Sun Game</Text>
+				<Text variant='bodyLargeBold' style={ styles.bookingTitle }>{ data?.game_name }</Text>
 				<View style={ styles.bookingRow }>
-					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>Schedule :</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>Nov, 25th at 11:00 - 14:00</Text>
+					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>{ t('room-detail.schedule') } :</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>{ schedule }</Text>
 				</View>
 				<View style={ styles.bookingRow }>
-					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>Location :</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>Bandung, Paskal 23 Mall</Text>
+					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>{ t('room-detail.location') } :</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>{ data?.cafe_name }, { data?.cafe_address }</Text>
 				</View>
 				<View style={ styles.bookingRow }>
-					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>Level :</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>Beginner</Text>
+					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>{ t('room-detail.level') } :</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>{ data?.difficulty }</Text>
 				</View>
 				<ActionButton
-					label='Pay with Xendit'
+					label={ t('room-detail.pay') }
 					style={ styles.mt16 }
 					onPress={ hideRegModal }
 				/>
