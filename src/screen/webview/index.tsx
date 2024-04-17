@@ -1,6 +1,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { WebView  } from 'react-native-webview'
+import { WebView as ReactNativeWebView  } from 'react-native-webview'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
 import styles from './styles'
@@ -32,7 +32,7 @@ const runFirst = `
 	true;
 `
 
-const Abc = ({ route, navigation }: Props): React.ReactNode => {
+const WebView = ({ route, navigation }: Props): React.ReactNode => {
 	const [loading, setLoading] = useState(false)
 
 	const webViewRef = useRef(null)
@@ -88,7 +88,7 @@ const Abc = ({ route, navigation }: Props): React.ReactNode => {
 				<ActivityIndicator/>
 			</View>
 			}
-			<WebView
+			<ReactNativeWebView
 				ref={ webViewRef }
 				source={ { uri: route.params.link } }
 				originWhitelist={ ['*'] }
@@ -114,4 +114,4 @@ const Abc = ({ route, navigation }: Props): React.ReactNode => {
 	)
 }
 
-export default withCommon(React.memo(Abc))
+export default withCommon(React.memo(WebView))
