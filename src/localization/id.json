@@ -89,6 +89,12 @@
       "filter-month": "Filter Month",
       "filter-year": "Filter Year",
       "filter-reset": "Reset"
+    },
+    "payment-success": {
+      "title": "Success Payment",
+      "subtitle": "We’ve just received your payment from Xendit. Now you can play a board game.",
+      "button-history": "See History Transaction",
+      "related-games": "Related Games"
     }
   }
 }

@@ -1,9 +1,14 @@
-import { Dimensions, Platform, PixelRatio } from 'react-native'
+import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 
 const {
 	width: SCREEN_WIDTH,
 	height: SCREEN_HEIGHT,
 } = Dimensions.get('window')
+
+const fullWidth = SCREEN_WIDTH
+
+const fullHeight = SCREEN_HEIGHT
 
 const defaultScaleWidth = SCREEN_WIDTH / 375
 
@@ -39,9 +44,11 @@ const scaleFont =  (size: number):number => {
 	return scaleHeight(size)
 }
 
-const fullWidth = SCREEN_WIDTH
+const isIphoneXorAbove = (): boolean =>  {
+	return DeviceInfo.hasNotch()
+}
 
-const fullHeight = SCREEN_HEIGHT
+const getStatusBarHeight = (): number | undefined => Platform.OS === 'android' ? StatusBar.currentHeight : isIphoneXorAbove() ? -20 : 0
 
 export {
 	scaleWidth,
@@ -50,5 +57,7 @@ export {
 	scaleVertical,
 	scaleFont,
 	fullWidth,
-	fullHeight
+	fullHeight,
+	isIphoneXorAbove,
+	getStatusBarHeight
 }
