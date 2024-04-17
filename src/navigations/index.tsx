@@ -18,6 +18,7 @@ import Register from '../screen/register'
 import PaymentSuccess from '../screen/payment-success'
 import GameDetail from '../screen/game-detail'
 import RoomDetail from '../screen/room-detail'
+import Webview from '../screen/webview'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
 import MVP from '../screen/mvp'
@@ -84,7 +85,7 @@ const privateNavigations = (): ReactNode => {
 			/>
 			<Stack.Screen
 				name={ screenName.webview }
-				component={ Profile } // todo webview
+				component={ Webview }
 			/>
 			<Stack.Screen
 				name={ screenName.mvp }
