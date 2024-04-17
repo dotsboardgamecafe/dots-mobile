@@ -77,6 +77,11 @@ const bodyConfigs = {
 		fontWeight: '400',
 		fontSize: scaleFont(16),
 	},
+	bodyLargeDemi: {
+		fontFamily: 'FuturaPT-Demi',
+		fontWeight: '600',
+		fontSize: scaleFont(16),
+	},
 	bodyLargeBold: {
 		fontFamily: 'FuturaPT-Bold',
 		fontWeight: Platform.select({
@@ -120,6 +125,16 @@ const bodyConfigs = {
 			ios: 'bold'
 		}),
 		fontSize: scaleFont(12),
+	},
+	bodyExtraSmallRegular: {
+		fontFamily: 'FuturaPT-Book',
+		fontWeight: '400',
+		fontSize: scaleFont(10),
+	},
+	bodyDoubleExtraSmallRegular: {
+		fontFamily: 'FuturaPT-Regular',
+		fontWeight: '400',
+		fontSize: scaleFont(8),
 	},
 }
 

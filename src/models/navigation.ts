@@ -20,6 +20,7 @@ export type RootStackParamList =  {
   play: undefined,
   champion: undefined,
   popular: undefined,
+  tier: undefined
 }
 
 export interface WithCommonProps {

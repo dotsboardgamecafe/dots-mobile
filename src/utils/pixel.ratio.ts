@@ -39,10 +39,16 @@ const scaleFont =  (size: number):number => {
 	return scaleHeight(size)
 }
 
+const fullWidth = SCREEN_WIDTH
+
+const fullHeight = SCREEN_HEIGHT
+
 export {
 	scaleWidth,
 	scaleHeight,
 	scaleHorizontal,
 	scaleVertical,
-	scaleFont
+	scaleFont,
+	fullWidth,
+	fullHeight
 }

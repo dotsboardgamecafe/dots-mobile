@@ -10,7 +10,8 @@ const navigationConstant = {
 		gameDetail: 'gameDetail',
 		roomDetail: 'roomDetail',
 		paymentSuccess: 'paymentSuccess',
-		webview: 'webview'
+		webview: 'webview',
+		tier: 'tier'
 	}
 }
 

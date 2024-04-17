@@ -6,8 +6,8 @@ import Filler from '../screen/filler'
 import TabBar from '../components/tabbar'
 import Discover from '../screen/discover'
 import Play from '../screen/play'
+import Home from '../screen/home'
 
-const Home = (): React.ReactNode => <Filler id='Home' />
 const Champion = (): React.ReactNode => <Filler id='Champion' />
 const Profile = (): React.ReactNode => <Filler id='Profile' />
 

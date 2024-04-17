@@ -20,6 +20,7 @@ import GameDetail from '../screen/game-detail'
 import RoomDetail from '../screen/room-detail'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
+import Tier from '../screen/tier'
 
 const { screenName, } = navigationConstant
 
@@ -83,6 +84,10 @@ const privateNavigations = (): ReactNode => {
 			<Stack.Screen
 				name={ screenName.webview }
 				component={ Profile } // todo webview
+			/>
+			<Stack.Screen
+				name={ screenName.tier }
+				component={ Tier }
 			/>
 		</Stack.Group>
 	)
