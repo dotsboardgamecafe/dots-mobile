@@ -38,6 +38,7 @@ export type RootStackParamList =  {
   },
   unique: undefined,
   hallOfFame: undefined,
+  tier: undefined
 }
 
 export interface WithCommonProps {
