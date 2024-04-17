@@ -5,7 +5,13 @@ import styles from './styles'
 import { type ContainerProps } from './type'
 import { BG } from '../../assets/images'
 
-const Container = ({ children, containerStyle, contentStyle, manualAppbar, barStyle }: ContainerProps): React.ReactNode => {
+const Container = ({
+	children,
+	containerStyle,
+	contentStyle,
+	manualAppbar,
+	barStyle = 'dark-content'
+}: ContainerProps): React.ReactNode => {
 
 	const renderContent = useMemo(() => {
 		if (manualAppbar) {
@@ -24,7 +30,7 @@ const Container = ({ children, containerStyle, contentStyle, manualAppbar, barSt
 		return (
 			<SafeAreaView style={ [styles.container, containerStyle] }>
 				<StatusBar
-					barStyle='dark-content'
+					barStyle={ barStyle }
 					backgroundColor='transparent'
 					translucent
 				/>

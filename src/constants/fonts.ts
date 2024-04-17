@@ -19,6 +19,15 @@ export const headingConfigs = {
 		}),
 		lineHeight: scaleHeight(32),
 		fontSize: scaleFont(24),
+	},
+	headingBold: {
+		fontFamily: 'Poppins-Black',
+		fontWeight: Platform.select({
+			android: '900',
+			ios: 'bold'
+		}),
+		lineHeight: scaleHeight(28),
+		fontSize: scaleFont(24),
 	}
 }
 

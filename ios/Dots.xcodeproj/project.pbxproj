@@ -21,6 +21,7 @@
 		881ED25CBB5642658E618BFF /* FuturaPT-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */; };
 		92B6D3962B6A451E83F4B045 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 453BAF80A1DF49CFB57DB0FE /* BootSplash.storyboard */; };
 		A8B8B961DBCA47ACB26EE89F /* FuturaPT-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */; };
+		C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0370F42E401A498D994BDC7C /* Poppins-Black.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* DotsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DotsTests.m; sourceTree = "<group>"; };
 		01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaPT-Book.ttf"; path = "../src/assets/fonts/FuturaPT-Book.ttf"; sourceTree = "<group>"; };
+		0370F42E401A498D994BDC7C /* Poppins-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Black.ttf"; path = "../src/assets/fonts/Poppins-Black.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Dots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Dots/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Dots/AppDelegate.mm; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				63F0A4F562864FFCAF33327C /* FuturaPT-Medium.ttf */,
 				6BACCCB838764ACE9C3EC4B2 /* FuturaPT-Demi.ttf */,
 				7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */,
+				0370F42E401A498D994BDC7C /* Poppins-Black.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -280,6 +283,7 @@
 				6D88A709ADCC4466B7C176AC /* FuturaPT-Medium.ttf in Resources */,
 				03872AC562C749E8B4258F3C /* FuturaPT-Demi.ttf in Resources */,
 				881ED25CBB5642658E618BFF /* FuturaPT-Heavy.ttf in Resources */,
+				C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

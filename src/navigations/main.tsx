@@ -7,8 +7,8 @@ import TabBar from '../components/tabbar'
 import Discover from '../screen/discover'
 import Play from '../screen/play'
 import Home from '../screen/home'
+import Champion from '../screen/champion'
 
-const Champion = (): React.ReactNode => <Filler id='Champion' />
 const Profile = (): React.ReactNode => <Filler id='Profile' />
 
 const Tab = createBottomTabNavigator()
@@ -28,7 +28,7 @@ const MainTab = (): React.ReactNode => {
 			<Tab.Screen name={ t('main-page.home') } component={ Home } />
 			<Tab.Screen name={ t('main-page.discover') } component={ Discover } options={ { lazy: false } } />
 			<Tab.Screen name={ t('main-page.play') } component={ Play } />
-			<Tab.Screen name={ t('main-page.champion') } component={ Champion } />
+			<Tab.Screen name={ t('main-page.champion') } component={ Champion } options={ { lazy: false } } />
 			<Tab.Screen name={ t('main-page.profile') } component={ Profile } />
 		</Tab.Navigator>
 	)

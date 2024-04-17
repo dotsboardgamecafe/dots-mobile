@@ -21,6 +21,8 @@ import RoomDetail from '../screen/room-detail'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
 import Tier from '../screen/tier'
+import MVP from '../screen/mvp'
+import HallOfFame from '../screen/hall-of-fame'
 
 const { screenName, } = navigationConstant
 
@@ -88,6 +90,14 @@ const privateNavigations = (): ReactNode => {
 			<Stack.Screen
 				name={ screenName.tier }
 				component={ Tier }
+			/>
+			<Stack.Screen
+				name={ screenName.mvp }
+				component={ MVP }
+			/>
+			<Stack.Screen
+				name={ screenName.hallOfFame }
+				component={ HallOfFame }
 			/>
 		</Stack.Group>
 	)

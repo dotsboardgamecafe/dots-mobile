@@ -5,5 +5,5 @@ export type ContainerProps = PropsWithChildren & {
   containerStyle?: StyleProp<ViewStyle> | undefined,
   contentStyle?: StyleProp<ViewStyle> | undefined,
   manualAppbar?:boolean,
-  barStyle?: StatusBarStyle
+  barStyle?: null | StatusBarStyle | undefined
 }

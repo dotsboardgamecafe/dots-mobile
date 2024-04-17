@@ -13,7 +13,6 @@ import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import createStyle from './styles'
 import { GameImageBackground } from '../../assets/images'
-import Blush from './blush'
 import { gameTypes, games } from '../discover/data'
 import FilterTag from '../../components/filter-tag'
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
@@ -21,6 +20,7 @@ import { PageIndicator } from 'react-native-page-indicator'
 import CardGame from '../../components/card-game'
 import { avatars, gameMasters, gamePlays, rooms } from './data'
 import { type GameMaster } from '../../models/games'
+import Blush from '../../components/blush'
 
 type Props = NavigationProps<'gameDetail'>
 

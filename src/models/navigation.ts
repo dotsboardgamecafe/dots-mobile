@@ -2,6 +2,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { type ThemeType } from '../models/theme'
+import { type Rooms } from './rooms'
 
 export type RootStackParamList =  {
   main: undefined,
@@ -12,7 +13,7 @@ export type RootStackParamList =  {
   bottomNav: undefined,
   register: undefined,
   gameDetail: undefined,
-  roomDetail: undefined,
+  roomDetail: Partial<Rooms>,
   paymentSuccess: undefined,
   webview: undefined,
   home: undefined,
@@ -20,7 +21,12 @@ export type RootStackParamList =  {
   play: undefined,
   champion: undefined,
   popular: undefined,
-  tier: undefined
+  tier: undefined,
+  mvp: {
+    unique?: boolean
+  },
+  unique: undefined,
+  hallOfFame: undefined,
 }
 
 export interface WithCommonProps {
