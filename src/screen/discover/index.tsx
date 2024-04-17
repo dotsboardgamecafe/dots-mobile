@@ -97,8 +97,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						/>
 					}
 					onPress={ () => {
-						// bottomSheetRef.current?.present()
-						navigation.navigate('paymentSuccess')
+						bottomSheetRef.current?.present()
 					} }
 				/>
 
