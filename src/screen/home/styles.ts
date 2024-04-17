@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 	iconWrapperStyle: {
 		width: scaleWidth(32),
 		height: scaleHeight(32),
-		backgroundColor: colorsTheme.background,
+		backgroundColor: colorsTheme.lightWhite,
 		borderRadius: 100,
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	gameLatestUpdateLabelStyle: {
-		marginBottom: scaleVertical(4)
+		marginBottom: scaleVertical(4),
+		color: colorsTheme.gray500
 	},
 	gameDescriptionLabelStyle: {
 		flexDirection: 'row',
@@ -100,6 +101,9 @@ const styles = StyleSheet.create({
 		marginVertical: scaleVertical(16),
 		height: 1,
 		backgroundColor: colorsTheme.background
+	},
+	hightLightDescriptionStyle: {
+		color: colorsTheme.blueAccent,
 	}
 })
 
