@@ -59,7 +59,7 @@ const textFormatter = (text:string, target:string): React.ReactNode => {
 		if (item === target) {
 			return (
 				<Pressable key={ index } onPress={ () => { Alert.alert(target) } }>
-					<Text key={ index } variant='bodyLargeDemi'>{ item }</Text>
+					<Text style={ styles.hightLightDescriptionStyle } key={ index } variant='bodyLargeDemi'>{ item }</Text>
 				</Pressable>
 			)
 		}
@@ -103,7 +103,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 				onPress={ () => { navigation.navigate('tier') } }
 				style={ [styles.sectionWrapperStyle, styles.tierWrapperStyle] }>
 				<Suspense fallback={ null }>
-					<LazyBannerTier style={ styles.starFieldStyle as StyleProp<ViewProps> }/>
+					<LazyBannerTier screen='home' style={ styles.starFieldStyle as StyleProp<ViewProps> }/>
 				</Suspense>
 			</Pressable>
 		)

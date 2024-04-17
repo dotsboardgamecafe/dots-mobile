@@ -12,6 +12,7 @@ import Animated, {
 	type SharedValue,
 } from 'react-native-reanimated'
 import styles from './styles'
+import { colorsTheme } from '../../constants/theme'
 
 const defaultStartCount = 500
 
@@ -71,7 +72,7 @@ const Star: React.FC<StarProps> = props => {
 				{
 					// the animation didnt work when the style in styles file
 					position: 'absolute',
-					backgroundColor: '#fafafa',
+					backgroundColor: colorsTheme.lightWhite,
 					width: 3,
 					height: 3,
 					opacity: 0.5 + Math.random() * 0.5,
@@ -98,6 +99,10 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = defaultStartCount, styl
 			0,
 			false
 		)
+
+		return () => {
+			timeVal.value = 0
+		}
 	}, [])
 
 	return (
