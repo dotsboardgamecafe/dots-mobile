@@ -1,4 +1,4 @@
-import { View, Animated, type StyleProp, type ViewProps } from 'react-native'
+import { View, Animated, } from 'react-native'
 import React, { useEffect, lazy, Suspense, useCallback } from 'react'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
@@ -10,14 +10,15 @@ import { useRoute } from '@react-navigation/native'
 import navigationConstant from '../../constants/navigation'
 import { Avatar } from 'react-native-paper'
 import { LOGO } from '../../assets/images'
+import { type StyleProps } from 'react-native-reanimated'
 
 const LazyStarsField = lazy(async() => await import('../stars-field/index'))
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 interface Props {
-  style?: StyleProp<ViewProps> | undefined,
-	starsFieldContentStyle?:StyleProp<ViewProps>,
+  style?: StyleProps,
+	starsFieldContentStyle?:StyleProps,
 	screen: 'home' | 'tier' | 'profile'
 }
 

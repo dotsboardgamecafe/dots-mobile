@@ -39,7 +39,7 @@ const Container = ({
 				</View>
 			</SafeAreaView>
 		)
-	}, [manualAppbar])
+	}, [manualAppbar, children, barStyle, containerStyle])
 
 	return (
 		<ImageBackground
