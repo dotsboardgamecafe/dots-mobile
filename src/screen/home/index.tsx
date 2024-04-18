@@ -1,5 +1,5 @@
 import {
-	Alert, FlatList, Image, Pressable, ScrollView, type StyleProp, TouchableOpacity, View
+	Alert, FlatList, Image, Pressable, ScrollView, TouchableOpacity, View
 } from 'react-native'
 import React, { Suspense, useCallback, lazy } from 'react'
 
@@ -12,7 +12,6 @@ import IconReceipt from '../../assets/svg/receipt.svg'
 import IconNotification from '../../assets/svg/notification.svg'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
-import { type ViewProps } from 'react-native-svg/lib/typescript/fabric/utils'
 
 type Props = NavigationProps<'home'>
 
@@ -103,7 +102,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 				onPress={ () => { navigation.navigate('tier') } }
 				style={ [styles.sectionWrapperStyle, styles.tierWrapperStyle] }>
 				<Suspense fallback={ null }>
-					<LazyBannerTier screen='home' style={ styles.starFieldStyle as StyleProp<ViewProps> }/>
+					<LazyBannerTier screen='home' style={ styles.starFieldStyle }/>
 				</Suspense>
 			</Pressable>
 		)

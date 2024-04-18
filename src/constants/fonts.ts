@@ -117,6 +117,11 @@ const bodyConfigs = {
 		}),
 		fontSize: scaleFont(14),
 	},
+	bodyMiddleDemi: {
+		fontFamily: 'FuturaPT-Demi',
+		fontWeight: '600',
+		fontSize: scaleFont(14),
+	},
 	bodySmallRegular: {
 		fontFamily: 'FuturaPT-Book',
 		fontWeight: '400',
