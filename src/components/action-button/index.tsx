@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from 'react-native'
 import styles from './styles'
 import { type ActionButtonProps } from './type'
 import Text from '../text'
+import ButtonBg from '../../assets/svg/ButtonBg.svg'
 
 const ActionButton = ({ style, onPress, label, suffix }: ActionButtonProps): React.ReactNode => {
 
@@ -31,10 +32,11 @@ const ActionButton = ({ style, onPress, label, suffix }: ActionButtonProps): Rea
 			onPress={ onPress }
 			activeOpacity={ 1 }
 		>
-			<View style={ styles.rectangle1 }>
-				<View style={ styles.rectangle2 } />
-				{ content }
-			</View>
+			<ButtonBg
+				width={ '100%' }
+				style={ styles.bg }
+			/>
+			{ content }
 		</TouchableOpacity>
 	)
 }

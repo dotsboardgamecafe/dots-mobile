@@ -31,7 +31,7 @@ const TextInput = ({
 	return (
 		<View style={ [
 			styles.container,
-			borderFocusColor && isFocused && [{ borderColor: borderFocusColor } as any],
+			borderFocusColor && isFocused && { borderColor: borderFocusColor },
 			containerStyle
 		] }>
 			{ prefix }

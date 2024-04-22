@@ -21,6 +21,9 @@
 		881ED25CBB5642658E618BFF /* FuturaPT-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */; };
 		92B6D3962B6A451E83F4B045 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 453BAF80A1DF49CFB57DB0FE /* BootSplash.storyboard */; };
 		A8B8B961DBCA47ACB26EE89F /* FuturaPT-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */; };
+		6D88A709ADCC4466B7C176AC /* FuturaPT-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63F0A4F562864FFCAF33327C /* FuturaPT-Medium.ttf */; };
+		03872AC562C749E8B4258F3C /* FuturaPT-Demi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6BACCCB838764ACE9C3EC4B2 /* FuturaPT-Demi.ttf */; };
+		881ED25CBB5642658E618BFF /* FuturaPT-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */; };
 		C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0370F42E401A498D994BDC7C /* Poppins-Black.ttf */; };
 /* End PBXBuildFile section */
 
