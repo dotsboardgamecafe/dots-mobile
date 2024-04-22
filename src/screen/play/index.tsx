@@ -66,7 +66,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 						style={ styles.filterSuffix }
 					/>
 				}
-				style={ [styles.filter, styles.mh] }
+				style={ styles.filter }
 			/>
 			<SectionList
 				sections={ sections }
@@ -77,13 +77,14 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					} }
 					>
 						<Image
-							source={ { uri: item.room_img_url } }
+							source={ { uri: 'https://picsum.photos/300/100?grayscale' } }
+							// source={ { uri: item.room_img_url } }
 							style={ styles.item }
 						/>
 					</TouchableOpacity>
 				) }
 				renderSectionHeader={ ({ section: { title } }) => (
-					<Text variant='bodyExtraLargeHeavy' style={ styles.section }>{ title }</Text>
+					<Text variant='headingBold' style={ styles.section }>{ title }</Text>
 				) }
 				renderSectionFooter={ sectionFooter }
 				ItemSeparatorComponent={ () => <View style={ styles.itemSeparator } /> }

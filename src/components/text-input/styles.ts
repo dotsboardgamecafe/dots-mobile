@@ -1,25 +1,25 @@
 import { StyleSheet } from 'react-native'
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
 
-const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: scaleWidth(16),
+		paddingHorizontal: scaleHorizontal(16),
 		borderRadius: 8,
 		borderColor: colors.background,
 		borderWidth: 1,
 		backgroundColor: colors.surface,
-		height: scaleHeight(42),
 	},
 
 	input: {
 		flex: 1,
 		borderWidth: 0,
 		color: colors.onBackground,
-		fontFamily: 'FuturaPT-Book'
+		fontFamily: 'FuturaPT-Book',
+		paddingVertical: scaleVertical(8),
 	},
 
 	isPrefix: { marginStart: scaleWidth(4) },

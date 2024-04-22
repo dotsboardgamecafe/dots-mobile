@@ -61,7 +61,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		{ label: t('discover-page.filter-game-type'), suffix: arrowDown },
 		{ label: t('discover-page.filter-game-mechanics'), suffix: arrowDown },
 		{ label: t('discover-page.filter-game-location'), suffix: arrowDown },
-		{ label: 'duration', suffix: arrowDown },
+		{ label: t('discover-page.duration'), suffix: arrowDown },
 	]
 
 	const navigateToDetail = useCallback((game: Games) => {
@@ -98,6 +98,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					}
 					onPress={ () => {
 						bottomSheetRef.current?.present()
+						// navigation.navigate('paymentSuccess')
 					} }
 				/>
 
