@@ -95,22 +95,6 @@ const privateNavigations = (): ReactNode => {
 				name={ screenName.hallOfFame }
 				component={ HallOfFame }
 			/>
-			<Stack.Screen
-				name={ screenName.mvp }
-				component={ MVP }
-			/>
-			<Stack.Screen
-				name={ screenName.hallOfFame }
-				component={ HallOfFame }
-			/>
-			<Stack.Screen
-				name={ screenName.mvp }
-				component={ MVP }
-			/>
-			<Stack.Screen
-				name={ screenName.hallOfFame }
-				component={ HallOfFame }
-			/>
 		</Stack.Group>
 	)
 }
