@@ -6,18 +6,21 @@ import { miscSlice } from './misc'
 
 import { rtkQueryErrorLogger } from '../middleware/rtkQueryErrorLogger'
 import { roomApi } from './room'
+import { gameApi } from './game'
 
 export const store = configureStore({
 	reducer: {
 		[productsApi.reducerPath]: productsApi.reducer,
 		[roomApi.reducerPath]: roomApi.reducer,
+		[gameApi.reducerPath]: gameApi.reducer,
 		[miscSlice.name]: miscSlice.reducer
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().concat([
 			productsApi.middleware,
-			 roomApi.middleware,
-			 rtkQueryErrorLogger
+			roomApi.middleware,
+			gameApi.middleware,
+			rtkQueryErrorLogger
 		]),
 })
 

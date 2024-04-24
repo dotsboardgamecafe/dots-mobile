@@ -4,7 +4,7 @@ const axiosInstance = axios.create()
 
 axiosInstance.interceptors.request.use(
 	config => {
-
+		console.log('req', config)
 		return config
 	},
 	async error => {

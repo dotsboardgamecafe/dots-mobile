@@ -173,7 +173,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<ActionButton2
 					label='Game Info'
 					style={ styles.gameInfoAction }
-					onPress={ () => { navigation.navigate('gameDetail') } }
+					onPress={ () => { navigation.navigate('gameDetail', { game_code: params.game_code }) } }
 				/>
 			)
 	}, [data])
