@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import {
-	Image, ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent
+	Image, ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent,
+	TouchableOpacity
 } from 'react-native'
 import {
 	ArrowLeft, Category, Clock, ExportCurve, Level, Location, Profile2User
@@ -21,6 +22,7 @@ import CardGame from '../../components/card-game'
 import { avatars, gameMasters, gamePlays, rooms } from './data'
 import { type GameMaster } from '../../models/games'
 import Blush from '../../components/blush'
+import exitApp from '../../utils/exit.app'
 
 type Props = NavigationProps<'gameDetail'>
 
@@ -84,6 +86,14 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 		setGamePlayIndex(x / SCREEN_WIDTH)
 	}, [])
 
+	const _onPressBack = useCallback(() => {
+		if (navigation.canGoBack()) {
+			navigation.goBack()
+		} else {
+			exitApp()
+		}
+	}, [navigation])
+
 	return (
 		<Container contentStyle={ styles.container }>
 			<Blush
@@ -105,12 +115,13 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 				opacity={ blushOp }
 			/>
 			<View style={ styles.header }>
-				<ArrowLeft
-					variant='Linear'
-					color={ theme.colors.onBackground }
-					size={ scaleWidth(24) }
-					onPress={ navigation.goBack }
-				/>
+				<TouchableOpacity onPress={ _onPressBack }>
+					<ArrowLeft
+						variant='Linear'
+						color={ theme.colors.onBackground }
+						size={ scaleWidth(24) }
+					/>
+				</TouchableOpacity>
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					Rising Sun Game
 				</Text>

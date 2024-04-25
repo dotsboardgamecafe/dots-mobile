@@ -7,7 +7,9 @@ import { type Rooms } from './rooms'
 export type RootStackParamList =  {
   main: undefined,
   profile: undefined,
-  login: undefined,
+  login: {
+    email?: string
+  },
   forgotPassword: undefined,
   updatePassword: undefined,
   bottomNav: undefined,
