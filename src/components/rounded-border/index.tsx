@@ -1,27 +1,29 @@
 import React, { useMemo } from 'react'
 import { View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { useTheme } from 'react-native-paper'
 
-import { type ThemeType } from '../../models/theme'
 import styles from './styles'
 import { type RoundedBorderProps } from './type'
 import { scaleWidth } from '../../utils/pixel.ratio'
+import { colorsTheme } from '../../constants/theme'
+
+const colors = [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent]
 
 const RoundedBorder = ({
 	children,
 	radius,
 	borderWidth,
 	contentStyle,
-	style: propStyle
+	style: propStyle,
+	colors: colorProps = colors,
+	spaceBorder = 1.5
 }: RoundedBorderProps): React.ReactNode => {
 
 	const contentRadius = useMemo(() => radius ? radius - (borderWidth ?? 0) : 0, [])
-	const { colors } = useTheme<ThemeType>()
 
 	return (
 		<LinearGradient
-			colors={ [colors.blueAccent, colors.yellowAccent, colors.redAccent] }
+			colors={ colorProps }
 			start={ { x: 0, y: 0 } }
 			end={ { x: 1, y: 0 } }
 			style={ [styles.border, propStyle, { borderRadius: radius }] }
@@ -30,7 +32,7 @@ const RoundedBorder = ({
 				style={ [
 					styles.container,
 					contentStyle,
-					{ margin: scaleWidth(1.5), borderRadius: contentRadius }
+					{ margin: scaleWidth(spaceBorder), borderRadius: contentRadius }
 				] }
 			>
 				{ children }

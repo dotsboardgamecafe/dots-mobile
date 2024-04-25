@@ -68,6 +68,7 @@ const TabView = ({ tabs }:Props): React.ReactNode => {
 				horizontal
 				showsHorizontalScrollIndicator={ false }
 				bounces={ false }
+				removeClippedSubviews
 			>
 				{ renderTabs() }
 				{ renderIndicator() }

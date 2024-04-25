@@ -1,29 +1,34 @@
-import { View, Animated, } from 'react-native'
-import React, { useEffect, lazy, Suspense, useCallback } from 'react'
+import { View, Animated, TouchableOpacity } from 'react-native'
+import React, {
+	useEffect, lazy, Suspense, useCallback, useState,
+} from 'react'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 import Text from '../text'
 import styles from './styles'
 import LinearGradient from 'react-native-linear-gradient'
 import VPIcon from '../../assets/svg/VP.svg'
-import { useRoute } from '@react-navigation/native'
-import navigationConstant from '../../constants/navigation'
+import PencilIcon from '../../assets/svg/pencil.svg'
+import TripleDotsIcon from '../../assets/svg/triple-dots.svg'
 import { Avatar } from 'react-native-paper'
 import { LOGO } from '../../assets/images'
 import { type StyleProps } from 'react-native-reanimated'
+import { type TierType } from '../../models/components'
 
-const LazyStarsField = lazy(async() => await import('../stars-field/index'))
+const LazyStarsField = lazy(async() => await import('../stars-field'))
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
-interface Props {
+interface Props extends TierType {
   style?: StyleProps,
 	starsFieldContentStyle?:StyleProps,
-	screen: 'home' | 'tier' | 'profile'
+	screen: 'home' | 'tier' | 'profile',
+	onPressTripleDot?: (() => void) | undefined;
 }
 
-const BannerTier = ({ style, starsFieldContentStyle, screen }: Props): React.ReactNode => {
-	const route = useRoute()
+const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediate', onPressTripleDot }: Props): React.ReactNode => {
+
+	const [starCount, setStarCount] = useState(0)
 
 	const animatedValue = new Animated.Value(0)
 
@@ -35,34 +40,63 @@ const BannerTier = ({ style, starsFieldContentStyle, screen }: Props): React.Rea
 	const _renderTopContent = useCallback(() => {
 		return (
 			<View style={ styles.starsFieldTopContentStyle }>
-				<View>
-					<Text style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>Legend tier</Text>
-				 	{ screen === 'tier' ?
-						<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyMiddleRegular'>Olivia Ainsley</Text> :
-						 null
-					}
-				</View>
-				<View>
+				{
+					screen === 'profile' ?
+						<View style={ styles.avatarUserWrapperStyle }>
+							<View>
+								<View style={ styles.imageBorderStyle }>
+									<Avatar.Image size={ scaleWidth(62) } source={ LOGO }/>
+								</View>
+								<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] }>
+									<PencilIcon/>
+								</TouchableOpacity>
+							</View>
+							<View style={ styles.avatarUsernameWrapperStyle }>
+								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyLargeBold'>Olivia Ainsley</Text>
+								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Member since 2023</Text>
+							</View>
+						</View> :
+						<View style={ styles.topContentWrapperStyle }>
+							<Text style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>Legend tier</Text>
+				 			{ screen === 'tier' ?
+								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyMiddleRegular'>Olivia Ainsley</Text> :
+						 		null
+							}
+						</View>
+				}
+				<View style={ styles.topContentWrapperStyle }>
 					{
 						screen === 'tier' ?
 							<View style={ styles.imageBorderStyle } >
 								<Avatar.Image size={ scaleWidth(48) } source={ LOGO }/>
 							</View> :
 							screen === 'profile' ?
-								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Icon</Text> :
+								<TouchableOpacity style={ styles.tripleDotsWrapperStyle } onPress={ onPressTripleDot }>
+									<View style={ styles.tripeDotsIconWrapperStyle } />
+									<TripleDotsIcon style={ styles.tripeDotsIconStyle }/>
+								</TouchableOpacity> :
 								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Member since 2023</Text>
 				 	}
 				</View>
 			</View>
 		)
-	}, [screen])
+	}, [screen, onPressTripleDot])
 
 	const _renderBottomContent = useCallback(() => {
 		return (
-			<View>
-				<View style={ styles.starsFieldMidContentStyle }>
-					<Text style={ [styles.textStyle, styles.pointStyle] } variant={ screen === 'home' ? 'bodyMiddleBold' : 'bodyLargeBold' }>650</Text>
-					<VPIcon width={ scaleWidth(screen === 'home' ? 20 : 24) } height={ scaleHeight(screen === 'home' ? 20 : 24) }/>
+			<View style={ styles.starsFieldContentStyle }>
+				<View style={ [styles.starsFieldMidContentStyle, styles.profileBottomWrapperStyle] }>
+					<View style={ styles.starsFieldMidContentStyle }>
+						<Text style={ [styles.textStyle, styles.pointStyle] } variant={ screen === 'home' ? 'bodyMiddleBold' : 'bodyLargeBold' }>650</Text>
+						<VPIcon width={ scaleWidth(screen === 'home' ? 20 : 26) } height={ scaleHeight(screen === 'home' ? 20 : 26) }/>
+					</View>
+					{
+						screen === 'profile' ?
+							<TouchableOpacity>
+								<Text style={ styles.textStyle } variant='bodyMiddleBold'>Legend tier</Text>
+							</TouchableOpacity> :
+							null
+					}
 				</View>
 				<View style={ styles.rangeWrapperStyle }>
 					<View style={ styles.neonWrapperStyle(screen === 'home') } />
@@ -89,14 +123,18 @@ const BannerTier = ({ style, starsFieldContentStyle, screen }: Props): React.Rea
 		Animated.timing(animatedValue, {
 			toValue: 80 - 1.5,
 			useNativeDriver: false,
-			duration: 3000
+			duration: 1500
 		}).start()
+		setStarCount(500)
+		return () => { setStarCount(0) }
 	}, [])
 
 	return (
-		<Suspense fallback={ null }>
-			<LazyStarsField starCount={ route.name === navigationConstant.screenName.tier ? 500 : 500 } style={ style }>
-				<View style={ [styles.starsFieldContentStyle, starsFieldContentStyle] }>
+		<Suspense fallback={
+			<View style={ style } />
+		 } >
+			<LazyStarsField starCount={ starCount } style={ style } tier={ tier }>
+				<View style={ [starsFieldContentStyle] }>
 					{ _renderTopContent() }
 					{ _renderBottomContent() }
 				</View>

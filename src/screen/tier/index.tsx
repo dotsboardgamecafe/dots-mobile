@@ -1,17 +1,18 @@
-import React, { Suspense, lazy, useCallback } from 'react'
+import React, { Suspense, lazy, useCallback, useRef } from 'react'
 import {
-	FlatList, Image, Pressable, View,
+	FlatList, Image, TouchableOpacity, View,
 	type ListRenderItemInfo
 } from 'react-native'
 
 import Container from '../../components/container'
 import Text from '../../components/text'
-import ChevronRight from '../../assets/svg/chevron-right.svg'
 
 import styles from './styles'
 import RoundedBorder from '../../components/rounded-border'
 import { ScrollView } from 'react-native-gesture-handler'
 import Tabview from '../../components/tab-view'
+import BottomSheet from '../../components/bottom-sheet'
+import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
@@ -136,65 +137,22 @@ const EarnPointActivityTab = (): React.ReactNode => {
 }
 
 const Tier = (): React.ReactNode => {
+	const bottomSheetRef = useRef<BottomSheetModal>(null)
+
+	const _onPressRedeemItem = useCallback(() => {
+		bottomSheetRef.current?.present()
+	}, [bottomSheetRef])
 
 	const _renderTopContent = useCallback(() => {
 		return (
-			<Suspense fallback={ null }>
-				<LazyBannerTier screen='tier' style={ styles.bannerStyle }
+			<Suspense fallback={
+				<View style={ styles.starsFieldContentStyle }/>
+			 }>
+				<LazyBannerTier
+					screen='tier'
+					style={ styles.bannerStyle }
 					starsFieldContentStyle={ styles.starsFieldContentStyle }/>
 			</Suspense>
-		)
-	}, [])
-
-	const _renderTitle = useCallback(() => {
-		return (
-			<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.midContentHorizontalStyle] }>
-				<Text variant='bodyExtraLargeBold'>Your Rewards</Text>
-				<Pressable style={ styles.iconWrapperStyle }>
-					<ChevronRight/>
-				</Pressable>
-			</View>
-		)
-	}, [])
-
-	const _renderFilterCardRedeem = useCallback(() => {
-		const listFilter = [
-			'All', 'Food and Beverage', 'Tournament', 'Game Room', 'Most Favorite'
-		]
-		return (
-			<View style={ [styles.filterCardRedeemWrapperStyle, styles.midContentHorizontalStyle] }>
-				<ScrollView
-					horizontal={ true }
-					bounces={ false }
-					showsHorizontalScrollIndicator={ false }
-					pagingEnabled
-					snapToInterval={ 300 }
-					decelerationRate='fast'
-				>
-					{
-						listFilter.map((item, index) => {
-							if (index === 1) {
-								return (
-									<RoundedBorder
-										style={ styles.selectedfilterCardRedeemItemStyle }
-										radius={ 16 }
-										borderWidth={ 1 }
-										key={ item }
-										contentStyle={ styles.selectedfilterCardRedeemItemBackgroundStyle }
-									>
-										<Text variant='bodyMiddleRegular'>{ item }</Text>
-									</RoundedBorder>
-								)
-							}
-							return (
-								<Pressable style={ styles.filterCardRedeemItemStyle } key={ item }>
-									<Text variant='bodyMiddleRegular'>{ item }</Text>
-								</Pressable>
-							)
-						})
-					}
-				</ScrollView>
-			</View>
 		)
 	}, [])
 
@@ -206,9 +164,10 @@ const Tier = (): React.ReactNode => {
 					bounces={ false }
 					showsHorizontalScrollIndicator={ false }
 					pagingEnabled
+					removeClippedSubviews
 				>
 					{
-						listRedeem.map((item, index) => {
+						listRedeem.map(item => {
 							return (
 								<RoundedBorder
 									style={ styles.cardRedeemItemStyle }
@@ -217,19 +176,18 @@ const Tier = (): React.ReactNode => {
 									key={ item.id }
 									contentStyle={ styles.cardRedeemItemBackgroundStyle }
 								>
-									<View style={ {
-										overflow: 'hidden'
-									} }>
-										<View style={ { ...styles.ticketStyle, left: -15 } } />
-										<Image style={ { ...styles.cardRedeemItemImageStyle, zIndex: -2 } } source={ { uri: item.image  } }  />
-										<View style={ { ...styles.ticketStyle, right: -15 } } />
-									</View>
-									<Text style={ styles.cardRedeemItemTitleStyle } variant='bodyMiddleBold'>{ item.title }</Text>
-									<Text variant='bodyMiddleBold'>{ item.price }</Text>
-									<View style={ [styles.rowStyle, styles.cardRedeemItemExpiryWrapperStyle] }>
-										<Text style={ styles.cardRedeemItemExpiryLeftStyle } variant='bodySmallRegular'>{ item.expiredDate }</Text>
-										<Text style={ styles.cardRedeemItemExpiryRightStyle } variant='bodySmallBold'>Redeem</Text>
-									</View>
+									<TouchableOpacity onPress={ _onPressRedeemItem }>
+										<View style={ styles.overflowHiddenStyle }>
+											<View style={ { ...styles.ticketStyle, left: -15 } } />
+											<Image style={ { ...styles.cardRedeemItemImageStyle, zIndex: -2 } } source={ { uri: item.image  } }  />
+											<View style={ { ...styles.ticketStyle, right: -15 } } />
+										</View>
+										<Text style={ styles.cardRedeemItemTitleStyle } variant='bodyMiddleBold'>{ item.title }</Text>
+										<Text variant='bodyMiddleBold'>{ item.price }</Text>
+										<View style={ [styles.rowStyle, styles.cardRedeemItemExpiryWrapperStyle] }>
+											<Text style={ styles.cardRedeemItemExpiryLeftStyle } variant='bodySmallRegular'>{ item.expiredDate }</Text>
+										</View>
+									</TouchableOpacity>
 								</RoundedBorder>
 							)
 						})
@@ -237,7 +195,7 @@ const Tier = (): React.ReactNode => {
 				</ScrollView>
 			</View>
 		)
-	}, [])
+	}, [_onPressRedeemItem])
 
 	const _renderTabActivity = useCallback(() => {
 		
@@ -256,13 +214,12 @@ const Tier = (): React.ReactNode => {
 	const _renderMidContent = useCallback(() => {
 		return (
 			<View style={ styles.midContentStyle }>
-				{ _renderTitle() }
-				{ _renderFilterCardRedeem() }
+				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>Your Rewards</Text>
 				{ _renderCardRedeem() }
 				{ _renderTabActivity() }
 			</View>
 		)
-	}, [_renderTabActivity])
+	}, [_renderTabActivity, _renderCardRedeem])
 
 	return (
 		<Container
@@ -272,10 +229,14 @@ const Tier = (): React.ReactNode => {
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
+				removeClippedSubviews
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }
 			</ScrollView>
+			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
+				<Text variant='headingLarge'>TODO </Text>
+			</BottomSheet>
 		</Container>
 	)
 }

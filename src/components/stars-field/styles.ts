@@ -1,14 +1,17 @@
-import { StyleSheet } from 'react-native'
-import { scaleHeight } from '../../utils/pixel.ratio'
+import { fullWidth, scaleHeight } from '../../utils/pixel.ratio'
+import { type StyleProps } from 'react-native-reanimated'
 
-const styles = StyleSheet.create({
+const styles: StyleProps = {
 	containerStyle: {
 		backgroundColor: 'black',
 		position: 'relative',
-		height: scaleHeight(200),
-		width: '100%',
 		zIndex: 99
 	},
-})
+	smokeImageStyle: (height: number) => ({
+		width: fullWidth,
+		height: scaleHeight(height),
+		opacity: 0.3
+	})
+}
 
 export default styles

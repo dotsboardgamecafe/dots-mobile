@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
 	},
 	tierWrapperStyle: {
 		borderRadius: 15,
-		marginBottom: scaleVertical(24)
+		marginBottom: scaleVertical(24),
+		height: scaleHeight(140)
 	},
 	badgeStyle: {
 		position: 'absolute',
