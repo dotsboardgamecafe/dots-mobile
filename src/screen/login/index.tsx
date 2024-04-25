@@ -48,6 +48,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	}, [])
 
 	useEffect(() => {
+		console.log(route.params)
 		if (route.params?.email) {
 			setEmail(route.params.email)
 		}

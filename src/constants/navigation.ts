@@ -23,7 +23,7 @@ export const linking: LinkingOptions<any> = {
 	config: {
 		screens: {
 			[navigationConstant.screenName.login]: {
-				path: 'login/:email?'
+				path: 'login/:email/:verify_token?',
 			},
 			[navigationConstant.screenName.gameDetail]: {
 				path: 'game-detail/:id?'
