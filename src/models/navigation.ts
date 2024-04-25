@@ -8,7 +8,8 @@ export type RootStackParamList =  {
   main: undefined,
   profile: undefined,
   login: {
-    email?: string
+    email?: string,
+    verify_token?:string
   },
   forgotPassword: undefined,
   updatePassword: undefined,
