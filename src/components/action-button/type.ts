@@ -5,5 +5,6 @@ export interface ActionButtonProps {
   style?: StyleProp<ViewStyle> | undefined,
   onPress?: ((event: GestureResponderEvent) => void) | undefined,
   label?: string | undefined,
-  suffix?: ReactNode | undefined
+  suffix?: ReactNode | undefined,
+  loading?: boolean
 }

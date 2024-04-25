@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { View, Image, TouchableOpacity } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { View, Image, TouchableOpacity, Alert } from 'react-native'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
@@ -16,14 +16,26 @@ import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
+import { usePostLoginMutation } from '../../store/access'
 
 type Props = NavigationProps<'login'>
 
 const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const { onSetLogin } = useStorage()
+	const { onSetLogin, onSetToken } = useStorage()
 	const { screenName } = navigationConstant
-
 	const [showPass, setShowPass] = useState(false)
+	const [email, setEmail] = useState('')
+	const [password, setPassword] = useState('')
+	const [
+		postLogin,
+		{
+			isSuccess,
+			isError,
+			isLoading,
+			data,
+			error
+		}
+	] = usePostLoginMutation()
 
 	const passSuffix = useMemo(() => {
 		const props: IconProps = {
@@ -46,12 +58,28 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 		navigation.navigate(screenName.forgotPassword as never)
 	}, [])
 
+	const doLogin = useCallback(() => {
+		postLogin({ email, password })
+	}, [email, password])
+
+	useEffect(() => {
+		if (isSuccess) {
+			onSetToken(data.token)
+			onSetLogin()
+		}
+
+		if (isError) {
+			Alert.alert((error as {data:string}).data)
+		}
+	}, [data, error, isError, isSuccess])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
 				bounces={ false }
+				keyboardShouldPersistTaps='handled'
 				enableOnAndroid
 			>
 				<Image source={ LOGO } style={ styles.headerImage } />
@@ -68,7 +96,9 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 					inputProps={ {
 						placeholder: t('login-page.email-hint'),
 						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'email-address'
+						keyboardType: 'email-address',
+						value: email,
+						onChangeText: setEmail
 					} }
 				/>
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
@@ -85,7 +115,9 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 						placeholder: t('login-page.password-hint'),
 						placeholderTextColor: theme.colors.gray,
 						keyboardType: 'default',
-						secureTextEntry: !showPass
+						secureTextEntry: !showPass,
+						value: password,
+						onChangeText: setPassword
 					} }
 				/>
 				<Text
@@ -97,8 +129,9 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 				</Text>
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ onSetLogin }
+					onPress={ doLogin }
 					label={ t('login-page.sign-in') }
+					loading={ isLoading }
 				/>
 				<View style={ styles.footer }>
 					<View style={ styles.registerContainer }>

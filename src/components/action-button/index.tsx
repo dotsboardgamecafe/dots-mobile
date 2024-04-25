@@ -5,10 +5,15 @@ import styles from './styles'
 import { type ActionButtonProps } from './type'
 import Text from '../text'
 import ButtonBg from '../../assets/svg/ButtonBg.svg'
+import { ActivityIndicator } from 'react-native-paper'
 
-const ActionButton = ({ style, onPress, label, suffix }: ActionButtonProps): React.ReactNode => {
+const ActionButton = ({ style, onPress, label, suffix, loading }: ActionButtonProps): React.ReactNode => {
 
 	const content = useMemo(() => {
+		if (loading) {
+			return <ActivityIndicator />
+		}
+
 		const text = <Text variant='bodyMiddleBold' style={ styles.label }>{ label }</Text>
 
 		if (suffix) {
