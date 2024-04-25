@@ -101,7 +101,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 			<Pressable
 				onPress={ () => { navigation.navigate('tier') } }
 				style={ [styles.sectionWrapperStyle, styles.tierWrapperStyle] }>
-				<Suspense fallback={ null }>
+				<Suspense fallback={ <View/> }>
 					<LazyBannerTier screen='home' style={ styles.starFieldStyle }/>
 				</Suspense>
 			</Pressable>

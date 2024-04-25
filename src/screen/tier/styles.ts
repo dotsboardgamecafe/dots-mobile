@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 	},
 	midContentStyle: {
-		paddingVertical: scaleHorizontal(24),
+		paddingVertical: scaleVertical(24),
 	},
 	midContentHorizontalStyle: {
 		paddingHorizontal: scaleHorizontal(16),
@@ -106,7 +106,14 @@ const styles = StyleSheet.create({
 	},
 	pointActivityContentTitleStyle: {
 		marginBottom: scaleVertical(8),
-	}
+	},
+	overflowHiddenStyle: {
+		overflow: 'hidden'
+	},
+	bottomSheetView: {
+		marginHorizontal: scaleWidth(16),
+		paddingBottom: scaleHeight(16),
+	},
 })
 
 export default styles

@@ -4,12 +4,16 @@ import { type StyleProps } from 'react-native-reanimated'
 
 const styles: StyleProps = {
 	starsFieldContentStyle: {
-		padding: scaleWidth(24)
+		padding: scaleWidth(24),
+		overflow: 'hidden'
+	},
+	topContentWrapperStyle: {
+		paddingHorizontal: scaleWidth(24),
+		paddingTop: scaleVertical(24),
 	},
 	starsFieldTopContentStyle: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		marginBottom: scaleVertical(18),
 		alignItems: 'center'
 	},
 	starsFieldMidContentStyle: {
@@ -57,6 +61,49 @@ const styles: StyleProps = {
 		borderColor: colorsTheme.lightWhite,
 		padding: 1,
 		borderRadius: 100
+	},
+	iconPencilWrapperStyle: {
+		position: 'absolute',
+		bottom: 5,
+		right: 0,
+		backgroundColor: 'white',
+		borderRadius: 100,
+		paddingTop: scaleVertical(4),
+		paddingHorizontal: scaleHorizontal(3),
+		paddingBottom: scaleVertical(2),
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: scaleWidth(20),
+		height: scaleHeight(20),
+	},
+	profileBottomWrapperStyle: {
+		justifyContent: 'space-between',
+		alignItems: 'flex-start',
+		marginBottom: 0
+	},
+	avatarUserWrapperStyle: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: scaleWidth(16),
+		paddingTop: scaleVertical(24),
+	},
+	avatarUsernameWrapperStyle: {
+		marginLeft: scaleHorizontal(16)
+	},
+	tripleDotsWrapperStyle: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	tripeDotsIconWrapperStyle: {
+		width: scaleWidth(32),
+		height: scaleWidth(32),
+		backgroundColor: 'white',
+		opacity: 0.5,
+		borderRadius: 100
+	},
+	tripeDotsIconStyle: {
+		position: 'absolute'
 	}
 }
 

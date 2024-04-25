@@ -39,6 +39,12 @@ export type RootStackParamList =  {
   unique: undefined,
   hallOfFame: undefined,
   tier: undefined
+  gameBoardCollection: undefined,
+  awards: undefined,
+  accountInformation: undefined
+  editPassword: undefined
+  tnc: undefined
+  privacyPolicy: undefined
 }
 
 export interface WithCommonProps {

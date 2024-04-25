@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import {
-	Dimensions, FlatList, type ListRenderItem, StyleSheet, type StyleProp, type ViewStyle
+	Dimensions, FlatList, type ListRenderItem, StyleSheet, type StyleProp, type ViewStyle,
+	Image,
+	View
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Animated, {
@@ -13,10 +15,10 @@ import Animated, {
 } from 'react-native-reanimated'
 import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
+import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
+import { type TierType } from '../../models/components'
 
-const defaultStartCount = 500
-
-interface DefaultProps {
+interface DefaultProps extends TierType {
   time?:SharedValue<number>;
   starCount?: number
   children?: React.ReactNode
@@ -85,12 +87,50 @@ const Star: React.FC<StarProps> = props => {
 	)
 }
 
-const Starfield: React.FC<DefaultProps> = ({ starCount = defaultStartCount, style, children }) => {
+const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
 	const timeVal = useSharedValue(0)
 
-	const renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
+	const _renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
 		return <Star key={ item.id } time={ timeVal } starCount={ starCount } { ...item } />
 	}, [starCount])
+
+	const _getSmokeImage = useMemo(() => {
+		if (tier) {
+			const smokeImage = {
+				legend: smokeLegendIllu,
+				intermediate: smokeIntermediateIllu,
+				master: smokeMasterIllu,
+				novice: smokeNoviceIllu
+			}
+	
+			return smokeImage[tier]
+		}
+	}, [tier])
+
+	const _generateGradientColor = useMemo(() => {
+		if (tier) {
+			const gradientColor = {
+				legend: ['rgba(27,24,31,1)', 'rgba(50,4,89,1)'],
+				intermediate: ['#212629', '#043249'],
+				master: ['#201b1b', '#480405'],
+				novice: ['#27271e', '#3f3703']
+			}
+	
+			return gradientColor[tier]
+		}
+		return ['#000', '#000']
+	}, [tier])
+
+	const _renderSmokeImage = useCallback(() => {
+		return (
+			<View style={ StyleSheet.absoluteFill }>
+				<Image
+					style={ styles.smokeImageStyle(Number((style as any)?.height ?? 200)) }
+					source={ _getSmokeImage }
+				/>
+			</View>
+		)
+	}, [starCount, style, _getSmokeImage])
 
 	useEffect(() => {
 		timeVal.value = 0
@@ -103,21 +143,22 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = defaultStartCount, styl
 		return () => {
 			timeVal.value = 0
 		}
-	}, [])
+	}, [starCount])
 
 	return (
 		<LinearGradient
-			colors={ ['rgba(27,24,31,1)', 'rgba(50,4,89,1)'] }
+			colors={ _generateGradientColor }
 			style={ [styles.containerStyle, style] }
 			useAngle
 			angle={ 100 }
 		>
+			{ _renderSmokeImage() }
 			<FlatList
 				style={ StyleSheet.absoluteFill }
 				scrollEnabled={ false }
 				initialNumToRender={ starCount }
 				data={ getStars(starCount) }
-				renderItem={ renderStars }
+				renderItem={ _renderStars }
 				keyExtractor={ (_, index) => index.toString() }
 				getItemLayout={ (_, index) => (
 					{ length: 3, offset: 3 * index, index }
