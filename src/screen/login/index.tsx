@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
@@ -19,7 +19,8 @@ import withCommon from '../../hoc/with-common'
 
 type Props = NavigationProps<'login'>
 
-const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
+const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
+	const [email, setEmail] = useState('')
 	const { onSetLogin } = useStorage()
 	const { screenName } = navigationConstant
 
@@ -46,6 +47,13 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 		navigation.navigate(screenName.forgotPassword as never)
 	}, [])
 
+	useEffect(() => {
+		if (route.params?.email && route.params.verify_token) {
+			setEmail(route.params.email)
+			// todo
+		}
+	}, [route.params])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
@@ -68,7 +76,8 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 					inputProps={ {
 						placeholder: t('login-page.email-hint'),
 						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'email-address'
+						keyboardType: 'email-address',
+						value: email
 					} }
 				/>
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>

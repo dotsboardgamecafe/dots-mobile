@@ -1,3 +1,5 @@
+import { type LinkingOptions } from '@react-navigation/native'
+
 const navigationConstant = {
 	screenName: {
 		main: 'main',
@@ -15,6 +17,20 @@ const navigationConstant = {
 		unique: 'unique',
 		hallOfFame: 'hallOfFame'
 	}
+}
+
+export const linking: LinkingOptions<any> = {
+	config: {
+		screens: {
+			[navigationConstant.screenName.login]: {
+				path: 'login/:email/:verify_token?',
+			},
+			[navigationConstant.screenName.gameDetail]: {
+				path: 'game-detail/:id?'
+			}
+		}
+	},
+	prefixes: ['dots.app://']
 }
 
 export default navigationConstant
