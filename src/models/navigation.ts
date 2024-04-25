@@ -8,7 +8,10 @@ import { type Games } from './games'
 export type RootStackParamList =  {
   main: undefined,
   profile: undefined,
-  login: undefined,
+  login: {
+    email?: string,
+    verify_token?:string
+  },
   forgotPassword: undefined,
   updatePassword: undefined,
   bottomNav: undefined,

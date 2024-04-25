@@ -20,7 +20,7 @@ import { usePostLoginMutation } from '../../store/access'
 
 type Props = NavigationProps<'login'>
 
-const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
+const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const { onSetLogin, onSetToken } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
@@ -72,6 +72,13 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 			Alert.alert((error as {data:string}).data)
 		}
 	}, [data, error, isError, isSuccess])
+
+	useEffect(() => {
+		if (route.params?.email && route.params.verify_token) {
+			setEmail(route.params.email)
+			// todo
+		}
+	}, [route.params])
 
 	return (
 		<Container>
