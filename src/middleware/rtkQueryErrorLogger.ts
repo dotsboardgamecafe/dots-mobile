@@ -14,7 +14,9 @@ export const rtkQueryErrorLogger: Middleware =
   				'RTK error!',
   				'data' in action.error
   					? (action.error.data as { message: string }).message
-  					: action.error.message
+  					: 'data' in (action.payload as any)
+  						? (action.payload as {data:string}).data
+  						: action.error.message
   			)
   		}
   	}

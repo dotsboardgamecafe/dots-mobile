@@ -4,7 +4,6 @@ export interface Users {
   username: string
   phone_numbe: string
   fullname: string
-  image_url: string
   latest_point: number
   latest_tier: string
   password: string
@@ -12,4 +11,7 @@ export interface Users {
   status_verification: boolean
   status: string
   created_date: string
+  user_name: string,
+  user_image_url?: string,
+  status_winner?: boolean,
 }

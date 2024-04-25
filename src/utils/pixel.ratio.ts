@@ -1,4 +1,5 @@
-import { Dimensions, Platform, PixelRatio } from 'react-native'
+import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 
 const {
 	width: SCREEN_WIDTH,
@@ -39,10 +40,18 @@ const scaleFont =  (size: number):number => {
 	return scaleHeight(size)
 }
 
+const isIphoneXorAbove = (): boolean =>  {
+	return DeviceInfo.hasNotch()
+}
+
+const getStatusBarHeight = (): number | undefined => Platform.OS === 'android' ? StatusBar.currentHeight : isIphoneXorAbove() ? -20 : 0
+
 export {
 	scaleWidth,
 	scaleHeight,
 	scaleHorizontal,
 	scaleVertical,
-	scaleFont
+	scaleFont,
+	isIphoneXorAbove,
+	getStatusBarHeight
 }

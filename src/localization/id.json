@@ -13,7 +13,6 @@
       "dont-have-account": "Tidak punya akun?",
       "sign-up": "Daftar disini"
     },
-
     "register-page": {
       "title": "Sign Up",
       "subtitle": "Sign Up to continue using DOTS",
@@ -32,7 +31,6 @@
       "success-info": "The verification link has been sent to your email. Please check your inbox/spam folder and click the \"Verify Now\" button to activate your account.",
       "open-email": "Open Email"
     },
-
     "forgot-password-page": {
       "title": "Forgot Password",
       "desc": "Enter the email associated with your account and we’ll send you an email with instruction for reseting your password.",
@@ -40,13 +38,11 @@
       "success-title": "Verification Link Sent",
       "success-info": "We have sent a link recovery for your password to your email address "
     },
-
     "update-password-page": {
       "title": "Update Your Password",
       "desc": "Your password must be different with the previous password.",
       "submit": "Submit"
     },
-
     "main-page": {
       "home": "Home",
       "discover": "Discover",
@@ -55,7 +51,6 @@
       "profile": "Profil",
       "popular": "Populer"
     },
-
     "discover-page": {
       "search-game": "Cari game...",
       "filter-game": "Filter",
@@ -67,6 +62,39 @@
       "duration": "Durasi",
       "person": "Orang",
       "minute": "menit"
+    },
+    "play-page": {
+      "tournament": "Tournament",
+      "special-event": "Special Event",
+      "game-room": "Game Room"
+    },
+    "room-detail": {
+      "currency": "Rp",
+      "slot": "Slot",
+      "details": "Details",
+      "schedule": "Schedule",
+      "location": "Location",
+      "level": "Level",
+      "players": "Joined Players",
+      "join": "Join Room - Get",
+      "booking": "Booking Confirmation",
+      "pay": "Pay with Xendit"
+    },
+    "champion-page": {
+      "mvp": "Most VP",
+      "unique": "Most Unique Game",
+      "hof": "Hall of Fame",
+      "see-more": "See More",
+      "filter-loc": "Filter Location",
+      "filter-month": "Filter Month",
+      "filter-year": "Filter Year",
+      "filter-reset": "Reset"
+    },
+    "payment-success": {
+      "title": "Success Payment",
+      "subtitle": "We’ve just received your payment from Xendit. Now you can play a board game.",
+      "button-history": "See History Transaction",
+      "related-games": "Related Games"
     }
   }
 }
