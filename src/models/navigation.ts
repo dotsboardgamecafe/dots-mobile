@@ -10,12 +10,18 @@ export type RootStackParamList =  {
   profile: undefined,
   login: {
     email?: string,
-    verify_token?:string
+    verify_token?:string,
+    token?: string,
+    type?: string
   },
   forgotPassword: undefined,
-  updatePassword: undefined,
+  updatePassword: {
+    token?: string
+  },
   bottomNav: undefined,
-  register: undefined,
+  register: {
+    token?: string,
+  },
   gameDetail: Partial<Games>,
   roomDetail: Partial<Rooms>,
   paymentSuccess: undefined,

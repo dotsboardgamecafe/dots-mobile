@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { View, Image, TouchableOpacity, Alert } from 'react-native'
+import {
+	View, Image, TouchableOpacity, Alert, Keyboard
+} from 'react-native'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
@@ -16,12 +18,13 @@ import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
-import { usePostLoginMutation } from '../../store/access'
+import { usePostLoginMutation, usePostVerifyMutation } from '../../store/access'
+import LoadingDialog from '../../components/loading-dialog'
 
 type Props = NavigationProps<'login'>
 
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
-	const { onSetLogin, onSetToken } = useStorage()
+	const { onSetLogin, onSetToken, onSetEmail } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
 	const [email, setEmail] = useState('')
@@ -36,6 +39,11 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			error
 		}
 	] = usePostLoginMutation()
+	const [postVerify, {
+		data: verifyData,
+		error: verifyError,
+		isLoading: verifyLoading
+	}] = usePostVerifyMutation()
 
 	const passSuffix = useMemo(() => {
 		const props: IconProps = {
@@ -59,7 +67,9 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	}, [])
 
 	const doLogin = useCallback(() => {
+		Keyboard.dismiss()
 		postLogin({ email, password })
+		onSetEmail(email)
 	}, [email, password])
 
 	useEffect(() => {
@@ -67,18 +77,26 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			onSetToken(data.token)
 			onSetLogin()
 		}
-
 		if (isError) {
 			Alert.alert((error as {data:string}).data)
 		}
 	}, [data, error, isError, isSuccess])
 
 	useEffect(() => {
-		if (route.params?.email && route.params.verify_token) {
-			setEmail(route.params.email)
-			// todo
+		if (route.params?.token) {
+			postVerify(route.params.token)
 		}
 	}, [route.params])
+
+	useEffect(() => {
+		if (verifyData) {
+			onSetToken(verifyData.token)
+			onSetLogin()
+		}
+		if (verifyError)  {
+			Alert.alert((verifyError as {data:string}).data)
+		}
+	}, [verifyData, verifyError])
 
 	return (
 		<Container>
@@ -152,6 +170,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 					</View>
 				</View>
 			</KeyboardAwareScrollView>
+			{ verifyLoading && <LoadingDialog visible title='Verifying email' /> }
 		</Container>
 	)
 }

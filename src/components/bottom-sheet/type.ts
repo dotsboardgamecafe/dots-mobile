@@ -6,6 +6,6 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 
 export type AppBottomSheetProps = PropsWithChildren & {
   bsRef: React.Ref<BottomSheetModalMethods>,
-  bsProps?: Omit<BottomSheetModalProps, 'ref'> | undefined,
+  bsProps?: Omit<BottomSheetModalProps, 'ref' | 'children'> | undefined,
   viewProps?: Omit<BottomSheetViewProps, 'children'> | undefined,
 }

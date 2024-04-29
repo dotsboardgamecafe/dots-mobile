@@ -9,3 +9,11 @@ export interface Profile {
   actor_type: string
   created_date: string
 }
+
+export interface RegisterParam {
+  fullname: string
+  email: string
+  phone_number: string
+  password: string
+  confirm_password: string
+}
