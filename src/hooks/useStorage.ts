@@ -4,11 +4,13 @@ import { useMMKVNumber, useMMKVString } from 'react-native-mmkv'
 
 interface UseStorageReturnType {
   isLoggedIn: boolean,
-	lang: string
+	lang: string,
+	token: string,
   onSetLogin: () => void,
   onSetLogout: () => void,
 	onSetLangID: () => void,
-  onSetLangEN: () => void
+  onSetLangEN: () => void,
+	onSetToken: (token: string) => void,
 }
 
 interface UseStorageProps {
@@ -16,7 +18,7 @@ interface UseStorageProps {
 }
 
 /* eslint-disable no-unused-vars */ // silly lint
-enum EnumLogin {
+export enum EnumLogin {
   IS_LOGGED_IN,
   IS_LOGGED_OUT
 }
@@ -24,6 +26,7 @@ enum EnumLogin {
 const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageReturnType => {
 	const [loginType, setLoginType] = useMMKVNumber('loginType')
 	const [lang, setLang] = useMMKVString('language')
+	const [token, setToken] = useMMKVString('token')
 	const { i18n } = useTranslation()
 
 	const onSetLogin = useCallback(() => {
@@ -55,17 +58,24 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 		}
 	}, [init])
 
+	const onSetToken = useCallback((token: string) => {
+		setToken(token)
+	}, [])
+
 	useEffect(() => {
 		loadLanguage()
+		setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiVVNSLTIwMjQwNDA2UFFIRVhFUUlOQyIsImVtYWlsIjoiZGQud2FoeXUxNkBnbWFpbC5jb20iLCJjaGFubmVsIjoiYXBwIiwiZXhwIjoxOTM0MDE0OTUwLCJpc3MiOiJ1c2VyIn0.WrL-012lRheyanehKbRWKIoiWrGcDdVo9Lch-UcUu8Q')
 	}, [])
 
 	return {
 		isLoggedIn,
 		lang: String(lang),
+		token: String(token),
 		onSetLogin,
 		onSetLogout,
 		onSetLangID,
-		onSetLangEN
+		onSetLangEN,
+		onSetToken
 	}
 
 }

@@ -10,7 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import Main from '../screen/main'
 import Profile from '../screen/profile'
 import Login from '../screen/login'
-import navigationConstant from '../constants/navigation'
+import navigationConstant, { linking } from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
@@ -18,8 +18,11 @@ import Register from '../screen/register'
 import PaymentSuccess from '../screen/payment-success'
 import GameDetail from '../screen/game-detail'
 import RoomDetail from '../screen/room-detail'
+import Webview from '../screen/webview'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
+import MVP from '../screen/mvp'
+import HallOfFame from '../screen/hall-of-fame'
 
 const { screenName, } = navigationConstant
 
@@ -82,7 +85,15 @@ const privateNavigations = (): ReactNode => {
 			/>
 			<Stack.Screen
 				name={ screenName.webview }
-				component={ Profile } // todo webview
+				component={ Webview }
+			/>
+			<Stack.Screen
+				name={ screenName.mvp }
+				component={ MVP }
+			/>
+			<Stack.Screen
+				name={ screenName.hallOfFame }
+				component={ HallOfFame }
 			/>
 		</Stack.Group>
 	)
@@ -118,6 +129,7 @@ const Navigations = (): React.ReactNode => {
 					<NavigationContainer
 						theme={ themeFactory.navigationTheme }
 						onReady={ BootSplash.hide }
+						linking={ linking }
 					>
 						<Stack.Navigator initialRouteName={ screenName.login }>
 							{ renderScreenContent }

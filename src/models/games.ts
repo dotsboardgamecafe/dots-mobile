@@ -19,3 +19,9 @@ export interface GameType {
   selected?: boolean | undefined;
   icon?: ReactNode | undefined;
 }
+
+export interface GameMaster {
+  id: number;
+  name: string;
+  photo?: string;
+}

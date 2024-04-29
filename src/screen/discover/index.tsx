@@ -18,11 +18,14 @@ import FilterTag from '../../components/filter-tag'
 import ActionButton from '../../components/action-button'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
+import { type Games } from '../../models/games'
+import navigationConstant from '../../constants/navigation'
 
 type Props = NavigationProps<'discover'>
 
 const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const styles = useMemo(() => createStyle(theme), [theme])
+	const { screenName } = navigationConstant
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
 	const [search, setSearch] = useState('')
@@ -42,7 +45,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const [selectedGameType, setSelectedGameType] = useState<number[]>([])
 	const switchSelected = useCallback((id: number) => {
 		if (selectedGameType.includes(id)) {
-			setSelectedGameType(selectedGameType.filter(i => i != id))
+			setSelectedGameType(selectedGameType.filter(i => i !== id))
 		} else {
 			setSelectedGameType([...selectedGameType, id])
 		}
@@ -58,8 +61,12 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		{ label: t('discover-page.filter-game-type'), suffix: arrowDown },
 		{ label: t('discover-page.filter-game-mechanics'), suffix: arrowDown },
 		{ label: t('discover-page.filter-game-location'), suffix: arrowDown },
-		{ label: 'duration', suffix: arrowDown },
+		{ label: t('discover-page.duration'), suffix: arrowDown },
 	]
+
+	const navigateToDetail = useCallback((game: Games) => {
+		navigation.navigate(screenName.gameDetail as never)
+	}, [])
 
 	return (
 		<Container>
@@ -90,8 +97,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						/>
 					}
 					onPress={ () => {
-						// bottomSheetRef.current?.present()
-						navigation.navigate('paymentSuccess')
+						bottomSheetRef.current?.present()
+						// navigation.navigate('paymentSuccess')
 					} }
 				/>
 
@@ -107,7 +114,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			<FlatList
 				data={ games }
 				keyExtractor={ item => item.game_code }
-				renderItem={ ({ item }) => <CardGame { ...item } /> }
+				renderItem={ ({ item }) => <CardGame item={ item } onPress={ navigateToDetail } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 				style={ styles.list }
 				columnWrapperStyle={ styles.columnWrapper }

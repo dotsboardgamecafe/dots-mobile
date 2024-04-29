@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native'
 
-import { scaleFont, scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
 
-export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	image: {
 		borderRadius: 11,
 		width: '100%',
@@ -22,15 +22,13 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 	},
 
 	popularTag: {
-		fontWeight: '700',
+		// fontWeight: '700',
 		color: colors.redAccent,
-		fontSize: scaleFont(10)
+		// fontSize: scaleFont(10)
 	},
 
 	title: {
-		fontWeight: '700',
-		fontSize: scaleFont(16),
-		marginVertical: scaleHeight(8)
+		marginVertical: scaleVertical(8)
 	},
 
 	row: {
@@ -47,14 +45,12 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 		alignSelf: 'flex-start',
 		backgroundColor: colors.blueAccent,
 		borderRadius: 12,
-		paddingVertical: scaleHeight(2),
-		paddingHorizontal: scaleWidth(8),
-		marginTop: scaleHeight(8)
+		paddingVertical: scaleVertical(2),
+		paddingHorizontal: scaleHorizontal(8),
+		marginTop: scaleVertical(8)
 	},
 
 	gameTag: {
-		fontWeight: '600',
 		color: colors.background,
-		fontSize: scaleFont(12)
 	},
 })

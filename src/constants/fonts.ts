@@ -19,6 +19,15 @@ export const headingConfigs = {
 		}),
 		lineHeight: scaleHeight(32),
 		fontSize: scaleFont(24),
+	},
+	headingBold: {
+		fontFamily: 'Poppins-Black',
+		fontWeight: Platform.select({
+			android: '900',
+			ios: 'bold'
+		}),
+		lineHeight: scaleHeight(28),
+		fontSize: scaleFont(24),
 	}
 }
 
@@ -110,7 +119,7 @@ const bodyConfigs = {
 	},
 	bodySmallMedium: {
 		fontFamily: 'FuturaPT-Medium',
-		fontWeight: '400',
+		fontWeight: '500',
 		fontSize: scaleFont(12),
 	},
 	bodySmallBold: {
