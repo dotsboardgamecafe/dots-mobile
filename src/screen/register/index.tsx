@@ -266,6 +266,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 					</View>
 				</View>
 			</KeyboardAwareScrollView>
+
 			<BottomSheet
 				bsRef={ bsRegRef }
 				viewProps={ { style: styles.bottomSheetView } }
