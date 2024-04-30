@@ -50,5 +50,5 @@ const FilterTag = ({
 
 export default React.memo(
 	FilterTag,
-	(prev, next) => prev.active === next.active
+	// (prev, next) => prev.active === next.active
 )
