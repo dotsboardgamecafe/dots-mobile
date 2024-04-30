@@ -9,28 +9,10 @@ import GiGears from '../../assets/svg/GiGears.svg'
 import GiRollingDices from '../../assets/svg/GiRollingDices.svg'
 import GiTeamIdea from '../../assets/svg/GiTeamIdea.svg'
 import GiSwordsPower from '../../assets/svg/GiSwordsPower.svg'
-import { type GameType, type Games } from '../../models/games'
+import { type GameType } from '../../models/games'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 
-export const games: Games[] = Array.from({ length: 30 }, (_, i) => ({
-	cafe_code: `CAFE-${i}`,
-	cafe_name: 'Cafe Bandung',
-	game_code: `GAME-${i}`,
-	game_type: 'boardgame',
-	name: 'Cafe Bandung Game A',
-	image_url: '/path/images.png',
-	collection_url: '/path/images.png',
-	description: 'Bandung Paskal Hyper Square Game A.',
-	status: 'active',
-	difficulty: 4.4,
-	duration: 11,
-	minimal_participant: 2,
-	maximum_participant: 6,
-	game_categories: [
-		{ category_name: 'Fun' },
-		{ category_name: 'Excited' }
-	]
-}))
+export const filterSections = ['type', 'mechanics', 'location']
 
 export const gameTypes: GameType[] = [
 	{
