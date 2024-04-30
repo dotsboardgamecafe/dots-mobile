@@ -16,7 +16,7 @@ const baseQuery = ({ baseUrl }: BaseQueryType = { baseUrl: BASE_URL }):
 BaseQueryFn<
   {
     url: string
-    method?: 'get' | 'post' | 'delete' | 'patch'
+    method?: 'get' | 'post' | 'delete' | 'patch' | 'put'
     data?: AxiosRequestConfig['data']
     params?: AxiosRequestConfig['params']
     headers?: AxiosRequestConfig['headers'],
@@ -35,7 +35,7 @@ BaseQueryFn<
 				params,
 				headers
 			}
-			if (isPrivate && isLoggedIn) {
+			if (isPrivate || isLoggedIn) {
 				config.headers = {
 					...headers,
 					Authorization: storage.getString('token')

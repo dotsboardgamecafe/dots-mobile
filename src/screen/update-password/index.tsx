@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react'
-import { Image } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Alert, Image, Keyboard } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type IconProps, Lock, Eye, EyeSlash } from 'iconsax-react-native'
 
@@ -12,14 +12,22 @@ import createStyle from './styles'
 import Text from '../../components/text'
 import TextInput from '../../components/text-input'
 import { scaleWidth } from '../../utils/pixel.ratio'
+import { usePostVerifyForgotPassMutation, usePutUpdatePassMutation } from '../../store/access'
+import LoadingDialog from '../../components/loading-dialog'
+import useStorage from '../../hooks/useStorage'
 
 type Props = NavigationProps<'updatePassword'>
 
-const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
+const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
+	const { onSetToken } = useStorage()
+	const [pass, setPass] = useState('')
+	const [confirmPass, setConfirmPass] = useState('')
 	const [showPass, setShowPass] = useState(false)
 	const [showConfimPass, setShowConfirmPass] = useState(false)
-  
+	const [postVerifyForgotPass, { isLoading: verifyLoading, data: verifyData, error: verifyError }] = usePostVerifyForgotPassMutation()
+	const [putUpdatePass, { isLoading, isSuccess, error }] = usePutUpdatePassMutation()
+
 	const iconProps = useMemo<IconProps>(() => {
 		return {
 			variant: 'Bold',
@@ -56,11 +64,54 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 		return <EyeSlash { ...props } />
 	}, [showConfimPass, iconProps])
 
+	const doUpdate = useCallback(() => {
+		Keyboard.dismiss()
+		putUpdatePass({
+			new_password: pass,
+			confirm_password: confirmPass
+		})
+	}, [pass, confirmPass])
+
+	useEffect(() => {
+		if (verifyData) {
+			onSetToken(verifyData.token)
+		}
+		if (verifyError) {
+			Alert.alert('', (verifyError as {data:string}).data, [], {
+				cancelable: false,
+				onDismiss: () => {
+					if (navigation.canGoBack()) {
+						navigation.goBack()
+					} else {
+						navigation.replace('forgotPassword')
+					}
+				}
+			})
+		}
+	}, [verifyError, verifyData])
+
+	useEffect(() => {
+		if (isSuccess) {
+			navigation.popToTop()
+			navigation.navigate('login', {})
+		}
+		if (error) {
+			Alert.alert((error as {data: string}).data)
+		}
+	}, [isSuccess, error])
+
+	useEffect(() => {
+		if (route.params?.token) {
+			postVerifyForgotPass(route.params?.token)
+		}
+	}, [route.params])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
+				keyboardShouldPersistTaps='handled'
 				bounces={ false }
 				enableOnAndroid
 			>
@@ -81,6 +132,9 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 					inputProps={ {
 						placeholder: t('login-page.password-hint'),
 						placeholderTextColor: theme.colors.gray,
+						secureTextEntry: !showPass,
+						value: pass,
+						onChangeText: setPass
 					} }
 					prefix={ passPrefix }
 					suffix={ passSuffix }
@@ -98,6 +152,9 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 					inputProps={ {
 						placeholder: t('register-page.confirm-password-hint'),
 						placeholderTextColor: theme.colors.gray,
+						secureTextEntry: !showConfimPass,
+						value: confirmPass,
+						onChangeText: setConfirmPass
 					} }
 					prefix={ passPrefix }
 					suffix={ confirmPassSuffix }
@@ -108,11 +165,12 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ navigation.goBack }
+					onPress={ doUpdate }
 					label={ t('update-password-page.submit') }
+					loading={ isLoading }
 				/>
 			</KeyboardAwareScrollView>
-
+			{ (verifyLoading) && <LoadingDialog visible title='Verifying' /> }
 		</Container>
 	)
 }

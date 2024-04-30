@@ -52,6 +52,14 @@ const publicNavigations = (): React.ReactNode => {
 				name={ screenName.updatePassword }
 				component={ UpdatePassword }
 			/>
+			<Stack.Screen
+				name={ screenName.forgotPassword }
+				component={ ForgotPassword }
+			/>
+			<Stack.Screen
+				name={ screenName.updatePassword }
+				component={ UpdatePassword }
+			/>
 		</Stack.Group>
 	)
 }
