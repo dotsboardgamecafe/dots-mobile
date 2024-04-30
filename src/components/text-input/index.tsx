@@ -48,8 +48,8 @@ const TextInput = ({
 					if (typeof inputProps?.onBlur === 'function')
 						inputProps.onBlur(e)
 				} }
-				value={ inputProps?.value }
-				onChangeText={ inputProps?.onChangeText }
+				// value={ inputProps?.value }
+				// onChangeText={ inputProps?.onChangeText }
 				{ ...inputProps }
 			/>
 

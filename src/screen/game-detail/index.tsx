@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
-	ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent
+	ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent,
+	TouchableOpacity
 } from 'react-native'
 import {
 	ArrowLeft, Category, Clock, ExportCurve, Level, Location, Profile2User
@@ -20,6 +21,7 @@ import CardGame from '../../components/card-game'
 import { avatars, gamePlays } from './data'
 import { type GameMasters } from '../../models/games'
 import Blush from '../../components/blush'
+import exitApp from '../../utils/exit.app'
 import { useGetDetailGameQuery } from '../../store/game'
 import Modal from '../../components/modal'
 import ActionButton from '../../components/action-button'
@@ -35,10 +37,6 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const [blushOp, setBlushOp] = useState(1)
 	const [gamePlayIndex, setGamePlayIndex] = useState(0)
 	const { data, error } = useGetDetailGameQuery(game.game_code ?? '')
-
-	useEffect(() => {
-		console.log('gd error', error)
-	}, [error])
 
 	const onPageScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const start = 30
@@ -95,6 +93,14 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		setGamePlayIndex(x / SCREEN_WIDTH)
 	}, [])
 
+	const _onPressBack = useCallback(() => {
+		if (navigation.canGoBack()) {
+			navigation.goBack()
+		} else {
+			exitApp()
+		}
+	}, [navigation])
+
 	return (
 		<Container contentStyle={ styles.container }>
 			<Blush
@@ -116,12 +122,13 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 				opacity={ blushOp }
 			/>
 			<View style={ styles.header }>
-				<ArrowLeft
-					variant='Linear'
-					color={ theme.colors.onBackground }
-					size={ scaleWidth(24) }
-					onPress={ navigation.goBack }
-				/>
+				<TouchableOpacity onPress={ _onPressBack }>
+					<ArrowLeft
+						variant='Linear'
+						color={ theme.colors.onBackground }
+						size={ scaleWidth(24) }
+					/>
+				</TouchableOpacity>
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					{ data?.name }
 				</Text>

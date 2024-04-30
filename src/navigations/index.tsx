@@ -10,7 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import Main from '../screen/main'
 import Profile from '../screen/profile'
 import Login from '../screen/login'
-import navigationConstant from '../constants/navigation'
+import navigationConstant, { linking } from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
@@ -43,6 +43,14 @@ const publicNavigations = (): React.ReactNode => {
 			<Stack.Screen
 				name={ screenName.register }
 				component={ Register }
+			/>
+			<Stack.Screen
+				name={ screenName.forgotPassword }
+				component={ ForgotPassword }
+			/>
+			<Stack.Screen
+				name={ screenName.updatePassword }
+				component={ UpdatePassword }
 			/>
 			<Stack.Screen
 				name={ screenName.forgotPassword }
@@ -129,6 +137,7 @@ const Navigations = (): React.ReactNode => {
 					<NavigationContainer
 						theme={ themeFactory.navigationTheme }
 						onReady={ BootSplash.hide }
+						linking={ linking }
 					>
 						<Stack.Navigator initialRouteName={ screenName.login }>
 							{ renderScreenContent }
