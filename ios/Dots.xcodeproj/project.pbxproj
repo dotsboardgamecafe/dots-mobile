@@ -66,6 +66,11 @@
 		A589706D2BDA22B800DE3189 /* ExitApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExitApp.h; sourceTree = "<group>"; };
 		A589706E2BDA22DF00DE3189 /* ExitApp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExitApp.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		3E4B971EB0774C028699B5B9 /* FuturaPT-Bold.ttf */ = {isa = PBXFileReference; name = "FuturaPT-Bold.ttf"; path = "../src/assets/fonts/FuturaPT-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */ = {isa = PBXFileReference; name = "FuturaPT-Book.ttf"; path = "../src/assets/fonts/FuturaPT-Book.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		63F0A4F562864FFCAF33327C /* FuturaPT-Medium.ttf */ = {isa = PBXFileReference; name = "FuturaPT-Medium.ttf"; path = "../src/assets/fonts/FuturaPT-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6BACCCB838764ACE9C3EC4B2 /* FuturaPT-Demi.ttf */ = {isa = PBXFileReference; name = "FuturaPT-Demi.ttf"; path = "../src/assets/fonts/FuturaPT-Demi.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */ = {isa = PBXFileReference; name = "FuturaPT-Heavy.ttf"; path = "../src/assets/fonts/FuturaPT-Heavy.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

@@ -7,5 +7,9 @@ export interface TextInputType {
   borderFocusColor?: string | undefined,
   prefix?: ReactNode | undefined,
   suffix?: ReactNode | undefined,
-  inputProps?: Omit<TextInputProps, 'style'> | undefined
+  inputProps?: Omit<TextInputProps, 'style'>
+  // inputProps?: Omit<TextInputProps, 'style' | 'onChangeText' | 'value'> & {
+  //   value?: string,
+  //   onChangeText?: (text: string) => void
+  // }
 }

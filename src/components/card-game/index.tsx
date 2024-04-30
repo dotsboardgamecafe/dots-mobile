@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { Clock, Level, Profile2User } from 'iconsax-react-native'
@@ -10,6 +10,7 @@ import { scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
 import { type CardGameProps } from './type'
 import Text from '../text'
+import Image from '../image'
 
 const CardGame = ({ item, onPress }: CardGameProps): React.ReactNode => {
 
@@ -45,15 +46,15 @@ const CardGame = ({ item, onPress }: CardGameProps): React.ReactNode => {
 				<Text variant='bodyLargeBold' style={ style.title }>{ item.name }</Text>
 				<View style={ style.row }>
 					<Profile2User size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
-					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.slot') }: 3-5 { t('discover-page.person') }</Text>
+					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.slot') }: { item.minimal_participant }-{ item.maximum_participant } { t('discover-page.person') }</Text>
 				</View>
 				<View style={ [style.row, { marginTop: 4 }] }>
 					<Level size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
-					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.level') }: { item.cafe_id }</Text>
+					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.level') }: { item.difficulty }</Text>
 				</View>
 				<View style={ [style.row, { marginTop: 4 }] }>
 					<Clock size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
-					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.duration') }: 20 { t('discover-page.minute') }</Text>
+					<Text variant='bodyMiddleRegular' style={ style.textInfo }>{ t('discover-page.duration') }: { item.duration } { t('discover-page.minute') }</Text>
 				</View>
 				<View style={ style.tagContainer }>
 					<Text variant='bodySmallMedium' style={ style.gameTag }>{ item.game_type }</Text>
