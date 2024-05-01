@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Button } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
 import { ArrowDown2, SearchNormal, Setting4 } from 'iconsax-react-native'
@@ -10,10 +10,10 @@ import FilterItem from '../../components/filter-item'
 import CardGame from '../../components/card-game'
 import TextInput from '../../components/text-input'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { createStyle } from './styles'
+import styles from './styles'
 import { useKeyboardShown } from '../../utils/keyboard'
 import { type FilterItemType } from '../../components/filter-item/type'
-import { gameTypes } from './data'
+import { filterSections, gameMechanics, gameTypes, locations } from './data'
 import FilterTag from '../../components/filter-tag'
 import ActionButton from '../../components/action-button'
 import withCommon from '../../hoc/with-common'
@@ -26,26 +26,13 @@ import Text from '../../components/text'
 type Props = NavigationProps<'discover'>
 
 const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const styles = useMemo(() => createStyle(theme), [theme])
 	const [search, setSearch] = useState('')
-	const [param, setParam] = useState<GameListParams>({
-		status: 'active',
-		limit: 100,
-		sort: 'desc',
-	})
-	const { data, isFetching } = useGetListGameQuery(param)
+	const [param, setParam] = useState<GameListParams>({ status: 'active', limit: 100, sort: 'desc', })
+	const [filterSection, setFilterSection] = useState(filterSections)
+	const { isLoading, data, refetch } = useGetListGameQuery(param)
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
-
-	const [selectedGameType, setSelectedGameType] = useState<number[]>([])
-	const switchSelected = useCallback((id: number) => {
-		if (selectedGameType.includes(id)) {
-			setSelectedGameType(selectedGameType.filter(i => i !== id))
-		} else {
-			setSelectedGameType([...selectedGameType, id])
-		}
-	}, [selectedGameType])
 
 	const arrowDown = <ArrowDown2
 		variant='Linear'
@@ -54,9 +41,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		style={ { marginStart: 4 } }
 	/>
 	const filters: FilterItemType[] = [
-		{ label: t('discover-page.filter-game-type'), suffix: arrowDown },
-		{ label: t('discover-page.filter-game-mechanics'), suffix: arrowDown },
-		{ label: t('discover-page.filter-game-location'), suffix: arrowDown },
+		{ label: t('discover-page.filter-game-type'), name: 'type', suffix: arrowDown },
+		{ label: t('discover-page.filter-game-mechanics'), name: 'mechanics', suffix: arrowDown },
+		{ label: t('discover-page.filter-game-location'), name: 'location', suffix: arrowDown },
 		{ label: t('discover-page.duration'), suffix: arrowDown },
 	]
 
@@ -64,9 +51,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		navigation.navigate('gameDetail', game)
 	}, [])
 
-	const updateSearch = useCallback(() => {
-		setParam({ ...param, keyword: search })
-	}, [search, param])
+	const updateParam = useCallback((update: Partial<GameListParams>) => {
+		setParam({ ...param, ...update })
+	}, [param])
 
 	return (
 		<Container>
@@ -90,7 +77,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					} }
 				/>
 				<Button
-					onPress={ updateSearch }
+					onPress={ () => { updateParam({ keyword: search }) } }
 					labelStyle={ styles.filterReset }
 					style={ {
 						borderRadius: 10,
@@ -117,6 +104,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						/>
 					}
 					onPress={ () => {
+						setFilterSection(filterSections)
 						bottomSheetRef.current?.present()
 						// navigation.navigate('paymentSuccess')
 					} }
@@ -125,7 +113,13 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				<FlatList
 					horizontal
 					data={ filters }
-					renderItem={ ({ item }) => <FilterItem { ...item } /> }
+					renderItem={ ({ item }) => <FilterItem
+						onPress={ () => {
+							setFilterSection(item.name ? filterSections.filter(i => i === item.name) : filterSections)
+							bottomSheetRef.current?.present()
+						} }
+						{ ...item } />
+					}
 					ItemSeparatorComponent={ () => <View style={ { width: 8 } } /> }
 					contentContainerStyle={ { paddingHorizontal: 10 } }
 				/>
@@ -133,7 +127,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 			<FlatList
 				data={ data }
-				refreshing={ isFetching }
+				refreshing={ isLoading }
+				onRefresh={ refetch }
 				keyExtractor={ item => item.game_code }
 				renderItem={ ({ item }) => <CardGame item={ item } onPress={ navigateToDetail } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
@@ -150,67 +145,76 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				<View style={ styles.bsHead }>
 					<Text style={ styles.bsTitle }>{ t('discover-page.filter-game') }</Text>
 					<Button
-						onPress={ () => { } }
+						onPress={ () => { updateParam({ game_type: '', game_category_name: '', location: '' }) } }
 						labelStyle={ styles.filterReset }
 					>
 						Reset
 					</Button>
 				</View>
 
-				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
+				{ filterSection.includes('type') &&
+					<>
+						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
+						<FlatList
+							data={ gameTypes }
+							extraData={ param.game_type }
+							renderItem={ ({ item }) => <FilterTag
+								id={ item.id }
+								icon={ item.icon }
+								label={ item.name }
+								active={ param.game_type === item.name }
+								onClick={ () => { updateParam({ game_type: item.name }) } }
+							/>
+							}
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							contentContainerStyle={ styles.wrapList }
+						/>
+					</>
+				}
 
-				<FlatList
-					data={ gameTypes }
-					extraData={ selectedGameType }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.id }
-						icon={ item.icon }
-						label={ item.name }
-						active={ selectedGameType.includes(item.id) }
-						onClick={ switchSelected }
-					/>
-					}
-					ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
-					contentContainerStyle={ styles.wrapList }
-				/>
+				{ filterSection.includes('mechanics') &&
+					<>
+						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
+						<FlatList
+							data={ gameMechanics }
+							extraData={ param.game_category_name }
+							renderItem={ ({ item }) => <FilterTag
+								id={ item.id }
+								icon={ item.icon }
+								label={ item.name }
+								active={ param.game_category_name === item.name }
+								onClick={ () => { updateParam({ game_category_name: item.name }) } }
+							/>
+							}
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							contentContainerStyle={ styles.wrapList }
+						/>
+					</>
+				}
 
-				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
-
-				<FlatList
-					data={ gameTypes }
-					extraData={ selectedGameType }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.id }
-						icon={ item.icon }
-						label={ item.name }
-						active={ selectedGameType.includes(item.id) }
-						onClick={ switchSelected }
-					/>
-					}
-					ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
-					contentContainerStyle={ styles.wrapList }
-				/>
-
-				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-location') }</Text>
-
-				<FlatList
-					data={ gameTypes }
-					extraData={ selectedGameType }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.id }
-						label={ item.name }
-						active={ selectedGameType.includes(item.id) }
-						onClick={ switchSelected }
-					/>
-					}
-					ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
-					contentContainerStyle={ styles.wrapList }
-				/>
+				{ filterSection.includes('location') &&
+					<>
+						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-location') }</Text>
+						<FlatList
+							data={ locations }
+							extraData={ param.location }
+							renderItem={ ({ item }) => <FilterTag
+								id={ item.id }
+								label={ item.name }
+								active={ param.location === item.name }
+								onClick={ () => { updateParam({ location: item.name }) } }
+							/>
+							}
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							contentContainerStyle={ styles.wrapList }
+						/>
+					</>
+				}
 
 				<ActionButton
 					style={ styles.filterAction }
-					label='Show 56 result'
-					onPress={ () => bottomSheetRef.current?.dismiss() }
+					label='Show Result'
+					onPress={ bottomSheetRef.current?.dismiss }
 				/>
 			</BottomSheet>
 		</Container>
