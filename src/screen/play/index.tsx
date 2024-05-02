@@ -10,7 +10,7 @@ import { ArrowDown2, Location } from 'iconsax-react-native'
 import { scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import Text from '../../components/text'
 import styles from './styles'
-import { useGetListRoomQuery } from '../../store/room'
+import { useGetListRoomQuery, useGetListTourneyQuery } from '../../store/room'
 import { type Rooms } from '../../models/rooms'
 import Image from '../../components/image'
 
@@ -21,6 +21,7 @@ interface Sections { title: string, data: Array<Partial<Rooms>> }
 const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const tabBarHeight = useBottomTabBarHeight()
 	const { data } = useGetListRoomQuery()
+	const { data: tourney } = useGetListTourneyQuery()
 	const [sections, setSections] = useState<Sections[]>([])
 
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
@@ -38,11 +39,11 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 			room_type: r.room_type
 		})) ?? []
 		setSections([
-			{ title: t('play-page.tournament'), data: raw.filter(r => r.room_type === 'tournament') },
+			{ title: t('play-page.tournament'), data: tourney ?? [] },
 			{ title: t('play-page.special-event'), data: raw.filter(r => r.room_type === 'special_event') },
 			{ title: t('play-page.game-room'), data: raw.filter(r => r.room_type === 'normal') },
 		])
-	}, [data])
+	}, [data, tourney])
 
 	return (
 		<Container
