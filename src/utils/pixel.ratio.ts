@@ -6,6 +6,10 @@ const {
 	height: SCREEN_HEIGHT,
 } = Dimensions.get('window')
 
+const fullWidth = SCREEN_WIDTH
+
+const fullHeight = SCREEN_HEIGHT
+
 const defaultScaleWidth = SCREEN_WIDTH / 375
 
 const defaultScaleHeight = SCREEN_HEIGHT / 852
@@ -46,12 +50,20 @@ const isIphoneXorAbove = (): boolean =>  {
 
 const getStatusBarHeight = (): number | undefined => Platform.OS === 'android' ? StatusBar.currentHeight : isIphoneXorAbove() ? -20 : 0
 
+const fullWidth = SCREEN_WIDTH
+
+const fullHeight = SCREEN_HEIGHT
+
 export {
 	scaleWidth,
 	scaleHeight,
 	scaleHorizontal,
 	scaleVertical,
 	scaleFont,
+	fullWidth,
+	fullHeight,
 	isIphoneXorAbove,
 	getStatusBarHeight
+	fullWidth,
+	fullHeight
 }

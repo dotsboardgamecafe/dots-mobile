@@ -1,5 +1,8 @@
 const customColor = {
-	gray500: '#667085'
+	gray500: '#667085',
+	lightWhite: '#fafafa',
+	black: '#000000',
+	neutralLink: '#232526'
 }
 
 const lightTheme = {
