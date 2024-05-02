@@ -16,7 +16,7 @@ const games: any[] = Array.from({ length: 30 }, (_, i) => ({
 	game_type: 'War Game',
 	cafe_id: 1,
 	name: `Rising Game ${i + 1}`,
-	image_url: 'https://picsum.photos/200',
+	image_url: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__opengraph/img/Y6XRS8qo8oR5g7p_PUAz8qqjIY4=/0x447:960x951/fit-in/1200x630/filters:strip_icc()/pic7720813.png',
 	description: '',
 	collection_url: '',
 	status: 'ok',
