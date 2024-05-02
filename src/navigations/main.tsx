@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next'
 import TabBar from '../components/tabbar'
 import Discover from '../screen/discover'
 import Play from '../screen/play'
-import Champion from '../screen/champion'
 import Home from '../screen/home'
+import Champion from '../screen/champion'
+
 import profile from '../screen/profile'
 
 const Tab = createBottomTabNavigator()

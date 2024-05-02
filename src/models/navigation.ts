@@ -33,12 +33,12 @@ export type RootStackParamList =  {
   play: undefined,
   champion: undefined,
   popular: undefined,
+  tier: undefined,
   mvp: {
     unique?: boolean
   },
   unique: undefined,
   hallOfFame: undefined,
-  tier: undefined
   gameBoardCollection: undefined,
   awards: undefined,
   accountInformation: undefined
