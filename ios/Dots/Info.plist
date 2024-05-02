@@ -20,6 +20,21 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>dots.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>dots.app</string>
+				<string>http</string>
+				<string>https</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -32,7 +47,17 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FuturaPTBook.otf</string>
+		<string>FuturaPT-Bold.ttf</string>
+		<string>FuturaPT-Book.ttf</string>
+		<string>FuturaPT-Medium.ttf</string>
+		<string>FuturaPT-Demi.ttf</string>
+		<string>FuturaPT-Heavy.ttf</string>
+		<string>Poppins-Black.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -47,14 +72,21 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
+	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>FuturaPTBook.otf</string>
-		<string>FuturaPT-Bold.ttf</string>
-		<string>FuturaPT-Book.ttf</string>
-		<string>FuturaPT-Medium.ttf</string>
-		<string>FuturaPT-Demi.ttf</string>
-		<string>FuturaPT-Heavy.ttf</string>
+			<string>mailto</string>
+			<string>message</string>
+			<string>readdle-spark</string>
+			<string>airmail</string>
+			<string>ms-outlook</string>
+			<string>googlegmail</string>
+			<string>inbox-gmail</string>
+			<string>ymail</string>
+			<string>superhuman</string>
+			<string>yandexmail</string>
+			<string>fastmail</string>
+			<string>protonmail</string>
+			<string>szn-email</string>
 	</array>
 </dict>
 </plist>

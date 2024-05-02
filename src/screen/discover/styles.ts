@@ -1,10 +1,8 @@
 import { StyleSheet } from 'react-native'
-import { type ThemeType } from '../../models/theme'
 import { scaleFont, scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type StyleProps } from 'react-native-reanimated'
 import { colorsTheme } from '../../constants/theme'
 
-export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+const styles = StyleSheet.create({
 	searchContainer: {
 		marginHorizontal: scaleWidth(10),
 		marginTop: scaleHeight(16),
@@ -77,3 +75,5 @@ export const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.cre
 		marginTop: scaleHeight(20)
 	}
 })
+
+export default styles

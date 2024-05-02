@@ -24,6 +24,10 @@
     {
       "path": "src/assets/fonts/FuturaPTBook.otf",
       "sha1": "d633453cd20a2fe9bb6ed0067b2188500b3562d3"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Black.ttf",
+      "sha1": "645e04c53c6b5b35bce654a811ebce16af8aa721"
     }
   ]
 }

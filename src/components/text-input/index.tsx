@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import { View, TextInput as TextInputNative } from 'react-native'
 import { useTheme } from 'react-native-paper'
+import { type StyleProps } from 'react-native-reanimated'
 
 import { type TextInputType } from './type'
 import createStyle from './styles'
 import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
 
 const TextInput = ({
 	containerStyle,
@@ -17,6 +17,8 @@ const TextInput = ({
 }: TextInputType): React.ReactNode => {
 
 	const styles = createStyle(useTheme<ThemeType>())
+	const [isFocused, setFocused] = useState(false)
+
 	const is = useMemo(() => {
 		let res = { ...styles.input, ...(inputStyle as StyleProps) }
 
@@ -26,12 +28,10 @@ const TextInput = ({
 		return res
 	}, [prefix, suffix])
 
-	const [isFocused, setFocused] = useState(false)
-
 	return (
 		<View style={ [
 			styles.container,
-			borderFocusColor && isFocused && [{ borderColor: borderFocusColor } as any],
+			borderFocusColor && isFocused && { borderColor: borderFocusColor } as any,
 			containerStyle
 		] }>
 			{ prefix }
@@ -48,6 +48,8 @@ const TextInput = ({
 					if (typeof inputProps?.onBlur === 'function')
 						inputProps.onBlur(e)
 				} }
+				// value={ inputProps?.value }
+				// onChangeText={ inputProps?.onChangeText }
 				{ ...inputProps }
 			/>
 
