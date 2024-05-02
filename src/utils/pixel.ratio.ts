@@ -50,10 +50,6 @@ const isIphoneXorAbove = (): boolean =>  {
 
 const getStatusBarHeight = (): number | undefined => Platform.OS === 'android' ? StatusBar.currentHeight : isIphoneXorAbove() ? -20 : 0
 
-const fullWidth = SCREEN_WIDTH
-
-const fullHeight = SCREEN_HEIGHT
-
 export {
 	scaleWidth,
 	scaleHeight,
@@ -64,6 +60,4 @@ export {
 	fullHeight,
 	isIphoneXorAbove,
 	getStatusBarHeight
-	fullWidth,
-	fullHeight
 }
