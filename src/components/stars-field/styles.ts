@@ -5,13 +5,18 @@ const styles: StyleProps = {
 	containerStyle: {
 		backgroundColor: 'black',
 		position: 'relative',
-		zIndex: 99
+		overflow: 'hidden'
 	},
 	smokeImageStyle: (height: number) => ({
 		width: fullWidth,
 		height: scaleHeight(height),
 		opacity: 0.3
-	})
+	}),
+	starWrapperStyle: {
+		flexGrow: 1,
+		borderWidth: 1,
+		borderColor: 'transparent'
+	 }
 }
 
 export default styles

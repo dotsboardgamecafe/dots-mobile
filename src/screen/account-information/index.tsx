@@ -1,5 +1,5 @@
 import { TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
 import Text from '../../components/text'
@@ -50,23 +50,33 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		}
 	}, [navigation, isChangeEmail])
 
+	const _getHeaderTitle = useMemo(() => {
+		let title = 'header-title'
+
+		if (isChangeEmail) {
+			title = `${title}-2`
+		}
+
+		return t(`account-info-page.${title}`)
+	}, [isChangeEmail])
+
 	const _renderPrimaryContent = useCallback(() => {
 		return (
 			<React.Fragment>
-				<Text variant='bodyMiddleMedium'>Email Address</Text>
+				<Text variant='bodyMiddleMedium'>{ t('account-info-page.email-label') }</Text>
 				<View style={ styles.cardWrapperStyle }>
 					<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
 						<Text variant='bodyMiddleRegular'>olivia@gmail.com</Text>
 						<TouchableOpacity onPress={ _onOpenBottomSheet }>
-							<Text variant='bodyMiddleDemi' style={ styles.editLabelStyle }>Edit</Text>
+							<Text variant='bodyMiddleDemi' style={ styles.editLabelStyle }>{ t('account-info-page.btn-edit') }</Text>
 						</TouchableOpacity>
 					</View>
 					<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.verifyWrapperStyle] }>
 						<Verify size={ scaleWidth(14) } variant='Bold' color={ colorsTheme.blueAccent } />
-						<Text style={ styles.activatedLabelStyle } variant='bodyExtranSmallMedium'>Has been activated</Text>
+						<Text style={ styles.activatedLabelStyle } variant='bodyExtranSmallMedium'>{ t('account-info-page.mark-activate') }</Text>
 					</View>
 				</View>
-				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>Your email is used to log in and process transactions.</Text>
+				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>{ t('account-info-page.email-info') }</Text>
 			</React.Fragment>
 		)
 	}, [])
@@ -74,9 +84,9 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 	const _renderSecondaryContent = useCallback(() => {
 		return (
 			<React.Fragment>
-				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>Kindly enter your new email and we will send you a verification link so that you can have an access to this app.</Text>
+				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>{ t('account-info-page.header-subtitle-2') }</Text>
 				<View>
-					<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
+					<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('account-info-page.email-label-2') }</Text>
 					<TextInput
 						containerStyle={ styles.input }
 						borderFocusColor={ theme.colors.blueAccent }
@@ -86,7 +96,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 							color={ theme.colors.gray }
 						/> }
 						inputProps={ {
-							placeholder: t('login-page.email-hint'),
+							placeholder: t('account-info-page.email-placeholder'),
 							placeholderTextColor: theme.colors.gray,
 							keyboardType: 'email-address'
 						} }
@@ -95,7 +105,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 				<View style={ styles.changeEmailBtnWrapper }>
 					<ActionButton
 						style={ styles.actionButton }
-						label={ 'Change Email' }
+						label={ t('account-info-page.btn-change-email') }
 						onPress={ _onOpenBottomSheet }
 					/>
 				</View>
@@ -130,7 +140,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 	const _renderPasswordFields = useCallback(() => {
 		return (
 			<View style={ styles.fieldWrapperStyle }>
-				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>Password</Text>
+				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('account-info-page.bottomsheet-password.password-label') }</Text>
 				<TextInput
 					containerStyle={ styles.input }
 					borderFocusColor={ theme.colors.blueAccent }
@@ -149,7 +159,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 						</TouchableOpacity>
 					}
 					inputProps={ {
-						placeholder: 'Password',
+						placeholder: t('account-info-page.bottomsheet-password.password-label'),
 						placeholderTextColor: theme.colors.gray,
 						keyboardType: 'default',
 						secureTextEntry: !visiblePassword
@@ -162,7 +172,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 	const _renderBottomSheetTopContent = useCallback(() => {
 		return (
 			<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
-				<Text style={ styles.bottomSheetTitleStyle } variant='bodyExtraLargeHeavy'>Security Verification</Text>
+				<Text style={ styles.bottomSheetTitleStyle } variant='bodyExtraLargeHeavy'>{ t('account-info-page.bottomsheet-password.header-title') }</Text>
 				<TouchableOpacity onPress={ () => bottomSheetRef.current?.close() }>
 					<CloseIcon />
 				</TouchableOpacity>
@@ -175,13 +185,13 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 			<React.Fragment>
 				{ _renderBottomSheetTopContent() }
 				<Text variant='bodyMiddleRegular' style={ styles.infoLabelStyle }>
-					Before continue to change email address, please kindly verify that this request is coming from you.
+					{ t('account-info-page.bottomsheet-password.header-title') }
 				</Text>
 				{ _renderPasswordFields() }
 				<ActionButton
 					style={ styles.actionButton }
 					onPress={ _onPressSubmit }
-					label={ 'Submit' }
+					label={ t('account-info-page.bottomsheet-password.btn-submit') }
 				/>
 			</React.Fragment>
 		)
@@ -195,18 +205,18 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 					variant='bodyDoubleExtraLargeBold'
 				 style={ styles.successTitle }
 				 >
-					Verification Link Sent
+					{ t('account-info-page.bottomsheet-verification.header-title') }
 				</Text>
 				<Text
 				 variant='bodyMiddleRegular'
 				  style={ styles.successInfo }
 				>
-					We have sent a link recovery for your password to your email address oliviaainsley@gmail.com
+					{ t('account-info-page.bottomsheet-verification.header-subtitle', { email: 'oke@mail.com' }) }
 				</Text>
 				<ActionButton
 					style={ styles.actionButton }
 					onPress={ _onPressSubmit }
-					label={ 'Open Email' }
+					label={ t('account-info-page.bottomsheet-verification.btn-verification') }
 				/>
 			</View>
 		)
@@ -225,7 +235,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 
 	return (
 		<Container>
-			<Header title={ isChangeEmail ? 'Change Email Address' : 'Account Information' } onPressBack={ _onPressBack } />
+			<Header title={ _getHeaderTitle } onPressBack={ _onPressBack } />
 			{ _renderContent() }
 			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
 				{ _renderBottomSheetContent() }

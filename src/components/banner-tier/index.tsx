@@ -14,10 +14,13 @@ import { Avatar } from 'react-native-paper'
 import { LOGO } from '../../assets/images'
 import { type StyleProps } from 'react-native-reanimated'
 import { type TierType } from '../../models/components'
+import { useTranslation } from 'react-i18next'
 
 const LazyStarsField = lazy(async() => await import('../stars-field'))
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
+
+const fullYear = new Date().getFullYear()
 
 interface Props extends TierType {
   style?: StyleProps,
@@ -27,6 +30,8 @@ interface Props extends TierType {
 }
 
 const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediate', onPressTripleDot }: Props): React.ReactNode => {
+
+	const { t } = useTranslation()
 
 	const [starCount, setStarCount] = useState(0)
 
@@ -53,11 +58,11 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 							</View>
 							<View style={ styles.avatarUsernameWrapperStyle }>
 								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyLargeBold'>Olivia Ainsley</Text>
-								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Member since 2023</Text>
+								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: fullYear }) }</Text>
 							</View>
 						</View> :
 						<View style={ styles.topContentWrapperStyle }>
-							<Text style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>Legend tier</Text>
+							<Text style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>{ t('components.banner-tier.tier', { tier }) }</Text>
 				 			{ screen === 'tier' ?
 								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyMiddleRegular'>Olivia Ainsley</Text> :
 						 		null
@@ -75,7 +80,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 									<View style={ styles.tripeDotsIconWrapperStyle } />
 									<TripleDotsIcon style={ styles.tripeDotsIconStyle }/>
 								</TouchableOpacity> :
-								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Member since 2023</Text>
+								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: fullYear }) }</Text>
 				 	}
 				</View>
 			</View>
@@ -93,7 +98,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 					{
 						screen === 'profile' ?
 							<TouchableOpacity>
-								<Text style={ styles.textStyle } variant='bodyMiddleBold'>Legend tier</Text>
+								<Text style={ styles.textStyle } variant='bodyMiddleBold'>{ t('components.banner-tier.tier', { tier }) }</Text>
 							</TouchableOpacity> :
 							null
 					}
@@ -114,7 +119,9 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 						<View style={ styles.neonLineStyle(screen === 'home') }/>
 					</AnimatedLinearGradient>
 				</View>
-				<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>Now you are on the highest tier. Level up points to get more reward.</Text>
+				<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>
+					{ t('components.banner-tier.tier-description') }
+				</Text>
 			</View>
 		)
 	}, [screen])
@@ -124,8 +131,9 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 			toValue: 80 - 1.5,
 			useNativeDriver: false,
 			duration: 1500
-		}).start()
-		setStarCount(1)
+		}).start(() => {
+			setStarCount(300)
+		})
 		return () => { setStarCount(0) }
 	}, [])
 

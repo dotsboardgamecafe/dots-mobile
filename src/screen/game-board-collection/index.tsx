@@ -5,6 +5,10 @@ import Header from '../../components/header'
 import { formatGridData } from '../../utils/format-grid'
 import { rackIllu } from '../../assets/images'
 import styles from './styles'
+import withCommon from '../../hoc/with-common'
+import { type NavigationProps } from '../../models/navigation'
+
+type Props = NavigationProps<'gameBoardCollection'>
 
 const listGame = [
 	'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
@@ -16,7 +20,7 @@ const listGame = [
 	'https://cf.geekdo-images.com/oI8jrUmwBtlWyCiIuYH6YQ__itemrep/img/zTojsO6Ou7Si2iUOffU6eDGl7pY=/fit-in/246x300/filters:strip_icc()/pic8107311.jpg',
 ]
 
-const GameBoardCollection = (): React.ReactNode => {
+const GameBoardCollection = ({ t }: Props): React.ReactNode => {
 
 	const _renderListGame = useCallback(() => {
 		const { numColumns, resultData } = formatGridData(listGame)
@@ -44,10 +48,10 @@ const GameBoardCollection = (): React.ReactNode => {
 
 	return (
 		<Container>
-			<Header title='Game Collection' />
+			<Header title={ t('game-collection-page.header-title') } />
 			{ _renderListGame() }
 		</Container>
 	)
 }
 
-export default GameBoardCollection
+export default withCommon(React.memo(GameBoardCollection))

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
 		height: scaleHeight(248)
 	},
 	starsFieldContentStyle: {
-		marginTop: 38,
+		marginTop: scaleHeight(34),
 		height: scaleHeight(210),
 		justifyContent: 'space-between',
 	},

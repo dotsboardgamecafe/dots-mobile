@@ -20,6 +20,10 @@ import CloseIcon from '../../assets/svg/close.svg'
 import CalendarIcon from '../../assets/svg/calendar.svg'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import Modal from '../../components/modal'
+import withCommon from '../../hoc/with-common'
+import { type NavigationProps } from '../../models/navigation'
+
+type Props = NavigationProps<'awards'>
 
 const listAwards = [
 	{
@@ -64,7 +68,7 @@ const listAwards = [
 	}
 ]
 
-const Awards = (): React.ReactNode => {
+const Awards = ({ t }: Props): React.ReactNode => {
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [selectedAward, setSelectedAward] = useState<any>()
 	const [modalVisible, setModalVisible] = useState(false)
@@ -271,7 +275,7 @@ const Awards = (): React.ReactNode => {
 
 	return (
 		<Container>
-			<Header title='Awards' />
+			<Header title={ t('awards-page.header-title') } />
 			{ _renderFilterCardRedeem() }
 			{ _renderListGame() }
 			<BottomSheet
@@ -287,4 +291,4 @@ const Awards = (): React.ReactNode => {
 	)
 }
 
-export default Awards
+export default withCommon(React.memo(Awards))

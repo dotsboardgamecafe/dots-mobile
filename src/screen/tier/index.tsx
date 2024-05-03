@@ -13,6 +13,8 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Tabview from '../../components/tab-view'
 import BottomSheet from '../../components/bottom-sheet'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
+import { type NavigationProps } from '../../models/navigation'
+import withCommon from '../../hoc/with-common'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
@@ -21,6 +23,8 @@ interface ListPointActivityType {
 	schedule: string,
 	point: string,
 }
+
+type Props = NavigationProps<'tier'>
 
 const listRedeem = [
 	{
@@ -136,7 +140,7 @@ const EarnPointActivityTab = (): React.ReactNode => {
 	)
 }
 
-const Tier = (): React.ReactNode => {
+const Tier = ({ t }: Props): React.ReactNode => {
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 
 	const _onPressRedeemItem = useCallback(() => {
@@ -203,8 +207,8 @@ const Tier = (): React.ReactNode => {
 			<View style={ styles.tabActivityWrapperStyle }>
 				<Tabview
 					tabs={ [
-						{ key: 'pointActivity', title: 'Point Activity', component: () => <PointActivityTab/> },
-						{ key: 'earnActivity', title: 'How to Earn Points', component: () => <EarnPointActivityTab/> }
+						{ key: 'pointActivity', title: t('tier-page.tab-activity'), component: () => <PointActivityTab/> },
+						{ key: 'earnActivity', title: t('tier-page.tab-earn-point'), component: () => <EarnPointActivityTab/> }
 					] }
 			 />
 			</View>
@@ -214,7 +218,7 @@ const Tier = (): React.ReactNode => {
 	const _renderMidContent = useCallback(() => {
 		return (
 			<View style={ styles.midContentStyle }>
-				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>Your Rewards</Text>
+				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>{ t('tier-page.rewards-title') }</Text>
 				{ _renderCardRedeem() }
 				{ _renderTabActivity() }
 			</View>
@@ -241,4 +245,4 @@ const Tier = (): React.ReactNode => {
 	)
 }
 
-export default React.memo(Tier)
+export default withCommon(React.memo(Tier))
