@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ImageBackground, SafeAreaView, StatusBar, View } from 'react-native'
 
 import styles from './styles'
@@ -9,15 +9,25 @@ const Container = ({
 	children,
 	containerStyle,
 	contentStyle,
+	manualAppbar,
 	barStyle = 'dark-content'
 }: ContainerProps): React.ReactNode => {
 
-	return (
-		<ImageBackground
-			source={ BG }
-			resizeMode='cover'
-			style={ styles.bg }
-		>
+	const renderContent = useMemo(() => {
+		if (manualAppbar) {
+			return (
+				<React.Fragment>
+					<StatusBar
+						barStyle={ barStyle }
+						backgroundColor='transparent'
+						translucent
+					/>
+					{ children }
+				</React.Fragment>
+			)
+		}
+
+		return (
 			<SafeAreaView style={ [styles.container, containerStyle] }>
 				<StatusBar
 					barStyle={ barStyle }
@@ -28,6 +38,16 @@ const Container = ({
 					{ children }
 				</View>
 			</SafeAreaView>
+		)
+	}, [manualAppbar, children, barStyle, containerStyle])
+
+	return (
+		<ImageBackground
+			source={ BG }
+			resizeMode='cover'
+			style={ styles.bg }
+		>
+			{ renderContent }
 		</ImageBackground>
 	)
 }

@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native'
 
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
+import { colorsTheme } from '../../constants/theme'
 
-const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		marginEnd: scaleWidth(8),
 		flex: 0
@@ -16,17 +15,17 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 		paddingVertical: scaleHeight(8),
 		borderRadius: 16,
 		flex: 0,
-		backgroundColor: colors.yellowTransparent
+		backgroundColor: colorsTheme.yellowTransparent
 	},
 	active: {
-		backgroundColor: colors.background,
+		backgroundColor: colorsTheme.background,
 		paddingHorizontal: 0,
 		paddingVertical: 0
 	},
 	inactive: {
 		marginEnd: scaleWidth(8),
 		borderRadius: 16,
-		backgroundColor: colors.gray100,
+		backgroundColor: colorsTheme.gray100,
 		paddingVertical: scaleHeight(8),
 	},
 	hasIcon: {
@@ -34,4 +33,4 @@ const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
 	}
 })
 
-export default createStyle
+export default styles

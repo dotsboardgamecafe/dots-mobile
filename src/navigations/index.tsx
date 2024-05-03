@@ -21,8 +21,14 @@ import RoomDetail from '../screen/room-detail'
 import Webview from '../screen/webview'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
+import Tier from '../screen/tier'
 import MVP from '../screen/mvp'
 import HallOfFame from '../screen/hall-of-fame'
+import Awards from '../screen/awards'
+import GameBoardCollection from '../screen/game-board-collection'
+import AccountInformation from '../screen/account-information'
+import EditPassword from '../screen/edit-password'
+import TncPrivacyPolicy from '../screen/tnc-privacy-policy'
 
 const { screenName, } = navigationConstant
 
@@ -43,14 +49,6 @@ const publicNavigations = (): React.ReactNode => {
 			<Stack.Screen
 				name={ screenName.register }
 				component={ Register }
-			/>
-			<Stack.Screen
-				name={ screenName.forgotPassword }
-				component={ ForgotPassword }
-			/>
-			<Stack.Screen
-				name={ screenName.updatePassword }
-				component={ UpdatePassword }
 			/>
 			<Stack.Screen
 				name={ screenName.forgotPassword }
@@ -96,12 +94,40 @@ const privateNavigations = (): ReactNode => {
 				component={ Webview }
 			/>
 			<Stack.Screen
+				name={ screenName.tier }
+				component={ Tier }
+			/>
+			<Stack.Screen
 				name={ screenName.mvp }
 				component={ MVP }
 			/>
 			<Stack.Screen
 				name={ screenName.hallOfFame }
 				component={ HallOfFame }
+			/>
+			<Stack.Screen
+				name={ screenName.gameBoardCollection }
+				component={ GameBoardCollection }
+			/>
+			<Stack.Screen
+				name={ screenName.awards }
+				component={ Awards }
+			/>
+			<Stack.Screen
+				name={ screenName.accountInformation }
+				component={ AccountInformation }
+			/>
+			<Stack.Screen
+				name={ screenName.editPassword }
+				component={ EditPassword }
+			/>
+			<Stack.Screen
+				name={ screenName.tnc }
+				component={ TncPrivacyPolicy }
+			/>
+			<Stack.Screen
+				name={ screenName.privacyPolicy }
+				component={ TncPrivacyPolicy }
 			/>
 		</Stack.Group>
 	)

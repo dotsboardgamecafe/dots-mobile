@@ -13,9 +13,16 @@ const navigationConstant = {
 		roomDetail: 'roomDetail',
 		paymentSuccess: 'paymentSuccess',
 		webview: 'webview',
+		tier: 'tier',
 		mvp: 'mvp',
 		unique: 'unique',
-		hallOfFame: 'hallOfFame'
+		hallOfFame: 'hallOfFame',
+		gameBoardCollection: 'gameBoardCollection',
+		awards: 'awards',
+		accountInformation: 'accountInformation',
+		editPassword: 'editPassword',
+		tnc: 'tnc',
+		privacyPolicy: 'privacyPolicy',
 	}
 }
 

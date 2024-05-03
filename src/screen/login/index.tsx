@@ -20,15 +20,17 @@ import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
 import { usePostLoginMutation, usePostVerifyMutation } from '../../store/access'
 import LoadingDialog from '../../components/loading-dialog'
+import { useForm, Controller, type FieldValues } from 'react-hook-form'
 
 type Props = NavigationProps<'login'>
+
+interface FormData extends FieldValues { email: string, password: string }
 
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const { onSetLogin, onSetToken, onSetEmail } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>()
 	const [
 		postLogin,
 		{
@@ -66,11 +68,11 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 		navigation.navigate(screenName.forgotPassword as never)
 	}, [])
 
-	const doLogin = useCallback(() => {
+	const doLogin = useCallback((data: { email: string, password: string }) => {
 		Keyboard.dismiss()
-		postLogin({ email, password })
-		onSetEmail(email)
-	}, [email, password])
+		postLogin(data)
+		onSetEmail(data.email)
+	}, [])
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -78,7 +80,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			onSetLogin()
 		}
 		if (isError) {
-			Alert.alert((error as {data:string}).data)
+			Alert.alert((error as { data: string }).data)
 		}
 	}, [data, error, isError, isSuccess])
 
@@ -93,8 +95,8 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			onSetToken(verifyData.token)
 			onSetLogin()
 		}
-		if (verifyError)  {
-			Alert.alert((verifyError as {data:string}).data)
+		if (verifyError) {
+			Alert.alert((verifyError as { data: string }).data)
 		}
 	}, [verifyData, verifyError])
 
@@ -110,41 +112,62 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 				<Image source={ LOGO } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 				<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
-				<TextInput
-					containerStyle={ styles.input }
-					borderFocusColor={ theme.colors.blueAccent }
-					prefix={ <Sms
-						variant='Bold'
-						size={ scaleWidth(16) }
-						color={ theme.colors.gray }
-					/> }
-					inputProps={ {
-						placeholder: t('login-page.email-hint'),
-						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'email-address',
-						value: email,
-						onChangeText: setEmail
-					} }
+				<Controller
+					control={ control }
+					name='email'
+					rules={ { required: { value: true, message: 'Email required' } } }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.input }
+							borderFocusColor={ theme.colors.blueAccent }
+							prefix={ <Sms
+								variant='Bold'
+								size={ scaleWidth(16) }
+								color={ theme.colors.gray }
+							/> }
+							inputProps={ {
+								placeholder: t('login-page.email-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'email-address',
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.email }
+						/>
+					) }
 				/>
+
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
-				<TextInput
-					containerStyle={ styles.input }
-					borderFocusColor={ theme.colors.blueAccent }
-					prefix={ <Lock
-						variant='Bold'
-						size={ scaleWidth(16) }
-						color={ theme.colors.gray }
-					/> }
-					suffix={ passSuffix }
-					inputProps={ {
-						placeholder: t('login-page.password-hint'),
-						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'default',
-						secureTextEntry: !showPass,
-						value: password,
-						onChangeText: setPassword
+				<Controller
+					control={ control }
+					name='password'
+					rules={ {
+						minLength: { value: 8, message: 'Min 8 characters' },
+						required: { value: true, message: 'Password required' }
 					} }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.input }
+							borderFocusColor={ theme.colors.blueAccent }
+							prefix={ <Lock
+								variant='Bold'
+								size={ scaleWidth(16) }
+								color={ theme.colors.gray }
+							/> }
+							suffix={ passSuffix }
+							inputProps={ {
+								placeholder: t('login-page.password-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'default',
+								secureTextEntry: !showPass,
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.password }
+						/>
+					) }
 				/>
+
 				<Text
 					variant='bodyMiddleMedium'
 					style={ styles.forgotLabel }
@@ -154,7 +177,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 				</Text>
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ doLogin }
+					onPress={ handleSubmit(doLogin) }
 					label={ t('login-page.sign-in') }
 					loading={ isLoading }
 				/>

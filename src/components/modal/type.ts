@@ -5,5 +5,6 @@ export type ModalType = PropsWithChildren & {
   visible: boolean,
   onDismiss?: () => void,
   style?: StyleProp<ViewStyle> | undefined,
+  borderRadius?: number
   dismissable?: boolean
 }
