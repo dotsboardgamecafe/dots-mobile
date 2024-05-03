@@ -20,8 +20,8 @@ interface Sections { title: string, data: Array<Partial<Rooms>> }
 
 const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const tabBarHeight = useBottomTabBarHeight()
-	const { data } = useGetListRoomQuery()
-	const { data: tourney } = useGetListTourneyQuery()
+	const { data, refetch, isLoading } = useGetListRoomQuery()
+	const { data: tourney, refetch: tourneyRefetch } = useGetListTourneyQuery()
 	const [sections, setSections] = useState<Sections[]>([])
 
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
@@ -30,6 +30,11 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 				{ !info.section.data.length && <Text variant='bodySmallMedium'>Data not found</Text> }
 			</View>
 		)
+	}, [])
+
+	const refresh = useCallback(() => {
+		refetch()
+		tourneyRefetch()
 	}, [])
 
 	useEffect(() => {
@@ -71,6 +76,8 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 			/>
 			<SectionList
 				sections={ sections }
+				refreshing={ isLoading }
+				onRefresh={ refresh }
 				keyExtractor={ (item, index) => (item.room_code ?? '') + index }
 				renderItem={ ({ item }) => (
 					<TouchableOpacity onPress={ () => {
@@ -78,9 +85,10 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					} }
 					>
 						<Image
-							source={ { uri: 'https://picsum.photos/300/100?grayscale' } }
-							// source={ { uri: item.room_img_url } }
+							// source={ { uri: 'https://picsum.photos/300/100?grayscale' } }
+							source={ { uri: item.room_code ? item.room_img_url : item.image_url } }
 							style={ styles.item }
+							resizeMode='stretch'
 						/>
 					</TouchableOpacity>
 				) }

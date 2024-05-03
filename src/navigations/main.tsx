@@ -25,9 +25,9 @@ const MainTab = (): React.ReactNode => {
 		>
 			{ /* TODO name to be constant variable */ }
 			<Tab.Screen name={ t('main-page.home') } component={ Home } />
-			<Tab.Screen name={ t('main-page.discover') } component={ Discover } options={ { lazy: false } } />
+			<Tab.Screen name={ t('main-page.discover') } component={ Discover } />
 			<Tab.Screen name={ t('main-page.play') } component={ Play } />
-			<Tab.Screen name={ t('main-page.champion') } component={ Champion } options={ { lazy: false } } />
+			<Tab.Screen name={ t('main-page.champion') } component={ Champion } />
 			<Tab.Screen name={ t('main-page.profile') } component={ profile } />
 		</Tab.Navigator>
 	)
