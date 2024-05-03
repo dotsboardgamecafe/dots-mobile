@@ -23,6 +23,7 @@ import UserEditIcon from '../../assets/svg/user-edit.svg'
 import { Lock, LogoutCurve, ShieldTick, TableDocument } from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import useStorage from '../../hooks/useStorage'
+import { t as translation } from 'i18next'
 
 type Props = NavigationProps<'profile'>
 
@@ -58,14 +59,14 @@ const listFavGameMechanics = [
 ]
 
 const settings: SettingsType[] = [
-	{ name: 'accountInformation', title: 'Account Information', icon: UserEditIcon },
-	{ name: 'editPassword', title: 'Edit Password', icon: Lock },
-	{ name: 'tnc', title: 'Terms and Condition', icon: ShieldTick },
-	{ name: 'privacyPolicy', title: 'Privacy Policy', icon: TableDocument },
-	{ name: 'logout', title: 'Logout', icon: LogoutCurve },
+	{ name: 'accountInformation', title: translation('profile-page.settings.account-information-title'), icon: UserEditIcon },
+	{ name: 'editPassword', title: translation('profile-page.settings.edit-password-title'), icon: Lock },
+	{ name: 'tnc', title: translation('profile-page.settings.tnc-title'), icon: ShieldTick },
+	{ name: 'privacyPolicy', title: translation('profile-page.settings.privacy-policy-title'), icon: TableDocument },
+	{ name: 'logout', title: translation('profile-page.settings.logout-title'), icon: LogoutCurve },
 ]
 
-const Profile = ({ navigation, theme }: Props):React.ReactNode => {
+const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
 
@@ -141,7 +142,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderBoardGameCollection = useCallback((): React.ReactNode => {
 		return (
 			<React.Fragment>
-				{ _renderTitle('Board Game Collection', 'gameBoardCollection') }
+				{ _renderTitle(t('profile-page.game-collection-title'), 'gameBoardCollection') }
 				{ _renderListGame() }
 			</React.Fragment>
 		)
@@ -150,7 +151,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderAward = useCallback((): React.ReactNode => {
 		return (
 			<View style={ [styles.awardWrapperStyle] }>
-				{ _renderTitle('Awards', 'awards') }
+				{ _renderTitle(t('profile-page.awards-title'), 'awards') }
 				{ _renderScrollView(
 					listAward.map(item => {
 						return (
@@ -171,7 +172,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderFavoriteGame = useCallback((): React.ReactNode => {
 		return (
 			<View style={ styles.awardWrapperStyle }>
-				{ _renderTitle('Favorite Game Mechanics', 'awards', false) }
+				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
 					listFavGameMechanics.map(item => {
 						return (
@@ -252,7 +253,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 						</View>
 					)
 				} }
-				keyExtractor={ item => item.title }
+				keyExtractor={ item => item.name }
 				bounces={ false }
 			 />
 		)

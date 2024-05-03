@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import {
-	Dimensions, FlatList, type ListRenderItem, StyleSheet, type StyleProp, type ViewStyle,
-	Image,
-	View
+	Dimensions, StyleSheet, type StyleProp, type ViewStyle, Image, View,
+	type ListRenderItem,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+import { FlatList } from 'react-native-gesture-handler'
 import Animated, {
 	useSharedValue,
 	withRepeat,
@@ -79,7 +79,7 @@ const Star: React.FC<StarProps> = props => {
 					height: 3,
 					opacity: 0.5 + Math.random() * 0.5,
 					borderRadius: 100,
-					zIndex: -1
+					zIndex: 99
 				},
 				animatedStyle,
 			] }
@@ -153,7 +153,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage() }
-			<FlatList
+			{ /* <FlatList
 				style={ StyleSheet.absoluteFill }
 				scrollEnabled={ false }
 				initialNumToRender={ starCount }
@@ -163,7 +163,8 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 				getItemLayout={ (_, index) => (
 					{ length: 3, offset: 3 * index, index }
 				) }
-			/>
+				contentContainerStyle={ styles.starWrapperStyle }
+			/> */ }
 			{ children }
 		</LinearGradient>
 	)

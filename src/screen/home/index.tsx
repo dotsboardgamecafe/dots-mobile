@@ -84,7 +84,7 @@ const getGreetingMessage = (): string => {
 	return greeting
 }
 
-const Home = ({ navigation }:Props): React.ReactNode => {
+const Home = ({ navigation, t }:Props): React.ReactNode => {
 
 	const renderHeader = useCallback(() => {
 		return (
@@ -141,7 +141,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	const renderListGame = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
-				<Text variant='bodyDoubleExtraLargeBold'>Activities Highlight</Text>
+				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
 				<FlatList
 					data={ activitiesHightlight }
 					style={ styles.listGameStyle }
@@ -172,7 +172,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	}, [])
 
 	return (
-		<Container>
+		<Container contentStyle={ styles.contentStyle }>
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.scrollContentStyle }

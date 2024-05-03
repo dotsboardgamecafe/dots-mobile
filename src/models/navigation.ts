@@ -39,7 +39,7 @@ export type RootStackParamList =  {
 
 export interface WithCommonProps {
 	theme: ThemeType,
-	t: (str: string) => string
+	t: (str: string, option?: any) => string
 }
 
 export type NavigationProps<T extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, T> & WithCommonProps

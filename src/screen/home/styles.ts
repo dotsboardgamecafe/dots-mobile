@@ -5,6 +5,9 @@ import {
 import { colorsTheme } from '../../constants/theme'
 
 const styles = StyleSheet.create({
+	contentStyle: {
+		marginTop: scaleVertical(24)
+	},
 	scrollContentStyle: {
 		paddingBottom: scaleHeight(100)
 	},
