@@ -1,5 +1,12 @@
 {
   "translation": {
+    "components": {
+      "banner-tier": {
+        "tier": "{{tier}} tier",
+        "joined-date": "Member since {{since}}",
+        "tier-description": "Now you are on the highest tier. Level up points to get more reward."
+      }
+    },
     "login-page": {
       "greetings": "Hello",
       "title": "Log In to Your Account",
@@ -98,6 +105,55 @@
       "subtitle": "We’ve just received your payment from Xendit. Now you can play a board game.",
       "button-history": "See History Transaction",
       "related-games": "Related Games"
+    },
+    "home-page": {
+      "activities-title": "Activities Highlight"
+    },
+    "tier-page": {
+      "rewards-title": "Your Rewards",
+      "tab-activity": "Point Activity",
+      "tab-earn-point": "How to Earn Points"
+    },
+    "profile-page": {
+      "game-collection-title": "Board Game Collection",
+      "awards-title": "Awards",
+      "favorite-game-title": "Favorite Game Mechanics",
+      "settings": {
+        "account-information-title":"Account Information",
+        "edit-password-title":"Edit Password",
+        "tnc-title":"Terms and Condition",
+        "privacy-policy-title":"Privacy Policy",
+        "logout-title":"Logout"
+      }
+    },
+    "game-collection-page": {
+      "header-title": "Game Collection"
+    },
+    "awards-page": {
+      "header-title": "Awards"
+    },
+    "account-info-page": {
+      "header-title": "Account Information",
+      "email-label": "Email Address",
+      "mark-activate": "Has been activated",
+      "btn-edit": "Edit",
+      "email-info": "Your email is used to log in and process transactions.",
+      "bottomsheet-password": {
+        "header-title": "Security Verification",
+        "header-subtitle": "Before continue to change email address, please kindly verify that this request is coming from you.",
+        "password-label": "Password",
+        "btn-submit": "Submit"
+      },
+      "header-title-2": "Change Email Address",
+      "header-subtitle-2": "Change Email Address",
+      "email-label-2": "Email",
+      "email-placeholder": "Masukan alamat email",
+      "btn-change-email": "Change Email",
+      "bottomsheet-verification": {
+        "header-title": "Verification Link Sent",
+        "header-subtitle": "We have sent a link recovery for your password to your email address {{email}}",
+        "btn-verification": "Open Email"
+      }
     }
   }
 }

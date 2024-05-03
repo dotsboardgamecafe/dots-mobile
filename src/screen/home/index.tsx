@@ -67,7 +67,24 @@ const textFormatter = (text:string, target:string): React.ReactNode => {
 	})
 }
 
-const Home = ({ navigation }:Props): React.ReactNode => {
+const getGreetingMessage = (): string => {
+	const currentTime = new Date()
+	const currentHour = currentTime.getHours()
+
+	let greeting
+
+	if (currentHour < 12) {
+		greeting = 'Good morning!'
+	} else if (currentHour < 18) {
+		greeting = 'Good afternoon!'
+	} else {
+		greeting = 'Good evening!'
+	}
+
+	return greeting
+}
+
+const Home = ({ navigation, t }:Props): React.ReactNode => {
 
 	const renderHeader = useCallback(() => {
 		return (
@@ -75,7 +92,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 				<View style={ styles.avatarWrapperStyle }>
 					<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
 					<View style={ styles.greetingWrapperStyle }>
-						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>Good Morning 👋</Text>
+						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>{ getGreetingMessage() } 👋</Text>
 						<TouchableOpacity onPress={ () => { navigation.navigate('profile') } }>
 							<Text variant='bodyLargeDemi'>Olivia Ainsley</Text>
 						</TouchableOpacity>
@@ -124,7 +141,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	const renderListGame = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
-				<Text variant='bodyDoubleExtraLargeBold'>Activities Highlight</Text>
+				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
 				<FlatList
 					data={ activitiesHightlight }
 					style={ styles.listGameStyle }
@@ -155,7 +172,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	}, [])
 
 	return (
-		<Container>
+		<Container contentStyle={ styles.contentStyle }>
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.scrollContentStyle }

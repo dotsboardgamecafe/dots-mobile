@@ -168,6 +168,12 @@ const bodyConfigs = {
 		fontSize: scaleFont(10),
 		color: colors.lightTheme.neutralLink
 	},
+	bodyExtranSmallMedium: {
+		fontFamily: 'FuturaPT-Medium',
+		fontWeight: '500',
+		fontSize: scaleFont(10),
+		color: colors.lightTheme.neutralLink
+	},
 	bodyDoubleExtraSmallRegular: {
 		fontFamily: 'FuturaPT-Regular',
 		fontWeight: '400',
