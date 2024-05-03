@@ -23,7 +23,6 @@ import UserEditIcon from '../../assets/svg/user-edit.svg'
 import { Lock, LogoutCurve, ShieldTick, TableDocument } from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import useStorage from '../../hooks/useStorage'
-import { t as translation } from 'i18next'
 
 type Props = NavigationProps<'profile'>
 
@@ -59,11 +58,11 @@ const listFavGameMechanics = [
 ]
 
 const settings: SettingsType[] = [
-	{ name: 'accountInformation', title: translation('profile-page.settings.account-information-title'), icon: UserEditIcon },
-	{ name: 'editPassword', title: translation('profile-page.settings.edit-password-title'), icon: Lock },
-	{ name: 'tnc', title: translation('profile-page.settings.tnc-title'), icon: ShieldTick },
-	{ name: 'privacyPolicy', title: translation('profile-page.settings.privacy-policy-title'), icon: TableDocument },
-	{ name: 'logout', title: translation('profile-page.settings.logout-title'), icon: LogoutCurve },
+	{ name: 'accountInformation', title: 'profile-page.settings.account-information-title', icon: UserEditIcon },
+	{ name: 'editPassword', title: 'profile-page.settings.edit-password-title', icon: Lock },
+	{ name: 'tnc', title: 'profile-page.settings.tnc-title', icon: ShieldTick },
+	{ name: 'privacyPolicy', title: 'profile-page.settings.privacy-policy-title', icon: TableDocument },
+	{ name: 'logout', title: 'profile-page.settings.logout-title', icon: LogoutCurve },
 ]
 
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
@@ -245,7 +244,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 							>
 								<View style={ [styles.rowStyle, styles.rowCenterStyle] }>
 									<item.icon size={ scaleWidth(20) } variant='Bold' color={ theme.colors.black } fill={ theme.colors.black } />
-									<Text style={ styles.settingTitleStyle } variant='bodyMiddleRegular'>{ item.title }</Text>
+									<Text style={ styles.settingTitleStyle } variant='bodyMiddleRegular'>{ t(item.title) }</Text>
 								</View>
 								<ChevronIcon/>
 							</TouchableOpacity>
