@@ -125,7 +125,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 			useNativeDriver: false,
 			duration: 1500
 		}).start()
-		setStarCount(500)
+		setStarCount(1)
 		return () => { setStarCount(0) }
 	}, [])
 
