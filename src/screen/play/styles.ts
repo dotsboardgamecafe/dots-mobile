@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native'
-import { scaleHeight, scaleHorizontal, scaleVertical } from '../../utils/pixel.ratio'
+import { scaleFont, scaleHeight, scaleHorizontal, scaleVertical } from '../../utils/pixel.ratio'
+import { colorsTheme } from '../../constants/theme'
 
 const styles = StyleSheet.create({
 	content: {
 		paddingVertical: scaleVertical(16),
-		paddingHorizontal: scaleHorizontal(16)
+		paddingHorizontal: scaleHorizontal(10)
 	},
 	filter: {
 		alignSelf: 'flex-end'
@@ -19,7 +20,8 @@ const styles = StyleSheet.create({
 		marginHorizontal: scaleHorizontal(16)
 	},
 	item: {
-		height: scaleHeight(160),
+		width: '100%',
+		// height: scaleHeight(160),
 		borderRadius: 16
 	},
 	itemSeparator: {
@@ -30,7 +32,13 @@ const styles = StyleSheet.create({
 	},
 	sectionFooter: {
 		height: scaleHeight(16)
-	}
+	},
+	filterReset: {
+		fontWeight: 'bold',
+		fontSize: scaleFont(16),
+		lineHeight: scaleHeight(20),
+		color: colorsTheme.blueAccent
+	},
 })
 
 export default styles

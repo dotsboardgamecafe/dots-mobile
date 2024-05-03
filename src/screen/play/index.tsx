@@ -5,14 +5,15 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { type NavigationProps } from '../../models/navigation'
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
-import FilterItem from '../../components/filter-item'
-import { ArrowDown2, Location } from 'iconsax-react-native'
-import { scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
+import { SearchNormal } from 'iconsax-react-native'
+import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import Text from '../../components/text'
 import styles from './styles'
 import { useGetListRoomQuery, useGetListTourneyQuery } from '../../store/room'
-import { type Rooms } from '../../models/rooms'
+import { type RoomListParam, type Rooms } from '../../models/rooms'
 import Image from '../../components/image'
+import TextInput from '../../components/text-input'
+import { Button } from 'react-native-paper'
 
 type Props = NavigationProps<'play'>
 
@@ -20,9 +21,11 @@ interface Sections { title: string, data: Array<Partial<Rooms>> }
 
 const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const tabBarHeight = useBottomTabBarHeight()
-	const { data, refetch, isLoading } = useGetListRoomQuery()
-	const { data: tourney, refetch: tourneyRefetch } = useGetListTourneyQuery()
+	const [param, setParam] = useState<RoomListParam>({ status: 'active' })
+	const { data, refetch, isLoading } = useGetListRoomQuery(param)
+	const { data: tourney, refetch: tourneyRefetch } = useGetListTourneyQuery(param)
 	const [sections, setSections] = useState<Sections[]>([])
+	const [search, setSearch] = useState('')
 
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
 		return (
@@ -37,6 +40,10 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		tourneyRefetch()
 	}, [])
 
+	const updateParam = useCallback((update: Partial<RoomListParam>) => {
+		setParam({ ...param, ...update })
+	}, [param])
+
 	useEffect(() => {
 		const raw = data?.map((r: Rooms) => ({
 			room_code: r.room_code,
@@ -45,8 +52,14 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		})) ?? []
 		setSections([
 			{ title: t('play-page.tournament'), data: tourney ?? [] },
-			{ title: t('play-page.special-event'), data: raw.filter(r => r.room_type === 'special_event') },
-			{ title: t('play-page.game-room'), data: raw.filter(r => r.room_type === 'normal') },
+			{
+				title: t('play-page.special-event'),
+				data: raw.filter(r => r.room_type === 'special_event')
+			},
+			{
+				title: t('play-page.game-room'),
+				data: raw.filter(r => r.room_type === 'normal')
+			}
 		])
 	}, [data, tourney])
 
@@ -54,26 +67,36 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		<Container
 			contentStyle={ styles.content }
 		>
-			<FilterItem
-				label='All location'
-				prefix={
-					<Location
-						size={ scaleWidth(14) }
-						variant='Bold'
-						color={ theme.colors.onBackground }
-						style={ styles.filterPrefix }
-					/>
-				}
-				suffix={
-					<ArrowDown2
-						variant='Linear'
-						color={ theme.colors.onBackground }
-						size={ 14 }
-						style={ styles.filterSuffix }
-					/>
-				}
-				style={ styles.filter }
-			/>
+			<View style={ {
+				flexDirection: 'row',
+				alignItems: 'center',
+				marginTop: scaleHeight(16),
+			} }>
+				<TextInput
+					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
+					inputProps={ {
+						placeholder: t('discover-page.search-game'),
+						placeholderTextColor: theme.colors.gray,
+						enterKeyHint: 'search',
+						value: search,
+						onChangeText: setSearch
+					} }
+				/>
+				<Button
+					onPress={ () => { updateParam({ keyword: search }) } }
+					labelStyle={ styles.filterReset }
+					style={ {
+						borderRadius: 10,
+						backgroundColor: theme.colors.background,
+						marginStart: 8,
+						alignSelf: 'stretch',
+						justifyContent: 'center'
+					} }
+					rippleColor={ theme.colors.background }
+				>
+					Search
+				</Button>
+			</View>
 			<SectionList
 				sections={ sections }
 				refreshing={ isLoading }
@@ -85,10 +108,9 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					} }
 					>
 						<Image
-							// source={ { uri: 'https://picsum.photos/300/100?grayscale' } }
 							source={ { uri: item.room_code ? item.room_img_url : item.image_url } }
 							style={ styles.item }
-							resizeMode='stretch'
+							keepRatio
 						/>
 					</TouchableOpacity>
 				) }

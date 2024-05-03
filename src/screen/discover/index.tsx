@@ -64,9 +64,6 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				marginTop: scaleHeight(16),
 			} }>
 				<TextInput
-					containerStyle={ {
-						flex: 1,
-					} }
 					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
 					inputProps={ {
 						placeholder: t('discover-page.search-game'),
@@ -166,7 +163,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 								onClick={ () => { updateParam({ game_type: item.name }) } }
 							/>
 							}
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameTypes.length > 3 ? 8 : 0) } } /> }
 							contentContainerStyle={ styles.wrapList }
 						/>
 					</>
@@ -186,7 +183,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 								onClick={ () => { updateParam({ game_category_name: item.name }) } }
 							/>
 							}
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }
 							contentContainerStyle={ styles.wrapList }
 						/>
 					</>
@@ -205,7 +202,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 								onClick={ () => { updateParam({ location: item.name }) } }
 							/>
 							}
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(8) } } /> }
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(locations.length > 4 ? 8 : 0) } } /> }
 							contentContainerStyle={ styles.wrapList }
 						/>
 					</>
