@@ -153,7 +153,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage() }
-			{ /* <FlatList
+			<FlatList
 				style={ StyleSheet.absoluteFill }
 				scrollEnabled={ false }
 				initialNumToRender={ starCount }
@@ -164,7 +164,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 					{ length: 3, offset: 3 * index, index }
 				) }
 				contentContainerStyle={ styles.starWrapperStyle }
-			/> */ }
+			/>
 			{ children }
 		</LinearGradient>
 	)
