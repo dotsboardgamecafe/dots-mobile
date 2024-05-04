@@ -1,4 +1,4 @@
-import { View, Animated, TouchableOpacity } from 'react-native'
+import { View, Animated, TouchableOpacity, Platform } from 'react-native'
 import React, {
 	useEffect, lazy, Suspense, useCallback, useState,
 } from 'react'
@@ -15,6 +15,8 @@ import { LOGO } from '../../assets/images'
 import { type StyleProps } from 'react-native-reanimated'
 import { type TierType } from '../../models/components'
 import { useTranslation } from 'react-i18next'
+import { type NavigationProp, useNavigation } from '@react-navigation/native'
+import { type RootStackParamList } from '../../models/navigation'
 
 const LazyStarsField = lazy(async() => await import('../stars-field'))
 
@@ -32,6 +34,7 @@ interface Props extends TierType {
 const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediate', onPressTripleDot }: Props): React.ReactNode => {
 
 	const { t } = useTranslation()
+	const navigation: NavigationProp<RootStackParamList> = useNavigation()
 
 	const [starCount, setStarCount] = useState(0)
 
@@ -41,6 +44,10 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 		inputRange: [0, 100],
 		outputRange: ['0%', '100%']
 	})
+
+	const _handlePressTierProfile = useCallback(() => {
+		navigation.navigate('tier')
+	}, [navigation])
 
 	const _renderTopContent = useCallback(() => {
 		return (
@@ -97,7 +104,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 					</View>
 					{
 						screen === 'profile' ?
-							<TouchableOpacity>
+							<TouchableOpacity onPress={ _handlePressTierProfile }>
 								<Text style={ styles.textStyle } variant='bodyMiddleBold'>{ t('components.banner-tier.tier', { tier }) }</Text>
 							</TouchableOpacity> :
 							null
@@ -124,7 +131,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 				</Text>
 			</View>
 		)
-	}, [screen])
+	}, [screen, _handlePressTierProfile])
 
 	useEffect(() => {
 		Animated.timing(animatedValue, {
@@ -132,7 +139,7 @@ const BannerTier = ({ style, starsFieldContentStyle, screen, tier = 'intermediat
 			useNativeDriver: false,
 			duration: 1500
 		}).start(() => {
-			setStarCount(300)
+			setStarCount(Platform.OS === 'android' ? 100 : 300)
 		})
 		return () => { setStarCount(0) }
 	}, [])
