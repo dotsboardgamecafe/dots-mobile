@@ -1,6 +1,8 @@
-import React, { Suspense, lazy, useCallback, useRef } from 'react'
+import React, {
+	Suspense, lazy, useCallback, useMemo, useRef, useState
+} from 'react'
 import {
-	FlatList, Image, TouchableOpacity, View,
+	FlatList, Image, ImageBackground, TouchableOpacity, View,
 	type ListRenderItemInfo
 } from 'react-native'
 
@@ -15,6 +17,7 @@ import BottomSheet from '../../components/bottom-sheet'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
+import { BG } from '../../assets/images'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
@@ -141,11 +144,17 @@ const EarnPointActivityTab = (): React.ReactNode => {
 }
 
 const Tier = ({ t }: Props): React.ReactNode => {
+	const [scrollY, setScrollY] = useState(0)
+
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 
 	const _onPressRedeemItem = useCallback(() => {
 		bottomSheetRef.current?.present()
 	}, [bottomSheetRef])
+
+	const _getScrollY = useMemo(() => {
+		return scrollY > 24
+	}, [scrollY])
 
 	const _renderTopContent = useCallback(() => {
 		return (
@@ -228,12 +237,18 @@ const Tier = ({ t }: Props): React.ReactNode => {
 	return (
 		<Container
 			manualAppbar
-			barStyle='light-content'
+			barStyle={ _getScrollY ? 'dark-content' : 'light-content' }
 		>
+			{
+				_getScrollY ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
 				removeClippedSubviews
+				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
+				scrollEventThrottle={ 16 }
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }

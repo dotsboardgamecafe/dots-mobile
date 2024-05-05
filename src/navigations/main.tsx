@@ -7,13 +7,14 @@ import Discover from '../screen/discover'
 import Play from '../screen/play'
 import Home from '../screen/home'
 import Champion from '../screen/champion'
-
-import profile from '../screen/profile'
+import Profile from '../screen/profile'
 
 const Tab = createBottomTabNavigator()
 
 const MainTab = (): React.ReactNode => {
 	const { t } = useTranslation()
+
+	console.log(t('main-page.profile'))
 
 	return (
 		<Tab.Navigator
@@ -28,7 +29,7 @@ const MainTab = (): React.ReactNode => {
 			<Tab.Screen name={ t('main-page.discover') } component={ Discover } />
 			<Tab.Screen name={ t('main-page.play') } component={ Play } />
 			<Tab.Screen name={ t('main-page.champion') } component={ Champion } />
-			<Tab.Screen name={ t('main-page.profile') } component={ profile } />
+			<Tab.Screen name={ t('main-page.profile') } component={ Profile } />
 		</Tab.Navigator>
 	)
 }

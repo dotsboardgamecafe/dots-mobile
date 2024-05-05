@@ -1,11 +1,13 @@
-import React, { Suspense, lazy, useCallback, useRef } from 'react'
+import React, {
+	Suspense, lazy, useCallback, useMemo, useRef, useState
+} from 'react'
 import Container from '../../components/container'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import styles from './styles'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
 import Text from '../../components/text'
 import NegotitationIcon from '../../assets/svg/negotitation.svg'
-import { neonCircleIllu, rackIllu } from '../../assets/images'
+import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
 import { colorsTheme } from '../../constants/theme'
 import RoundedBorder from '../../components/rounded-border'
 import { formatGridData } from '../../utils/format-grid'
@@ -66,6 +68,7 @@ const settings: SettingsType[] = [
 ]
 
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const [scrollY, setScrollY] = useState(0)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
 
@@ -84,6 +87,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		}
 		bottomSheetRef.current?.close()
 	}, [bottomSheetRef, onSetLogout])
+
+	const _getScrollY = useMemo(() => {
+		return scrollY > 24
+	}, [scrollY])
 
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
 		return (
@@ -278,10 +285,16 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 			manualAppbar
 			barStyle='light-content'
 		>
+			{
+				_getScrollY ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
 				removeClippedSubviews
+				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
+				scrollEventThrottle={ 16 }
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }
