@@ -21,7 +21,8 @@ const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
 	const filterRef = useRef<BottomSheetModal>(null)
 	const date = new Date()
-	const [years, setYears] = useState(Array.from({ length: 5 }, (_, i) => {
+	date.setFullYear(date.getFullYear() + 1)
+	const [years, setYears] = useState(Array.from({ length: 1 }, (_, i) => {
 		date.setFullYear(date.getFullYear() - 1)
 		return {
 			name: date.toLocaleDateString('en-us', { year: 'numeric' }),

@@ -1,31 +1,53 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import {
+	Alert, Image, Keyboard, TouchableOpacity, View
+} from 'react-native'
+import { type BottomSheetModal } from '@gorhom/bottom-sheet'
+import { openInbox } from 'react-native-email-link'
 
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Image, TouchableOpacity, View } from 'react-native'
 import { LOGO } from '../../assets/images'
 import Text from '../../components/text'
 import createStyle from './styles'
 import TextInput from '../../components/text-input'
 import ActionButton from '../../components/action-button'
 import BottomSheet from '../../components/bottom-sheet'
-import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import MailSent from '../../assets/svg/MailSent.svg'
 import { scaleWidth, scaleHeight } from '../../utils/pixel.ratio'
-import navigationConstant from '../../constants/navigation'
+import { usePostForgotPassMutation } from '../../store/access'
+import { Controller, useForm } from 'react-hook-form'
 
 type Props = NavigationProps<'forgotPassword'>
 
 const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
-	const { screenName } = navigationConstant
+	const { control, handleSubmit, formState: { errors }, } = useForm<{email: string}>({
+		defaultValues: { email: '' }
+	})
+	const [postForgotPass, { isLoading, error, isSuccess }] = usePostForgotPassMutation()
 
-	const navigateToUpdatePassword = useCallback(() => {
-		navigation.replace(screenName.updatePassword as never, '' as never)
+	const openMail = useCallback(() => {
+		bottomSheetRef.current?.dismiss()
+		openInbox()
 	}, [])
+
+	const postForm = useCallback((data: {email: string}) => {
+		Keyboard.dismiss()
+		postForgotPass(data.email)
+	}, [])
+
+	useEffect(() => {
+		if (isSuccess) {
+			bottomSheetRef.current?.present()
+		}
+		if (error) {
+			Alert.alert((error as {data: string}).data)
+		}
+	}, [isSuccess, error])
 
 	return (
 		<Container>
@@ -33,6 +55,7 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
 				bounces={ false }
+				keyboardShouldPersistTaps='handled'
 				enableOnAndroid
 			>
 				<Image source={ LOGO } style={ styles.headerImage } />
@@ -49,19 +72,31 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 					{ t('login-page.email-label') }
 				</Text>
 
-				<TextInput
-					containerStyle={ styles.mt8 }
-					borderFocusColor={ theme.colors.blueAccent }
-					inputProps={ {
-						placeholder: t('login-page.email-hint'),
-						placeholderTextColor: theme.colors.gray,
-					} }
+				<Controller
+					control={ control }
+					name='email'
+					rules={ { required: { value: true, message: 'Email is required' } } }
+					render={ ({ field: { onChange, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('login-page.email-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'email-address',
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.email }
+						/>
+					) }
 				/>
 
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ () => bottomSheetRef.current?.present() }
+					onPress={ handleSubmit(postForm) }
 					label={ t('forgot-password-page.verification') }
+					loading={ isLoading }
 				/>
 
 				<View style={ styles.footer }>
@@ -101,7 +136,7 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 				</Text>
 				<ActionButton
 					style={ styles.successAction }
-					onPress={ navigateToUpdatePassword }
+					onPress={ openMail }
 					label={ t('register-page.open-email') }
 				/>
 			</BottomSheet>

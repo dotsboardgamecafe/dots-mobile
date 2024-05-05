@@ -1,29 +1,33 @@
 import { StyleSheet } from 'react-native'
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
+import { scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
+import { colorsTheme } from '../../constants/theme'
 
-const createStyle = ({ colors }: ThemeType): StyleProps => StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: scaleWidth(16),
+		paddingHorizontal: scaleHorizontal(16),
 		borderRadius: 8,
-		borderColor: colors.background,
+		borderColor: colorsTheme.background,
 		borderWidth: 1,
-		backgroundColor: colors.surface,
-		height: scaleHeight(42),
+		backgroundColor: colorsTheme.surface,
 	},
-
 	input: {
 		flex: 1,
 		borderWidth: 0,
-		color: colors.onBackground,
-		fontFamily: 'FuturaPT-Book'
+		color: colorsTheme.textColor,
+		fontFamily: 'FuturaPT-Book',
+		paddingVertical: scaleVertical(8),
 	},
-
+	error: {
+		borderColor: colorsTheme.redAccent
+	},
+	textError: {
+		marginTop: scaleVertical(4),
+		color: colorsTheme.redAccent
+	},
 	isPrefix: { marginStart: scaleWidth(4) },
 	isSuffix: { marginEnd: scaleWidth(4) },
 })
 
-export default createStyle
+export default styles

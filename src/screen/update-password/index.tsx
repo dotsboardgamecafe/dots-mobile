@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react'
-import { Image } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Alert, Image, Keyboard } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type IconProps, Lock, Eye, EyeSlash } from 'iconsax-react-native'
 
@@ -12,14 +12,26 @@ import createStyle from './styles'
 import Text from '../../components/text'
 import TextInput from '../../components/text-input'
 import { scaleWidth } from '../../utils/pixel.ratio'
+import { usePostVerifyForgotPassMutation, usePutUpdatePassMutation } from '../../store/access'
+import LoadingDialog from '../../components/loading-dialog'
+import useStorage from '../../hooks/useStorage'
+import { Controller, useForm } from 'react-hook-form'
 
 type Props = NavigationProps<'updatePassword'>
 
-const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
+interface FormData { new_password: string, confirm_password: string }
+
+const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
+	const { onSetToken } = useStorage()
+	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>({
+		defaultValues: { new_password: '', confirm_password: '' }
+	})
 	const [showPass, setShowPass] = useState(false)
 	const [showConfimPass, setShowConfirmPass] = useState(false)
-  
+	const [postVerifyForgotPass, { isLoading: verifyLoading, data: verifyData, error: verifyError }] = usePostVerifyForgotPassMutation()
+	const [putUpdatePass, { isLoading, isSuccess, error }] = usePutUpdatePassMutation()
+
 	const iconProps = useMemo<IconProps>(() => {
 		return {
 			variant: 'Bold',
@@ -56,11 +68,51 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 		return <EyeSlash { ...props } />
 	}, [showConfimPass, iconProps])
 
+	const doUpdate = useCallback((data: FormData) => {
+		Keyboard.dismiss()
+		putUpdatePass(data)
+	}, [])
+
+	useEffect(() => {
+		if (verifyData) {
+			onSetToken(verifyData.token)
+		}
+		if (verifyError) {
+			Alert.alert('', (verifyError as { data: string }).data, [], {
+				cancelable: false,
+				onDismiss: () => {
+					if (navigation.canGoBack()) {
+						navigation.goBack()
+					} else {
+						navigation.replace('forgotPassword')
+					}
+				}
+			})
+		}
+	}, [verifyError, verifyData])
+
+	useEffect(() => {
+		if (isSuccess) {
+			navigation.popToTop()
+			navigation.navigate('login', {})
+		}
+		if (error) {
+			Alert.alert((error as { data: string }).data)
+		}
+	}, [isSuccess, error])
+
+	useEffect(() => {
+		if (route.params?.token) {
+			postVerifyForgotPass(route.params?.token)
+		}
+	}, [route.params])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
+				keyboardShouldPersistTaps='handled'
 				bounces={ false }
 				enableOnAndroid
 			>
@@ -75,16 +127,28 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 				<Text variant='bodyMiddleMedium' style={ styles.nameLabel }>
 					{ t('login-page.password-label') }
 				</Text>
-				<TextInput
-					containerStyle={ styles.mt8 }
-					borderFocusColor={ theme.colors.blueAccent }
-					inputProps={ {
-						placeholder: t('login-page.password-hint'),
-						placeholderTextColor: theme.colors.gray,
-					} }
-					prefix={ passPrefix }
-					suffix={ passSuffix }
+				<Controller
+					control={ control }
+					name='new_password'
+					rules={ { required: true, minLength: 8 } }
+					render={ ({ field: { onChange, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('login-page.password-hint'),
+								placeholderTextColor: theme.colors.gray,
+								secureTextEntry: !showPass,
+								value,
+								onChangeText: onChange
+							} }
+							prefix={ passPrefix }
+							suffix={ passSuffix }
+							errors={ errors.new_password }
+						/>
+					) }
 				/>
+
 				<Text variant='bodyMiddleRegular' style={ styles.inputInfo }>
 					{ t('register-page.password-info') }
 				</Text>
@@ -92,27 +156,40 @@ const UpdatePassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 				<Text variant='bodyMiddleMedium' style={ styles.inputLabel }>
 					{ t('register-page.confirm-password-label') }
 				</Text>
-				<TextInput
-					containerStyle={ styles.mt8 }
-					borderFocusColor={ theme.colors.blueAccent }
-					inputProps={ {
-						placeholder: t('register-page.confirm-password-hint'),
-						placeholderTextColor: theme.colors.gray,
-					} }
-					prefix={ passPrefix }
-					suffix={ confirmPassSuffix }
+				<Controller
+					control={ control }
+					name='confirm_password'
+					rules={ { required: true, validate: value => value === control._formValues.new_password } }
+					render={ ({ field: { onChange, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('register-page.confirm-password-hint'),
+								placeholderTextColor: theme.colors.gray,
+								secureTextEntry: !showConfimPass,
+								value,
+								onChangeText: onChange
+							} }
+							prefix={ passPrefix }
+							suffix={ confirmPassSuffix }
+							errors={ errors.confirm_password }
+						/>
+					) }
 				/>
+				{ errors.confirm_password && <Text style={ { color: theme.colors.redAccent } }>This is required.</Text> }
 				<Text variant='bodyMiddleRegular' style={ styles.inputInfo }>
 					{ t('register-page.confirm-password-info') }
 				</Text>
 
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ navigation.goBack }
+					onPress={ handleSubmit(doUpdate) }
 					label={ t('update-password-page.submit') }
+					loading={ isLoading }
 				/>
 			</KeyboardAwareScrollView>
-
+			{ (verifyLoading) && <LoadingDialog visible title='Verifying' /> }
 		</Container>
 	)
 }

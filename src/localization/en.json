@@ -35,7 +35,11 @@
       "sign-in": "Sign In Here",
       "success-title": "Kindly Check Your Email",
       "success-info": "The verification link has been sent to your email. Please check your inbox/spam folder and click the \"Verify Now\" button to activate your account.",
-      "open-email": "Open Email"
+      "open-email": "Open Email",
+      "verify-email": "Verifying Email",
+      "send-email": "Sending Email",
+      "failed-verify": "Failed to Verify Email",
+      "resend-token": "Resend Verify Email"
     },
     "forgot-password-page": {
       "title": "Forgot Password",

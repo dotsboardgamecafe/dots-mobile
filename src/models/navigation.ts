@@ -3,18 +3,28 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { type ThemeType } from '../models/theme'
 import { type Rooms } from './rooms'
+import { type Games } from './games'
 
 export type RootStackParamList =  {
   main: {
     screen?: string
   },
   profile: undefined,
-  login: undefined,
+  login: {
+    email?: string,
+    verify_token?:string,
+    token?: string,
+    type?: string
+  },
   forgotPassword: undefined,
-  updatePassword: undefined,
+  updatePassword: {
+    token?: string
+  },
   bottomNav: undefined,
-  register: undefined,
-  gameDetail: undefined,
+  register: {
+    token?: string,
+  },
+  gameDetail: Partial<Games>,
   roomDetail: Partial<Rooms>,
   paymentSuccess: undefined,
   webview: {

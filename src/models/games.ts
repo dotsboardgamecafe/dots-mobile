@@ -1,16 +1,48 @@
 import { type ReactNode } from 'react'
+import { type Rooms } from './rooms'
 
 export interface Games {
-  game_code: string
-  game_type: string
-  cafe_id: number
-  name: string
-  image_url: string
-  description: string
-  collection_url: string
+  cafe_code: string,
+  cafe_name: string,
+  game_code: string,
+  game_type: string,
+  name: string,
+  image_url: string,
+  collection_url: string,
+  description: string,
+  status: string,
+  difficulty: number,
+  duration: number,
+  minimal_participant: number,
+  maximum_participant: number,
+  game_categories: GameCategory[],
+  game_related?: Games[],
+  game_rooms?: Rooms[],
+  game_masters?: GameMasters[]
+  
+}
+
+export interface GameCategory {
+  category_name: string
+}
+
+export interface GameListParams {
+  keyword?: string
   status: string
-  created_date: string
-  is_popular: boolean
+  sort: 'desc' | 'asc',
+  order?: string
+  limit: number
+  location?: string
+  game_type?: string,
+  game_category_name?: string
+}
+
+export interface GameMasters {
+  admin_code: string,
+  email: string,
+  name: string,
+  status: string
+  image_url?: string
 }
 
 export interface GameType {

@@ -5,7 +5,7 @@ import { type ModalType } from './type'
 import createStyle from './styles'
 import { type ThemeType } from '../../models/theme'
 
-const Modal = ({ visible, onDismiss, style, children, borderRadius }: ModalType): React.ReactNode => {
+const Modal = ({ visible, onDismiss, dismissable, style, children, borderRadius }: ModalType): React.ReactNode => {
 	const theme = useTheme<ThemeType>()
 	const styles = createStyle(theme)
 
@@ -15,6 +15,7 @@ const Modal = ({ visible, onDismiss, style, children, borderRadius }: ModalType)
 				visible={ visible }
 				onDismiss={ onDismiss }
 				contentContainerStyle={ [styles.container, style, { borderRadius }] }
+				dismissable={ dismissable }
 			>
 				{ children }
 			</ModalLib>

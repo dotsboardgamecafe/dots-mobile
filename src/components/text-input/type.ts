@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { type FieldError } from 'react-hook-form'
 import { type StyleProp, type TextInputProps, type TextStyle, type ViewStyle } from 'react-native'
 
 export interface TextInputType {
@@ -7,5 +8,6 @@ export interface TextInputType {
   borderFocusColor?: string | undefined,
   prefix?: ReactNode | undefined,
   suffix?: ReactNode | undefined,
-  inputProps?: Omit<TextInputProps, 'style'> | undefined
+  inputProps?: Omit<TextInputProps, 'style'>,
+  errors?: FieldError
 }

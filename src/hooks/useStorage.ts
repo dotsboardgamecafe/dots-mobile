@@ -6,11 +6,13 @@ interface UseStorageReturnType {
   isLoggedIn: boolean,
 	lang: string,
 	token: string,
+	email: string,
   onSetLogin: () => void,
   onSetLogout: () => void,
 	onSetLangID: () => void,
   onSetLangEN: () => void,
 	onSetToken: (token: string) => void,
+	onSetEmail: (email: string) => void,
 }
 
 interface UseStorageProps {
@@ -27,6 +29,7 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	const [loginType, setLoginType] = useMMKVNumber('loginType')
 	const [lang, setLang] = useMMKVString('language')
 	const [token, setToken] = useMMKVString('token')
+	const [email, setEmail] = useMMKVString('email')
 	const { i18n } = useTranslation()
 
 	const onSetLogin = useCallback(() => {
@@ -62,6 +65,8 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 		setToken(token)
 	}, [])
 
+	const onSetEmail = useCallback((email: string) => { setEmail(email) }, [])
+
 	useEffect(() => {
 		loadLanguage()
 		setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiVVNSLTIwMjQwNDA2UFFIRVhFUUlOQyIsImVtYWlsIjoiZGQud2FoeXUxNkBnbWFpbC5jb20iLCJjaGFubmVsIjoiYXBwIiwiZXhwIjoxOTM0MDE0OTUwLCJpc3MiOiJ1c2VyIn0.WrL-012lRheyanehKbRWKIoiWrGcDdVo9Lch-UcUu8Q')
@@ -71,11 +76,13 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 		isLoggedIn,
 		lang: String(lang),
 		token: String(token),
+		email: email ?? '',
 		onSetLogin,
 		onSetLogout,
 		onSetLangID,
 		onSetLangEN,
-		onSetToken
+		onSetToken,
+		onSetEmail
 	}
 
 }

@@ -1,5 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { View, Image, TouchableOpacity } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+	View, Image, TouchableOpacity, Alert, Keyboard
+} from 'react-native'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
@@ -16,14 +18,34 @@ import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
+import { usePostLoginMutation, usePostVerifyMutation } from '../../store/access'
+import LoadingDialog from '../../components/loading-dialog'
+import { useForm, Controller, type FieldValues } from 'react-hook-form'
 
 type Props = NavigationProps<'login'>
 
-const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const { onSetLogin } = useStorage()
-	const { screenName } = navigationConstant
+interface FormData extends FieldValues { email: string, password: string }
 
+const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
+	const { onSetLogin, onSetToken, onSetEmail } = useStorage()
+	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
+	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>()
+	const [
+		postLogin,
+		{
+			isSuccess,
+			isError,
+			isLoading,
+			data,
+			error
+		}
+	] = usePostLoginMutation()
+	const [postVerify, {
+		data: verifyData,
+		error: verifyError,
+		isLoading: verifyLoading
+	}] = usePostVerifyMutation()
 
 	const passSuffix = useMemo(() => {
 		const props: IconProps = {
@@ -46,48 +68,106 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 		navigation.navigate(screenName.forgotPassword as never)
 	}, [])
 
+	const doLogin = useCallback((data: { email: string, password: string }) => {
+		Keyboard.dismiss()
+		postLogin(data)
+		onSetEmail(data.email)
+	}, [])
+
+	useEffect(() => {
+		if (isSuccess) {
+			onSetToken(data.token)
+			onSetLogin()
+		}
+		if (isError) {
+			Alert.alert((error as { data: string }).data)
+		}
+	}, [data, error, isError, isSuccess])
+
+	useEffect(() => {
+		if (route.params?.token) {
+			postVerify(route.params.token)
+		}
+	}, [route.params])
+
+	useEffect(() => {
+		if (verifyData) {
+			onSetToken(verifyData.token)
+			onSetLogin()
+		}
+		if (verifyError) {
+			Alert.alert((verifyError as { data: string }).data)
+		}
+	}, [verifyData, verifyError])
+
 	return (
 		<Container>
 			<KeyboardAwareScrollView
 				contentContainerStyle={ styles.scrollView }
 				showsVerticalScrollIndicator={ false }
 				bounces={ false }
+				keyboardShouldPersistTaps='handled'
 				enableOnAndroid
 			>
 				<Image source={ LOGO } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 				<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
-				<TextInput
-					containerStyle={ styles.input }
-					borderFocusColor={ theme.colors.blueAccent }
-					prefix={ <Sms
-						variant='Bold'
-						size={ scaleWidth(16) }
-						color={ theme.colors.gray }
-					/> }
-					inputProps={ {
-						placeholder: t('login-page.email-hint'),
-						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'email-address'
-					} }
+				<Controller
+					control={ control }
+					name='email'
+					rules={ { required: { value: true, message: 'Email required' } } }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.input }
+							borderFocusColor={ theme.colors.blueAccent }
+							prefix={ <Sms
+								variant='Bold'
+								size={ scaleWidth(16) }
+								color={ theme.colors.gray }
+							/> }
+							inputProps={ {
+								placeholder: t('login-page.email-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'email-address',
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.email }
+						/>
+					) }
 				/>
+
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('login-page.password-label') }</Text>
-				<TextInput
-					containerStyle={ styles.input }
-					borderFocusColor={ theme.colors.blueAccent }
-					prefix={ <Lock
-						variant='Bold'
-						size={ scaleWidth(16) }
-						color={ theme.colors.gray }
-					/> }
-					suffix={ passSuffix }
-					inputProps={ {
-						placeholder: t('login-page.password-hint'),
-						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'default',
-						secureTextEntry: !showPass
+				<Controller
+					control={ control }
+					name='password'
+					rules={ {
+						minLength: { value: 8, message: 'Min 8 characters' },
+						required: { value: true, message: 'Password required' }
 					} }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.input }
+							borderFocusColor={ theme.colors.blueAccent }
+							prefix={ <Lock
+								variant='Bold'
+								size={ scaleWidth(16) }
+								color={ theme.colors.gray }
+							/> }
+							suffix={ passSuffix }
+							inputProps={ {
+								placeholder: t('login-page.password-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'default',
+								secureTextEntry: !showPass,
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.password }
+						/>
+					) }
 				/>
+
 				<Text
 					variant='bodyMiddleMedium'
 					style={ styles.forgotLabel }
@@ -97,8 +177,9 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 				</Text>
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ onSetLogin }
+					onPress={ handleSubmit(doLogin) }
 					label={ t('login-page.sign-in') }
+					loading={ isLoading }
 				/>
 				<View style={ styles.footer }>
 					<View style={ styles.registerContainer }>
@@ -112,6 +193,7 @@ const Login = ({ theme, t, navigation }: Props): React.ReactNode => {
 					</View>
 				</View>
 			</KeyboardAwareScrollView>
+			{ verifyLoading && <LoadingDialog visible title='Verifying email' /> }
 		</Container>
 	)
 }
