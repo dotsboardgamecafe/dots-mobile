@@ -14,8 +14,6 @@ const Tab = createBottomTabNavigator()
 const MainTab = (): React.ReactNode => {
 	const { t } = useTranslation()
 
-	console.log(t('main-page.profile'))
-
 	return (
 		<Tab.Navigator
 			screenOptions={ {
