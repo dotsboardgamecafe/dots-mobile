@@ -5,7 +5,9 @@ import { type ThemeType } from '../models/theme'
 import { type Rooms } from './rooms'
 
 export type RootStackParamList =  {
-  main: undefined,
+  main: {
+    screen?: string
+  },
   profile: undefined,
   login: undefined,
   forgotPassword: undefined,
