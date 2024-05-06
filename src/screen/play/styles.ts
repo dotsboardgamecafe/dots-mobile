@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { scaleFont, scaleHeight, scaleHorizontal, scaleVertical } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleHorizontal, scaleVertical } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 
 const styles = StyleSheet.create({
@@ -33,12 +33,21 @@ const styles = StyleSheet.create({
 	sectionFooter: {
 		height: scaleHeight(16)
 	},
+	filterHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingHorizontal: 16,
+		paddingBottom: 16,
+		backgroundColor: colorsTheme.background
+	},
 	filterReset: {
-		fontWeight: 'bold',
-		fontSize: scaleFont(16),
-		lineHeight: scaleHeight(20),
 		color: colorsTheme.blueAccent
 	},
+	filterItemSeparator: {
+		height: 1,
+		backgroundColor: colorsTheme.gray100
+	}
 })
 
 export default styles

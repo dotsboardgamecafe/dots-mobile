@@ -1,19 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { SectionList, type SectionListData, TouchableOpacity, View } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
 import { type NavigationProps } from '../../models/navigation'
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
-import { SearchNormal } from 'iconsax-react-native'
+import { ArrowDown2, Location } from 'iconsax-react-native'
 import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import Text from '../../components/text'
 import styles from './styles'
 import { useGetListRoomQuery, useGetListTourneyQuery } from '../../store/room'
 import { type RoomListParam, type Rooms } from '../../models/rooms'
 import Image from '../../components/image'
-import TextInput from '../../components/text-input'
-import { Button } from 'react-native-paper'
+import FilterItem from '../../components/filter-item'
+import BottomSheetList from '../../components/bottom-sheet-list'
+import FilterItemList from '../../components/filter-item-list'
 
 type Props = NavigationProps<'play'>
 
@@ -25,8 +27,13 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const { data, refetch, isLoading } = useGetListRoomQuery(param)
 	const { data: tourney, refetch: tourneyRefetch } = useGetListTourneyQuery(param)
 	const [sections, setSections] = useState<Sections[]>([])
-	const [search, setSearch] = useState('')
-
+	const filterLocRef = useRef<BottomSheetModal>(null)
+	const [location, setLocation] = useState('All Location')
+	const [locations, setLocations] = useState([
+		{ name: 'All Location', selected: true },
+		{ name: 'Jakarta', selected: false },
+		{ name: 'Bandung', selected: false },
+	])
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
 		return (
 			<View style={ styles.sectionFooter }>
@@ -40,9 +47,23 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		tourneyRefetch()
 	}, [])
 
-	const updateParam = useCallback((update: Partial<RoomListParam>) => {
-		setParam({ ...param, ...update })
-	}, [param])
+	const setLoc = useCallback((label: string) => {
+		setLocations(locations.map(loc => ({ ...loc, selected: label === loc.name })))
+		setLocation(label)
+		setParam({ ...param, location: label })
+		filterLocRef.current?.dismiss()
+	}, [locations, param])
+
+	const filterHeader = useCallback((title: string, onReset: () => void) => {
+		return (
+			<View style={ styles.filterHeader }>
+				<Text variant='bodyExtraLargeMedium'>{ title }</Text>
+				<TouchableOpacity onPress={ onReset }>
+					<Text variant='bodyLargeBold' style={ styles.filterReset }>{ t('champion-page.filter-reset') }</Text>
+				</TouchableOpacity>
+			</View>
+		)
+	}, [])
 
 	useEffect(() => {
 		const raw = data?.map((r: Rooms) => ({
@@ -67,36 +88,27 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		<Container
 			contentStyle={ styles.content }
 		>
-			<View style={ {
-				flexDirection: 'row',
-				alignItems: 'center',
-				marginTop: scaleHeight(16),
-			} }>
-				<TextInput
-					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
-					inputProps={ {
-						placeholder: t('discover-page.search-game'),
-						placeholderTextColor: theme.colors.gray,
-						enterKeyHint: 'search',
-						value: search,
-						onChangeText: setSearch
-					} }
-				/>
-				<Button
-					onPress={ () => { updateParam({ keyword: search }) } }
-					labelStyle={ styles.filterReset }
-					style={ {
-						borderRadius: 10,
-						backgroundColor: theme.colors.background,
-						marginStart: 8,
-						alignSelf: 'stretch',
-						justifyContent: 'center'
-					} }
-					rippleColor={ theme.colors.background }
-				>
-					Search
-				</Button>
-			</View>
+			<FilterItem
+				label={ location }
+				prefix={
+					<Location
+						size={ scaleWidth(14) }
+						variant='Bold'
+						color={ theme.colors.onBackground }
+						style={ styles.filterPrefix }
+					/>
+				}
+				suffix={
+					<ArrowDown2
+						variant='Linear'
+						color={ theme.colors.onBackground }
+						size={ 14 }
+						style={ styles.filterSuffix }
+					/>
+				}
+				style={ styles.filter }
+				onPress={ filterLocRef.current?.present }
+			/>
 			<SectionList
 				sections={ sections }
 				refreshing={ isLoading }
@@ -123,6 +135,22 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 				style={ { marginTop: scaleVertical(8) } }
 				showsVerticalScrollIndicator={ false }
 				stickySectionHeadersEnabled={ false }
+			/>
+			<BottomSheetList
+				bsRef={ filterLocRef }
+				bsProps={ {
+					topInset: scaleHeight(100)
+				} }
+				listProps={ {
+					data: locations,
+					ListHeaderComponent: filterHeader(
+						t('champion-page.filter-loc'),
+						() => { setLoc('Jakarta') }
+					),
+					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ setLoc } />),
+					ItemSeparatorComponent: () => <View style={ styles.filterItemSeparator } />,
+					stickyHeaderIndices: [0]
+				} }
 			/>
 		</Container>
 	)
