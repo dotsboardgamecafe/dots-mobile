@@ -6,7 +6,9 @@ import { type Rooms } from './rooms'
 import { type Games } from './games'
 
 export type RootStackParamList =  {
-  main: undefined,
+  main: {
+    screen?: string
+  },
   profile: undefined,
   login: {
     email?: string,

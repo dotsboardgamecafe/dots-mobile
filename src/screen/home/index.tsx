@@ -12,6 +12,7 @@ import IconReceipt from '../../assets/svg/receipt.svg'
 import IconNotification from '../../assets/svg/notification.svg'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
+import { TabActions } from '@react-navigation/native'
 
 type Props = NavigationProps<'home'>
 
@@ -86,14 +87,21 @@ const getGreetingMessage = (): string => {
 
 const Home = ({ navigation, t }:Props): React.ReactNode => {
 
+	const navigateToProfile = useCallback(() => {
+		const jumpAction = TabActions.jumpTo('Profil')
+		navigation.dispatch(jumpAction)
+	}, [])
+
 	const renderHeader = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
 				<View style={ styles.avatarWrapperStyle }>
-					<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
+					<TouchableOpacity onPress={ navigateToProfile }>
+						<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
+					</TouchableOpacity>
 					<View style={ styles.greetingWrapperStyle }>
 						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>{ getGreetingMessage() } 👋</Text>
-						<TouchableOpacity onPress={ () => { navigation.navigate('profile') } }>
+						<TouchableOpacity onPress={ navigateToProfile }>
 							<Text variant='bodyLargeDemi'>Olivia Ainsley</Text>
 						</TouchableOpacity>
 					</View>

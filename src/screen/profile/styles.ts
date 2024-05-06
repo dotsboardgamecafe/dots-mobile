@@ -1,5 +1,7 @@
 import { StyleSheet } from 'react-native'
-import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
+import {
+	isIphoneXorAbove, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
+} from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 
 const styles = StyleSheet.create({
@@ -115,6 +117,15 @@ const styles = StyleSheet.create({
 	versionSyle: {
 		textAlign: 'center',
 		marginVertical: scaleVertical(16),
+	},
+	imageBgStyle: {
+		width: '100%',
+		height: scaleHeight(isIphoneXorAbove() ? 50 : 20),
+		position: 'absolute',
+		top: 0,
+		zIndex: 999,
+		opacity: 1,
+		backgroundColor: colorsTheme.background
 	}
 })
 
