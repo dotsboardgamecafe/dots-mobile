@@ -1,11 +1,13 @@
-import React, { Suspense, lazy, useCallback, useRef } from 'react'
+import React, {
+	Suspense, lazy, useCallback, useMemo, useRef, useState
+} from 'react'
 import Container from '../../components/container'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import styles from './styles'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
 import Text from '../../components/text'
 import NegotitationIcon from '../../assets/svg/negotitation.svg'
-import { neonCircleIllu, rackIllu } from '../../assets/images'
+import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
 import { colorsTheme } from '../../constants/theme'
 import RoundedBorder from '../../components/rounded-border'
 import { formatGridData } from '../../utils/format-grid'
@@ -58,14 +60,15 @@ const listFavGameMechanics = [
 ]
 
 const settings: SettingsType[] = [
-	{ name: 'accountInformation', title: 'Account Information', icon: UserEditIcon },
-	{ name: 'editPassword', title: 'Edit Password', icon: Lock },
-	{ name: 'tnc', title: 'Terms and Condition', icon: ShieldTick },
-	{ name: 'privacyPolicy', title: 'Privacy Policy', icon: TableDocument },
-	{ name: 'logout', title: 'Logout', icon: LogoutCurve },
+	{ name: 'accountInformation', title: 'profile-page.settings.account-information-title', icon: UserEditIcon },
+	{ name: 'editPassword', title: 'profile-page.settings.edit-password-title', icon: Lock },
+	{ name: 'tnc', title: 'profile-page.settings.tnc-title', icon: ShieldTick },
+	{ name: 'privacyPolicy', title: 'profile-page.settings.privacy-policy-title', icon: TableDocument },
+	{ name: 'logout', title: 'profile-page.settings.logout-title', icon: LogoutCurve },
 ]
 
-const Profile = ({ navigation, theme }: Props):React.ReactNode => {
+const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const [scrollY, setScrollY] = useState(0)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
 
@@ -84,6 +87,10 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 		}
 		bottomSheetRef.current?.close()
 	}, [bottomSheetRef, onSetLogout])
+
+	const _getScrollY = useMemo(() => {
+		return scrollY > 24
+	}, [scrollY])
 
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
 		return (
@@ -141,7 +148,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderBoardGameCollection = useCallback((): React.ReactNode => {
 		return (
 			<React.Fragment>
-				{ _renderTitle('Board Game Collection', 'gameBoardCollection') }
+				{ _renderTitle(t('profile-page.game-collection-title'), 'gameBoardCollection') }
 				{ _renderListGame() }
 			</React.Fragment>
 		)
@@ -150,7 +157,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderAward = useCallback((): React.ReactNode => {
 		return (
 			<View style={ [styles.awardWrapperStyle] }>
-				{ _renderTitle('Awards', 'awards') }
+				{ _renderTitle(t('profile-page.awards-title'), 'awards') }
 				{ _renderScrollView(
 					listAward.map(item => {
 						return (
@@ -171,7 +178,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 	const _renderFavoriteGame = useCallback((): React.ReactNode => {
 		return (
 			<View style={ styles.awardWrapperStyle }>
-				{ _renderTitle('Favorite Game Mechanics', 'awards', false) }
+				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
 					listFavGameMechanics.map(item => {
 						return (
@@ -244,7 +251,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 							>
 								<View style={ [styles.rowStyle, styles.rowCenterStyle] }>
 									<item.icon size={ scaleWidth(20) } variant='Bold' color={ theme.colors.black } fill={ theme.colors.black } />
-									<Text style={ styles.settingTitleStyle } variant='bodyMiddleRegular'>{ item.title }</Text>
+									<Text style={ styles.settingTitleStyle } variant='bodyMiddleRegular'>{ t(item.title) }</Text>
 								</View>
 								<ChevronIcon/>
 							</TouchableOpacity>
@@ -252,7 +259,7 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 						</View>
 					)
 				} }
-				keyExtractor={ item => item.title }
+				keyExtractor={ item => item.name }
 				bounces={ false }
 			 />
 		)
@@ -278,10 +285,16 @@ const Profile = ({ navigation, theme }: Props):React.ReactNode => {
 			manualAppbar
 			barStyle='light-content'
 		>
+			{
+				_getScrollY ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
 				removeClippedSubviews
+				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
+				scrollEventThrottle={ 16 }
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }

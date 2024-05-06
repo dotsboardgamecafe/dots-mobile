@@ -1,6 +1,8 @@
-import React, { Suspense, lazy, useCallback, useRef } from 'react'
+import React, {
+	Suspense, lazy, useCallback, useMemo, useRef, useState
+} from 'react'
 import {
-	FlatList, Image, TouchableOpacity, View,
+	FlatList, Image, ImageBackground, TouchableOpacity, View,
 	type ListRenderItemInfo
 } from 'react-native'
 
@@ -13,6 +15,9 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Tabview from '../../components/tab-view'
 import BottomSheet from '../../components/bottom-sheet'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
+import { type NavigationProps } from '../../models/navigation'
+import withCommon from '../../hoc/with-common'
+import { BG } from '../../assets/images'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
@@ -21,6 +26,8 @@ interface ListPointActivityType {
 	schedule: string,
 	point: string,
 }
+
+type Props = NavigationProps<'tier'>
 
 const listRedeem = [
 	{
@@ -136,12 +143,18 @@ const EarnPointActivityTab = (): React.ReactNode => {
 	)
 }
 
-const Tier = (): React.ReactNode => {
+const Tier = ({ t }: Props): React.ReactNode => {
+	const [scrollY, setScrollY] = useState(0)
+
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 
 	const _onPressRedeemItem = useCallback(() => {
 		bottomSheetRef.current?.present()
 	}, [bottomSheetRef])
+
+	const _getScrollY = useMemo(() => {
+		return scrollY > 24
+	}, [scrollY])
 
 	const _renderTopContent = useCallback(() => {
 		return (
@@ -203,8 +216,8 @@ const Tier = (): React.ReactNode => {
 			<View style={ styles.tabActivityWrapperStyle }>
 				<Tabview
 					tabs={ [
-						{ key: 'pointActivity', title: 'Point Activity', component: () => <PointActivityTab/> },
-						{ key: 'earnActivity', title: 'How to Earn Points', component: () => <EarnPointActivityTab/> }
+						{ key: 'pointActivity', title: t('tier-page.tab-activity'), component: () => <PointActivityTab/> },
+						{ key: 'earnActivity', title: t('tier-page.tab-earn-point'), component: () => <EarnPointActivityTab/> }
 					] }
 			 />
 			</View>
@@ -214,7 +227,7 @@ const Tier = (): React.ReactNode => {
 	const _renderMidContent = useCallback(() => {
 		return (
 			<View style={ styles.midContentStyle }>
-				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>Your Rewards</Text>
+				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>{ t('tier-page.rewards-title') }</Text>
 				{ _renderCardRedeem() }
 				{ _renderTabActivity() }
 			</View>
@@ -224,12 +237,18 @@ const Tier = (): React.ReactNode => {
 	return (
 		<Container
 			manualAppbar
-			barStyle='light-content'
+			barStyle={ _getScrollY ? 'dark-content' : 'light-content' }
 		>
+			{
+				_getScrollY ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
 				removeClippedSubviews
+				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
+				scrollEventThrottle={ 16 }
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }
@@ -241,4 +260,4 @@ const Tier = (): React.ReactNode => {
 	)
 }
 
-export default React.memo(Tier)
+export default withCommon(React.memo(Tier))
