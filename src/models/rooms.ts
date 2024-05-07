@@ -34,3 +34,10 @@ export interface Rooms {
   participant_vp?: number,
   status?: string,
 }
+
+export interface RoomListParam {
+  keyword?: string
+  tournament_date?: string
+  location?: string
+  status: string
+}

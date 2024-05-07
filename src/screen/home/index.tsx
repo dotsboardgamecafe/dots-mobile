@@ -12,6 +12,7 @@ import IconReceipt from '../../assets/svg/receipt.svg'
 import IconNotification from '../../assets/svg/notification.svg'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
+import { TabActions } from '@react-navigation/native'
 
 type Props = NavigationProps<'home'>
 
@@ -67,16 +68,40 @@ const textFormatter = (text:string, target:string): React.ReactNode => {
 	})
 }
 
-const Home = ({ navigation }:Props): React.ReactNode => {
+const getGreetingMessage = (): string => {
+	const currentTime = new Date()
+	const currentHour = currentTime.getHours()
+
+	let greeting
+
+	if (currentHour < 12) {
+		greeting = 'Good morning!'
+	} else if (currentHour < 18) {
+		greeting = 'Good afternoon!'
+	} else {
+		greeting = 'Good evening!'
+	}
+
+	return greeting
+}
+
+const Home = ({ navigation, t }:Props): React.ReactNode => {
+
+	const navigateToProfile = useCallback(() => {
+		const jumpAction = TabActions.jumpTo('Profil')
+		navigation.dispatch(jumpAction)
+	}, [])
 
 	const renderHeader = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
 				<View style={ styles.avatarWrapperStyle }>
-					<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
+					<TouchableOpacity onPress={ navigateToProfile }>
+						<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
+					</TouchableOpacity>
 					<View style={ styles.greetingWrapperStyle }>
-						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>Good Morning 👋</Text>
-						<TouchableOpacity onPress={ () => { navigation.navigate('profile') } }>
+						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>{ getGreetingMessage() } 👋</Text>
+						<TouchableOpacity onPress={ navigateToProfile }>
 							<Text variant='bodyLargeDemi'>Olivia Ainsley</Text>
 						</TouchableOpacity>
 					</View>
@@ -124,7 +149,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	const renderListGame = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
-				<Text variant='bodyDoubleExtraLargeBold'>Activities Highlight</Text>
+				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
 				<FlatList
 					data={ activitiesHightlight }
 					style={ styles.listGameStyle }
@@ -155,7 +180,7 @@ const Home = ({ navigation }:Props): React.ReactNode => {
 	}, [])
 
 	return (
-		<Container>
+		<Container contentStyle={ styles.contentStyle }>
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.scrollContentStyle }

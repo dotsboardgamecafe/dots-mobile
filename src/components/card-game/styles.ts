@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native'
 
 import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
+import { colorsTheme } from '../../constants/theme'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
+export const styles = StyleSheet.create({
 	image: {
 		borderRadius: 11,
 		width: '100%',
@@ -15,7 +14,7 @@ export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		position: 'absolute',
 		bottom: scaleHeight(10),
 		start: scaleWidth(12),
-		backgroundColor: colors.background,
+		backgroundColor: colorsTheme.background,
 		borderRadius: 12,
 		paddingVertical: scaleHeight(2),
 		paddingHorizontal: scaleWidth(8)
@@ -23,7 +22,7 @@ export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 
 	popularTag: {
 		// fontWeight: '700',
-		color: colors.redAccent,
+		color: colorsTheme.redAccent,
 		// fontSize: scaleFont(10)
 	},
 
@@ -43,7 +42,7 @@ export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 
 	tagContainer: {
 		alignSelf: 'flex-start',
-		backgroundColor: colors.blueAccent,
+		backgroundColor: colorsTheme.blueAccent,
 		borderRadius: 12,
 		paddingVertical: scaleVertical(2),
 		paddingHorizontal: scaleHorizontal(8),
@@ -51,6 +50,6 @@ export const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 
 	gameTag: {
-		color: colors.background,
+		color: colorsTheme.background,
 	},
 })
