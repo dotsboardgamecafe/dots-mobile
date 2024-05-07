@@ -4,5 +4,6 @@ import { type StatusBarStyle, type StyleProp, type ViewStyle } from 'react-nativ
 export type ContainerProps = PropsWithChildren & {
   containerStyle?: StyleProp<ViewStyle> | undefined,
   contentStyle?: StyleProp<ViewStyle> | undefined,
+  manualAppbar?: boolean,
   barStyle?: null | StatusBarStyle | undefined
 }

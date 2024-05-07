@@ -4,4 +4,6 @@ export type RoundedBorderProps = ViewProps & {
   contentStyle?: StyleProp<ViewStyle> | undefined,
   radius?: number | undefined,
   borderWidth?: number | undefined,
+  colors?: string[],
+  spaceBorder?: number
 }

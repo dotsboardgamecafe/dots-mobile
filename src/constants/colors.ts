@@ -1,9 +1,12 @@
 const customColor = {
-	gray500: '#667085'
+	gray500: '#667085',
+	lightWhite: '#fafafa',
+	black: '#000000',
+	neutralLink: '#232526'
 }
 
 const lightTheme = {
-	textColor: 'blue',
+	textColor: '#000000',
 	yellowAccent: '#F8EA0E',
 	yellowTransparent: '#F8EA0E1F',
 	redAccent: '#FB1515',
@@ -19,7 +22,7 @@ const lightTheme = {
 }
 
 const darkTheme = {
-	textColor: 'green',
+	textColor: '#FFFFFF',
 	yellowAccent: '#F8EA0E',
 	yellowTransparent: '#F8EA0E1F',
 	redAccent: '#FB1515',

@@ -6,7 +6,9 @@ import { type Rooms } from './rooms'
 import { type Games } from './games'
 
 export type RootStackParamList =  {
-  main: undefined,
+  main: {
+    screen?: string
+  },
   profile: undefined,
   login: {
     email?: string,
@@ -33,16 +35,23 @@ export type RootStackParamList =  {
   play: undefined,
   champion: undefined,
   popular: undefined,
+  tier: undefined,
   mvp: {
     unique?: boolean
   },
   unique: undefined,
   hallOfFame: undefined,
+  gameBoardCollection: undefined,
+  awards: undefined,
+  accountInformation: undefined
+  editPassword: undefined
+  tnc: undefined
+  privacyPolicy: undefined
 }
 
 export interface WithCommonProps {
 	theme: ThemeType,
-	t: (str: string) => string
+	t: (str: string, option?: any) => string
 }
 
 export type NavigationProps<T extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, T> & WithCommonProps

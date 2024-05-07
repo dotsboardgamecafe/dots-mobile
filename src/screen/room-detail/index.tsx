@@ -152,8 +152,8 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 
 	const detail = useMemo(() => {
 		return (
-			<View style={ styles.ph }>
-				<Text variant='bodyLargeMedium'>{ data?.room_type === 'special_event' ? 'Event' : 'Room' } { t('room-detail.details') }</Text>
+			<View style={ [styles.ph, styles.mt16] }>
+				<Text variant='bodyLargeMedium'>{ isTourney ? 'Tournament' : data?.room_type === 'special_event' ? 'Event' : 'Room' } { t('room-detail.details') }</Text>
 				<View style={ styles.rowDetail }>
 					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.schedule') }</Text>
 					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ schedule }
@@ -171,7 +171,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data])
+	}, [data, isTourney])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.room_type === 'Tournament') {
@@ -245,7 +245,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			setData(tourney)
 			setLoading(tourneyLoading)
 		}
-	}, [params])
+	}, [params, room, tourney])
 
 	return (
 		<Container>

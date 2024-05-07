@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {
 	Alert, Image, Keyboard, TouchableOpacity, View
@@ -18,13 +18,16 @@ import BottomSheet from '../../components/bottom-sheet'
 import MailSent from '../../assets/svg/MailSent.svg'
 import { scaleWidth, scaleHeight } from '../../utils/pixel.ratio'
 import { usePostForgotPassMutation } from '../../store/access'
+import { Controller, useForm } from 'react-hook-form'
 
 type Props = NavigationProps<'forgotPassword'>
 
 const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
-	const [email, setEmail] = useState('')
+	const { control, handleSubmit, formState: { errors }, } = useForm<{email: string}>({
+		defaultValues: { email: '' }
+	})
 	const [postForgotPass, { isLoading, error, isSuccess }] = usePostForgotPassMutation()
 
 	const openMail = useCallback(() => {
@@ -32,10 +35,10 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 		openInbox()
 	}, [])
 
-	const postForm = useCallback(() => {
+	const postForm = useCallback((data: {email: string}) => {
 		Keyboard.dismiss()
-		postForgotPass(email)
-	}, [email])
+		postForgotPass(data.email)
+	}, [])
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -69,21 +72,29 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 					{ t('login-page.email-label') }
 				</Text>
 
-				<TextInput
-					containerStyle={ styles.mt8 }
-					borderFocusColor={ theme.colors.blueAccent }
-					inputProps={ {
-						placeholder: t('login-page.email-hint'),
-						placeholderTextColor: theme.colors.gray,
-						keyboardType: 'email-address',
-						value: email,
-						onChangeText: text => { setEmail(text) }
-					} }
+				<Controller
+					control={ control }
+					name='email'
+					rules={ { required: { value: true, message: 'Email is required' } } }
+					render={ ({ field: { onChange, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('login-page.email-hint'),
+								placeholderTextColor: theme.colors.gray,
+								keyboardType: 'email-address',
+								value,
+								onChangeText: onChange
+							} }
+							errors={ errors.email }
+						/>
+					) }
 				/>
 
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ postForm }
+					onPress={ handleSubmit(postForm) }
 					label={ t('forgot-password-page.verification') }
 					loading={ isLoading }
 				/>

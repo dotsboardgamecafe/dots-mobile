@@ -1,29 +1,33 @@
 import { StyleSheet } from 'react-native'
 import { scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
+import { colorsTheme } from '../../constants/theme'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingHorizontal: scaleHorizontal(16),
 		borderRadius: 8,
-		borderColor: colors.background,
+		borderColor: colorsTheme.background,
 		borderWidth: 1,
-		backgroundColor: colors.surface,
+		backgroundColor: colorsTheme.surface,
 	},
-
 	input: {
 		flex: 1,
 		borderWidth: 0,
-		color: colors.onBackground,
+		color: colorsTheme.textColor,
 		fontFamily: 'FuturaPT-Book',
 		paddingVertical: scaleVertical(8),
 	},
-
+	error: {
+		borderColor: colorsTheme.redAccent
+	},
+	textError: {
+		marginTop: scaleVertical(4),
+		color: colorsTheme.redAccent
+	},
 	isPrefix: { marginStart: scaleWidth(4) },
 	isSuffix: { marginEnd: scaleWidth(4) },
 })
 
-export default createStyle
+export default styles
