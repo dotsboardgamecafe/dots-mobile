@@ -5,7 +5,6 @@ import { Shadow } from 'react-native-shadow-2'
 import {
 	FlatList, type ListRenderItemInfo, ScrollView, View,
 	ActivityIndicator,
-	Alert
 } from 'react-native'
 import { ArrowLeft, CloseCircle, ExportCurve } from 'iconsax-react-native'
 import { type BottomSheetModal, SCREEN_WIDTH } from '@gorhom/bottom-sheet'
@@ -29,6 +28,7 @@ import { useGetRoomDetailQuery, useGetTourneyDetailQuery } from '../../store/roo
 import { type Users } from '../../models/users'
 import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
+import ErrorModal from '../../components/error-modal'
 
 type Props = NavigationProps<'roomDetail'>
 
@@ -37,6 +37,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	const styles = createStyle(theme)
 	const playerColors = ['#1EA0DFc0', '#D0C210c0', '#FB1515c0', '#4B0B8Bc0']
 	const shareRef = useRef<BottomSheetModal>(null)
+	const bsErrRef = useRef<BottomSheetModal>(null)
 	const [regModalVisible, setRegModalVisible] = useState(false)
 	const [isRoom, setIsRoom] = useState(false)
 	const [isTourney, setIsTourney] = useState(false)
@@ -228,14 +229,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 
 	useEffect(() => {
 		if (!params.room_code && !params.tournament_code) {
-			Alert.alert('Error', 'Invalid room/tournament', [], { onDismiss: () => {
-				if (navigation.canGoBack()) {
-					navigation.goBack()
-				} else {
-					navigation.popToTop()
-					navigation.replace('main')
-				}
-			 } })
+			bsErrRef.current?.present()
 		} else if (params.room_code) {
 			setIsRoom(true)
 			setData(room)
@@ -352,6 +346,19 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 					onPress={ hideRegModal }
 				/>
 			</Modal>
+			<ErrorModal
+				bsRef={ bsErrRef }
+				title='Failed To Open'
+				message='Invalid room/tournament'
+				onDismiss={ () => {
+					if (navigation.canGoBack()) {
+						navigation.goBack()
+					} else {
+						navigation.popToTop()
+						navigation.replace('main', {})
+					}
+				} }
+			/>
 		</Container>
 	)
 }

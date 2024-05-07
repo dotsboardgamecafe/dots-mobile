@@ -28,13 +28,12 @@ const TextInput = ({
 	}, [prefix, suffix])
 
 	return (
-		<View style={ { alignSelf: 'stretch', flex: 1 } }>
+		<View style={ containerStyle }>
 			<View
 				style={ [
 					styles.container,
 					borderFocusColor && isFocused && { borderColor: borderFocusColor } as any,
 					errors && styles.error,
-					containerStyle
 				] }
 			>
 				{ prefix }

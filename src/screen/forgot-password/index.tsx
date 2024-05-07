@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {
-	Alert, Image, Keyboard, TouchableOpacity, View
-} from 'react-native'
+import { Image, Keyboard, TouchableOpacity, View } from 'react-native'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { openInbox } from 'react-native-email-link'
 
@@ -19,12 +17,14 @@ import MailSent from '../../assets/svg/MailSent.svg'
 import { scaleWidth, scaleHeight } from '../../utils/pixel.ratio'
 import { usePostForgotPassMutation } from '../../store/access'
 import { Controller, useForm } from 'react-hook-form'
+import ErrorModal from '../../components/error-modal'
 
 type Props = NavigationProps<'forgotPassword'>
 
 const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
+	const bsErrRef = useRef<BottomSheetModal>(null)
 	const { control, handleSubmit, formState: { errors }, } = useForm<{email: string}>({
 		defaultValues: { email: '' }
 	})
@@ -45,7 +45,7 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 			bottomSheetRef.current?.present()
 		}
 		if (error) {
-			Alert.alert((error as {data: string}).data)
+			bsErrRef.current?.present()
 		}
 	}, [isSuccess, error])
 
@@ -140,6 +140,11 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 					label={ t('register-page.open-email') }
 				/>
 			</BottomSheet>
+			<ErrorModal
+				bsRef={ bsErrRef }
+				title='Failed To Send Email'
+				message={ error ? (error as { data: string }).data : '' }
+			/>
 		</Container>
 	)
 }

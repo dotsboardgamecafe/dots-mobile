@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Alert, Image, Keyboard } from 'react-native'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
+import { Image, Keyboard } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type IconProps, Lock, Eye, EyeSlash } from 'iconsax-react-native'
 
@@ -16,6 +18,8 @@ import { usePostVerifyForgotPassMutation, usePutUpdatePassMutation } from '../..
 import LoadingDialog from '../../components/loading-dialog'
 import useStorage from '../../hooks/useStorage'
 import { Controller, useForm } from 'react-hook-form'
+import { type BottomSheetModal } from '@gorhom/bottom-sheet'
+import ErrorModal from '../../components/error-modal'
 
 type Props = NavigationProps<'updatePassword'>
 
@@ -23,6 +27,8 @@ interface FormData { new_password: string, confirm_password: string }
 
 const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
+	const bsVerifyErrRef = useRef<BottomSheetModal>(null)
+	const bsErrRef = useRef<BottomSheetModal>(null)
 	const { onSetToken } = useStorage()
 	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>({
 		defaultValues: { new_password: '', confirm_password: '' }
@@ -78,16 +84,7 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 			onSetToken(verifyData.token)
 		}
 		if (verifyError) {
-			Alert.alert('', (verifyError as { data: string }).data, [], {
-				cancelable: false,
-				onDismiss: () => {
-					if (navigation.canGoBack()) {
-						navigation.goBack()
-					} else {
-						navigation.replace('forgotPassword')
-					}
-				}
-			})
+			bsVerifyErrRef.current?.present()
 		}
 	}, [verifyError, verifyData])
 
@@ -97,7 +94,7 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 			navigation.navigate('login', {})
 		}
 		if (error) {
-			Alert.alert((error as { data: string }).data)
+			bsErrRef.current?.present()
 		}
 	}, [isSuccess, error])
 
@@ -190,6 +187,23 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 				/>
 			</KeyboardAwareScrollView>
 			{ (verifyLoading) && <LoadingDialog visible title='Verifying' /> }
+			<ErrorModal
+				bsRef={ bsVerifyErrRef }
+				title='Failed To Verify Account'
+				message={ verifyError ? (verifyError as { data: string }).data : '' }
+				onDismiss={ () => {
+					if (navigation.canGoBack()) {
+						navigation.goBack()
+					} else {
+						navigation.replace('forgotPassword')
+					}
+				} }
+			/>
+			<ErrorModal
+				bsRef={ bsErrRef }
+				title='Failed To Update Password'
+				message={ error ? (error as { data: string }).data : '' }
+			/>
 		</Container>
 	)
 }
