@@ -89,6 +89,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				marginTop: scaleHeight(16),
 			} }>
 				<TextInput
+					containerStyle={ { flex: 1, alignSelf: 'stretch' } }
 					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
 					inputProps={ {
 						placeholder: t('discover-page.search-game'),
