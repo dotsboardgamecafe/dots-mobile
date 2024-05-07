@@ -28,7 +28,7 @@ const TextInput = ({
 	}, [prefix, suffix])
 
 	return (
-		<View style={ { alignSelf: 'stretch' } }>
+		<View style={ { alignSelf: 'stretch', flex: 1 } }>
 			<View
 				style={ [
 					styles.container,
