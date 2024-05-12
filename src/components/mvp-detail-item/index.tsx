@@ -17,12 +17,12 @@ const MvpDetailItem = ({ item, index, showVP }: MvpItemProps): React.ReactNode =
 		<View style={ styles.container }>
 			<Text variant='bodyMiddleMedium' style={ styles.rank }>{ index + 1 }</Text>
 			<Image
-				source={ { uri: item.photo } }
+				source={ { uri: item.user_img_url } }
 				resizeMode='cover'
 				style={ styles.image }
 			/>
-			<Text variant='bodyMiddleMedium' style={ styles.name }>{ item.name }</Text>
-			<Text variant='bodyMiddleMedium'>{ item.vp }</Text>
+			<Text variant='bodyMiddleMedium' style={ styles.name }>{ item.user_name }</Text>
+			<Text variant='bodyMiddleMedium'>{ showVP ? item.total_point : item.total_game_played }</Text>
 			{ showVP && <VP width={ scaleWidth(14) } /> }
 		</View>
 	)

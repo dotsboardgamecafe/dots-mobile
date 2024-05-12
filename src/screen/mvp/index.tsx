@@ -166,7 +166,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 			</View>
 			<FlatList
 				data={ mostVps.slice(0, 70) }
-				keyExtractor={ item => item.rank + item.name }
+				keyExtractor={ item => item.rank + item.user_name }
 				renderItem={ ({ item, index }) => <MvpDetailItem item={ item } index={ index + 3 } showVP={ !unique } /> }
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.listContent }

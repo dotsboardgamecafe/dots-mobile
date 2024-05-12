@@ -8,6 +8,7 @@ import { rtkQueryErrorLogger } from '../middleware/rtkQueryErrorLogger'
 import { roomApi } from './room'
 import { gameApi } from './game'
 import { accessApi } from './access'
+import { championApi } from './champion'
 
 export const store = configureStore({
 	reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
 		[accessApi.reducerPath]: accessApi.reducer,
 		[roomApi.reducerPath]: roomApi.reducer,
 		[gameApi.reducerPath]: gameApi.reducer,
+		[championApi.reducerPath]: championApi.reducer,
 		[miscSlice.name]: miscSlice.reducer
 	},
 	middleware: getDefaultMiddleware =>
@@ -23,6 +25,7 @@ export const store = configureStore({
 			accessApi.middleware,
 			roomApi.middleware,
 			gameApi.middleware,
+			championApi.middleware,
 			rtkQueryErrorLogger
 		]),
 })
