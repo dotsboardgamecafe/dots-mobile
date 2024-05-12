@@ -10,18 +10,21 @@ import withCommon from '../../hoc/with-common'
 import { getStatusBarHeight, scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import styles from './styles'
 import CardChampion from '../../components/card-champion'
-import { hofData, mostVps } from './data'
 import CardHof from '../../components/card-hof'
 import MvpItem from '../../components/mvp-item'
 import { useSharedValue } from 'react-native-reanimated'
 import PageIndicator from '../../components/page-indicator'
+import { useGetHallOfFameQuery, useGetMonthlyTopAchieverQuery } from '../../store/champion'
 
 type Props = NavigationProps<'champion'>
 
-const Champion = ({ theme, t, navigation }: Props): React.ReactNode => {
+const Champion = ({ t, navigation }: Props): React.ReactNode => {
 	const statusBarHeight = getStatusBarHeight() ?? 0
 	const navBarHeight = useBottomTabBarHeight()
 	const progressValue = useSharedValue<number>(0)
+	const { data: mvpData } = useGetMonthlyTopAchieverQuery('vp')
+	const { data: uniqueData } = useGetMonthlyTopAchieverQuery('unique_game')
+	const { data: hallData } = useGetHallOfFameQuery()
 
 	const cardMVP = useMemo(() => {
 		return (
@@ -30,8 +33,8 @@ const Champion = ({ theme, t, navigation }: Props): React.ReactNode => {
 				onClickSeeMore={ () => { navigation.navigate('mvp', {}) } }
 			>
 				<FlatList
-					data={ mostVps.slice(0, 10) }
-					keyExtractor={ item => item.rank + item.name }
+					data={ mvpData?.slice(0, 10) }
+					keyExtractor={ item => item.rank + item.user_name }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
@@ -49,8 +52,8 @@ const Champion = ({ theme, t, navigation }: Props): React.ReactNode => {
 				onClickSeeMore={ () => { navigation.navigate('mvp', { unique: true }) } }
 			>
 				<FlatList
-					data={ mostVps.slice(0, 10) }
-					keyExtractor={ item => item.rank + item.name }
+					data={ uniqueData?.slice(0, 10) }
+					keyExtractor={ item => item.rank + item.user_name }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP={ false } /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
@@ -68,8 +71,8 @@ const Champion = ({ theme, t, navigation }: Props): React.ReactNode => {
 				onClickSeeMore={ () => { navigation.navigate('hallOfFame') } }
 			>
 				<FlatList
-					data={ hofData.slice(0, 4) }
-					keyExtractor={ item => item.game.game_code + item.player.user_code }
+					data={ hallData?.slice(0, 4) }
+					keyExtractor={ item => item.user_fullname + item.location }
 					renderItem={ ({ item }) => <CardHof { ...item } /> }
 					ItemSeparatorComponent={ () => <View style={ { height: 16 } } /> }
 					style={ { marginVertical: scaleVertical(32) } }

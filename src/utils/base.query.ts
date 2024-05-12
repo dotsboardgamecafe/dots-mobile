@@ -45,11 +45,12 @@ BaseQueryFn<
 			return { data: result.data }
 		} catch (axiosError) {
 			const err = axiosError as AxiosError
-			const msg = (err.response?.data as {stat_msg: string}).stat_msg
+			const msg = (err.response && 'data' in err.response) ? (err.response?.data as {stat_msg?: string}).stat_msg : err.message
+			// const msg = (err.response?.data as {stat_msg: string}).stat_msg
 			return {
 				error: {
 					status: err.response?.status,
-					data: msg || err.message,
+					data: msg,
 				},
 			}
 		}

@@ -173,6 +173,29 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				/>
 
 				<Text variant='bodyMiddleMedium' style={ styles.inputLabel }>
+					{ t('register-page.username-label') }
+				</Text>
+				<Controller
+					control={ control }
+					name='username'
+					rules={ { required: { value: true, message: 'Username is required' } } }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('register-page.username-hint'),
+								placeholderTextColor: theme.colors.gray,
+								value,
+								onChangeText: onChange,
+								editable: !isLoading
+							} }
+							errors={ errors.username }
+						/>
+					) }
+				/>
+
+				<Text variant='bodyMiddleMedium' style={ styles.inputLabel }>
 					{ t('login-page.email-label') }
 				</Text>
 				<Controller

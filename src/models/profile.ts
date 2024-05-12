@@ -12,6 +12,7 @@ export interface Profile {
 
 export interface RegisterParam {
   fullname: string
+  username: string
   email: string
   phone_number: string
   password: string
