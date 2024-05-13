@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-start'
 	},
 	input: {
-		marginTop: scaleHeight(8)
+		marginTop: scaleHeight(8),
+		alignSelf: 'stretch'
 	},
 	passwordLabel: {
 		marginTop: scaleHeight(24),

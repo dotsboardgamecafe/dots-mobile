@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-	View, Image, TouchableOpacity, Alert, Keyboard
-} from 'react-native'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
+import { View, Image, TouchableOpacity, Keyboard } from 'react-native'
 import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
@@ -21,12 +21,16 @@ import withCommon from '../../hoc/with-common'
 import { usePostLoginMutation, usePostVerifyMutation } from '../../store/access'
 import LoadingDialog from '../../components/loading-dialog'
 import { useForm, Controller, type FieldValues } from 'react-hook-form'
+import ErrorModal from '../../components/error-modal'
+import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
 type Props = NavigationProps<'login'>
 
 interface FormData extends FieldValues { email: string, password: string }
 
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
+	const errModalRef = useRef<BottomSheetModal>(null)
+	const errVerifyRef = useRef<BottomSheetModal>(null)
 	const {  onSetUser } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
@@ -78,7 +82,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			onSetUser(data)
 		}
 		if (isError) {
-			Alert.alert((error as { data: string }).data)
+			errModalRef.current?.present()
 		}
 	}, [data, error, isError, isSuccess])
 
@@ -93,7 +97,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			onSetUser(verifyData)
 		}
 		if (verifyError) {
-			Alert.alert((verifyError as { data: string }).data)
+			errVerifyRef.current?.present()
 		}
 	}, [verifyData, verifyError])
 
@@ -164,7 +168,6 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 						/>
 					) }
 				/>
-
 				<Text
 					variant='bodyMiddleMedium'
 					style={ styles.forgotLabel }
@@ -191,6 +194,16 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 				</View>
 			</KeyboardAwareScrollView>
 			{ verifyLoading && <LoadingDialog visible title='Verifying email' /> }
+			<ErrorModal
+				bsRef={ errModalRef }
+				title='Failed To Login'
+				message={ error ? (error as { data: string }).data : '' }
+			/>
+			<ErrorModal
+				bsRef={ errVerifyRef }
+				title='Failed To Verify Account'
+				message={ error ? (error as { data: string }).data : '' }
+			/>
 		</Container>
 	)
 }
