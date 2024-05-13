@@ -2,7 +2,7 @@ import React, {
 	Suspense, lazy, useCallback, useMemo, useRef, useState
 } from 'react'
 import {
-	FlatList, Image, ImageBackground, TouchableOpacity, View,
+	FlatList, ImageBackground, RefreshControl, TouchableOpacity, View,
 	type ListRenderItemInfo
 } from 'react-native'
 
@@ -18,88 +18,29 @@ import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
 import { BG } from '../../assets/images'
+import { useGetUserProfileQuery } from '../../store/user'
+import ReloadView from '../../components/reload-view'
+import Loading from '../loading'
+import useStorage from '../../hooks/useStorage'
+import { useGetPointActivityQuery } from '../../store/activity'
+import { type PointActivity } from '../../models/activity'
+import Image from '../../components/image'
+import moment from 'moment'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
-interface ListPointActivityType {
-	title: string,
-	schedule: string,
-	point: string,
-}
-
 type Props = NavigationProps<'tier'>
 
-const listRedeem = [
-	{
-		id: '1',
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		title: 'Hot Coffee Drink - E Voucher',
-		price: 'Rp10.000',
-		expiredDate: 'Expired on Feb 20, 2024'
-	},
-	{
-		id: '2',
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		title: 'Hot Coffee Drink - E Voucher',
-		price: 'Rp10.000',
-		expiredDate: 'Expired on Feb 20, 2024'
-	},
-	{
-		id: '3',
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		title: 'Hot Coffee Drink - E Voucher',
-		price: 'Rp10.000',
-		expiredDate: 'Expired on Feb 20, 2024'
-	},
-	{
-		id: '4',
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		title: 'Hot Coffee Drink - E Voucher',
-		price: 'Rp10.000',
-		expiredDate: 'Expired on Feb 20, 2024'
-	},
-	{
-		id: '5',
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		title: 'Hot Coffee Drink - E Voucher',
-		price: 'Rp10.000',
-		expiredDate: 'Expired on Feb 20, 2024'
-	}
-]
+const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] }): React.ReactNode => {
 
-const listPointActivity: ListPointActivityType[] = [
-	{
-		title: 'Joined Resident Evil Tournament Game',
-		schedule: 'Feb 10, 2024 - 15:00 PM',
-		point: '+ 24 poin'
-	},
-	{
-		title: 'Claiming Achievement',
-		schedule: 'Feb 03, 2024 - 09:00 AM',
-		point: '+ 6 poin'
-	},
-	{
-		title: 'Played Dune Imperium Board Game',
-		schedule: 'Jan 25, 2024 - 08:00 PM',
-		point: '+ 20 poin'
-	},
-	{
-		title: 'Buying Chocolate Drink',
-		schedule: 'Jan 30, 2024 - 11:00 AM',
-		point: '+ 8 poin'
-	}
-]
-
-const PointActivityTab = (): React.ReactNode => {
-
-	const _renderItem = useCallback(({ item }:ListRenderItemInfo<ListPointActivityType>): React.ReactElement => {
+	const _renderItem = useCallback(({ item }:ListRenderItemInfo<PointActivity>): React.ReactElement => {
 		return (
 			<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
 				<View>
-					<Text variant='bodyMiddleDemi' style={ styles.pointActivityContentTitleStyle }>{ item.title }</Text>
-					<Text variant='bodySmallRegular' >{ item.schedule }</Text>
+					<Text variant='bodyMiddleDemi' style={ styles.pointActivityContentTitleStyle }>{ item.title_description }</Text>
+					<Text style={ styles.pointActivityDateStyle } variant='bodySmallRegular' >{ moment(item.created_date).format('MMMM DD, YYYY h:mm a') }</Text>
 				</View>
-				<Text variant='bodyMiddleBold'>{ item.point }</Text>
+				<Text variant='bodyMiddleBold'>{ `${item.point}+` }</Text>
 			</View>
 		)
 	}, [])
@@ -107,9 +48,9 @@ const PointActivityTab = (): React.ReactNode => {
 	return (
 		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle] }>
 			<FlatList
-				data={ listPointActivity }
+				data={ pointActivity }
 				renderItem={ _renderItem }
-				keyExtractor={ item => item.title }
+				keyExtractor={ (_, index) => index.toString() }
 				scrollEnabled={ false }
 				ItemSeparatorComponent={ () => <View style={ styles.listGameSeparatorStyle }/> }
 			/>
@@ -118,32 +59,26 @@ const PointActivityTab = (): React.ReactNode => {
 }
 
 const EarnPointActivityTab = (): React.ReactNode => {
-	const _renderItem = useCallback(({ item }:ListRenderItemInfo<ListPointActivityType>): React.ReactElement => {
-		return (
-			<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
-				<View>
-					<Text variant='bodyMiddleDemi' style={ styles.pointActivityContentTitleStyle }>{ item.title }</Text>
-					<Text variant='bodySmallRegular' >{ item.schedule }</Text>
-				</View>
-				<Text variant='bodyMiddleBold'>{ item.point }</Text>
-			</View>
-		)
-	}, [])
 
 	return (
-		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle, { opacity: 0.7 }] }>
-			<FlatList
-				data={ listPointActivity }
-				renderItem={ _renderItem }
-				keyExtractor={ item => item.title }
-				scrollEnabled={ false }
-				ItemSeparatorComponent={ () => <View style={ styles.listGameSeparatorStyle }/> }
-			/>
-		</View>
+		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle, { opacity: 0.7 }] } />
 	)
 }
 
 const Tier = ({ t }: Props): React.ReactNode => {
+	const { user } = useStorage()
+	const {
+		data: userProfileData,
+		isLoading: isLoadingUser,
+		refetch: refetchUser,
+		isError: isErrorUser
+	} = useGetUserProfileQuery()
+	const {
+		data: pointActivityData,
+		isLoading: isLoadingPointActivity,
+		refetch: pointActivityRefetch,
+		isError: isErrorPointActivity
+	} = useGetPointActivityQuery(user?.user_code)
 	const [scrollY, setScrollY] = useState(0)
 
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
@@ -156,20 +91,36 @@ const Tier = ({ t }: Props): React.ReactNode => {
 		return scrollY > 24
 	}, [scrollY])
 
+	const _onRefresh = useCallback(() => {
+		refetchUser()
+		pointActivityRefetch()
+	}, [])
+
+	const _isLoading = useMemo(() => {
+		const loading = isLoadingUser || isLoadingPointActivity
+		return loading
+	}, [isLoadingUser, isLoadingPointActivity])
+
+	const _isError = useMemo(() => {
+		const error = isErrorUser || isErrorPointActivity
+		return error
+	}, [isErrorUser, isErrorPointActivity])
+
 	const _renderTopContent = useCallback(() => {
 		return (
 			<Suspense fallback={
 				<View style={ styles.starsFieldContentStyle }/>
 			 }>
 				<LazyBannerTier
+					userProfileData={ userProfileData }
 					screen='tier'
 					style={ styles.bannerStyle }
 					starsFieldContentStyle={ styles.starsFieldContentStyle }/>
 			</Suspense>
 		)
-	}, [])
+	}, [userProfileData])
 
-	const _renderCardRedeem = useCallback(() => {
+	const _renderCardBenefits = useCallback(() => {
 		return (
 			<View style={ [styles.filterCardRedeemWrapperStyle, styles.midContentHorizontalStyle] }>
 				<ScrollView
@@ -180,35 +131,35 @@ const Tier = ({ t }: Props): React.ReactNode => {
 					removeClippedSubviews
 				>
 					{
-						listRedeem.map(item => {
+						userProfileData?.tier_benefits ? userProfileData?.tier_benefits.map(item => {
 							return (
 								<RoundedBorder
 									style={ styles.cardRedeemItemStyle }
 									radius={ 12 }
 									borderWidth={ 1 }
-									key={ item.id }
+									key={ item.reward_code }
 									contentStyle={ styles.cardRedeemItemBackgroundStyle }
 								>
 									<TouchableOpacity onPress={ _onPressRedeemItem }>
 										<View style={ styles.overflowHiddenStyle }>
 											<View style={ { ...styles.ticketStyle, left: -15 } } />
-											<Image style={ { ...styles.cardRedeemItemImageStyle, zIndex: -2 } } source={ { uri: item.image  } }  />
+											<Image style={ { ...styles.cardRedeemItemImageStyle, zIndex: -2 } } source={ { uri: item.reward_img_url  } }  />
 											<View style={ { ...styles.ticketStyle, right: -15 } } />
 										</View>
-										<Text style={ styles.cardRedeemItemTitleStyle } variant='bodyMiddleBold'>{ item.title }</Text>
-										<Text variant='bodyMiddleBold'>{ item.price }</Text>
+										<Text style={ styles.cardRedeemItemTitleStyle } variant='bodyMiddleBold'>{ item.reward_name }</Text>
+										<Text variant='bodyMiddleBold'>{ item.reward_description }</Text>
 										<View style={ [styles.rowStyle, styles.cardRedeemItemExpiryWrapperStyle] }>
-											<Text style={ styles.cardRedeemItemExpiryLeftStyle } variant='bodySmallRegular'>{ item.expiredDate }</Text>
+											<Text style={ styles.cardRedeemItemExpiryLeftStyle } variant='bodySmallRegular'>TODO</Text>
 										</View>
 									</TouchableOpacity>
 								</RoundedBorder>
 							)
-						})
+						}) : null
 					}
 				</ScrollView>
 			</View>
 		)
-	}, [_onPressRedeemItem])
+	}, [_onPressRedeemItem, userProfileData])
 
 	const _renderTabActivity = useCallback(() => {
 		
@@ -216,46 +167,55 @@ const Tier = ({ t }: Props): React.ReactNode => {
 			<View style={ styles.tabActivityWrapperStyle }>
 				<Tabview
 					tabs={ [
-						{ key: 'pointActivity', title: t('tier-page.tab-activity'), component: () => <PointActivityTab/> },
+						{ key: 'pointActivity', title: t('tier-page.tab-activity'), component: () => <PointActivityTab pointActivity={ pointActivityData ?? [] } /> },
 						{ key: 'earnActivity', title: t('tier-page.tab-earn-point'), component: () => <EarnPointActivityTab/> }
 					] }
 			 />
 			</View>
 		)
-	}, [])
+	}, [pointActivityData])
 
 	const _renderMidContent = useCallback(() => {
 		return (
 			<View style={ styles.midContentStyle }>
 				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>{ t('tier-page.rewards-title') }</Text>
-				{ _renderCardRedeem() }
+				{ _renderCardBenefits() }
 				{ _renderTabActivity() }
 			</View>
 		)
-	}, [_renderTabActivity, _renderCardRedeem])
+	}, [_renderTabActivity, _renderCardBenefits])
 
-	return (
-		<Container
-			manualAppbar
-			barStyle={ _getScrollY ? 'dark-content' : 'light-content' }
-		>
-			{
-				_getScrollY ?
-					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
-			}
+	const _renderMainContent = useCallback(() => {
+		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
+
+		return (
 			<ScrollView
-				bounces={ false }
 				showsVerticalScrollIndicator={ false }
 				removeClippedSubviews
 				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
 				scrollEventThrottle={ 16 }
+				refreshControl={ <RefreshControl refreshing={ _isLoading } onRefresh={ _onRefresh }/> }
 			>
 				{ _renderTopContent() }
 				{ _renderMidContent() }
 			</ScrollView>
+		)
+	}, [_renderTopContent, _renderMidContent, _isError, _isLoading])
+
+	return (
+		<Container
+			manualAppbar
+			barStyle={ _getScrollY || _isError ? 'dark-content' : 'light-content' }
+		>
+			{
+				_getScrollY || _isError ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
+			{ _renderMainContent() }
 			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
 				<Text variant='headingLarge'>TODO </Text>
 			</BottomSheet>
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }
