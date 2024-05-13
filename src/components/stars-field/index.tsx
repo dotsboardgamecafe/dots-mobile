@@ -16,13 +16,13 @@ import Animated, {
 import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
 import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
-import { type TierType } from '../../models/components'
 
-interface DefaultProps extends TierType {
+interface DefaultProps {
   time?:SharedValue<number>;
   starCount?: number
   children?: React.ReactNode
   style?: StyleProp<ViewStyle> | undefined,
+	tier?: string
 }
 
 interface StarData extends DefaultProps {
@@ -103,7 +103,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 				novice: smokeNoviceIllu
 			}
 	
-			return smokeImage[tier]
+			return smokeImage[tier as keyof typeof smokeImage]
 		}
 	}, [tier])
 
@@ -116,7 +116,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 				novice: ['#27271e', '#3f3703']
 			}
 	
-			return gradientColor[tier]
+			return gradientColor[tier as keyof typeof gradientColor]
 		}
 		return ['#000', '#000']
 	}, [tier])

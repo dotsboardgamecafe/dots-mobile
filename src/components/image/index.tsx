@@ -38,7 +38,7 @@ const Image = (props: ImageProps): React.ReactNode => {
 		}
 	}, [])
 
-	if (valid) return <ImageLib { ...props } />
+	if (valid) return <ImageLib { ...props } onError={ () => { setValid(false) } } />
 
 	return (
 		<View style={ [props.style, styles.notFound] } onLayout={ notFoundLayout }>

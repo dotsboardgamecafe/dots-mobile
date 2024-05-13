@@ -5,6 +5,10 @@
         "tier": "{{tier}} tier",
         "joined-date": "Member since {{since}}",
         "tier-description": "Now you are on the highest tier. Level up points to get more reward."
+      },
+      "reload-view": {
+        "title": "Something went wrong",
+        "description": "We're working on the problem right away. Please tap reload to continue"
       }
     },
     "login-page": {
@@ -107,10 +111,11 @@
       "related-games": "Related Games"
     },
     "home-page": {
-      "activities-title": "Activities Highlight"
+      "activities-title": "Activities Highlight",
+      "activities-result-description": "{{username}} played {{gameName}} and earned {{point}}VP"
     },
     "tier-page": {
-      "rewards-title": "Your Rewards",
+      "rewards-title": "Your Benefits",
       "tab-activity": "Point Activity",
       "tab-earn-point": "How to Earn Points"
     },

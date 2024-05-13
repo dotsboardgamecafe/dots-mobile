@@ -29,6 +29,7 @@ import GameBoardCollection from '../screen/game-board-collection'
 import AccountInformation from '../screen/account-information'
 import EditPassword from '../screen/edit-password'
 import TncPrivacyPolicy from '../screen/tnc-privacy-policy'
+import Notifications from '../screen/notifications'
 
 const { screenName, } = navigationConstant
 
@@ -128,6 +129,10 @@ const privateNavigations = (): ReactNode => {
 			<Stack.Screen
 				name={ screenName.privacyPolicy }
 				component={ TncPrivacyPolicy }
+			/>
+			<Stack.Screen
+				name={ screenName.notifications }
+				component={ Notifications }
 			/>
 		</Stack.Group>
 	)

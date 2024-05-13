@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 		width: scaleWidth(320),
 		height: scaleWidth(20),
 		marginTop: -10,
-		zIndex: -1
+		zIndex: -1,
 	},
 	cardAwardItemStyle: {
 		borderRadius: 100,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 		marginBottom: scaleVertical(36),
 	},
 	cardAwardItemWrapperStyle: {
-		marginTop: scaleVertical(16)
+		marginTop: scaleVertical(16),
 	},
 	gamefavTitleStyle: {
 		marginLeft: scaleHorizontal(8)
@@ -126,6 +126,9 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 		opacity: 1,
 		backgroundColor: colorsTheme.background
+	},
+	scrollContentStyle: {
+		paddingRight: 20
 	}
 })
 

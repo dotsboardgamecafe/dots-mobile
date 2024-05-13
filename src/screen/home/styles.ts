@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import {
+	fullWidth,
 	scaleFont, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
 } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
@@ -56,6 +57,10 @@ const styles = StyleSheet.create({
 		height: scaleHeight(140),
 		borderRadius: 20
 	},
+	loadingStarFieldStyle: {
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
 	tierWrapperStyle: {
 		borderRadius: 15,
 		marginBottom: scaleVertical(24),
@@ -108,6 +113,17 @@ const styles = StyleSheet.create({
 	},
 	hightLightDescriptionStyle: {
 		color: colorsTheme.blueAccent,
+	},
+	indicatorWrapperStyle: {
+		position: 'absolute',
+		bottom: 10,
+		right: 0,
+		left: 0,
+		alignItems: 'center'
+	},
+	bannerStyle: {
+		width: fullWidth,
+		height: scaleHeight(180)
 	}
 })
 
