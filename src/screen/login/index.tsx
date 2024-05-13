@@ -31,7 +31,7 @@ interface FormData extends FieldValues { email: string, password: string }
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const errModalRef = useRef<BottomSheetModal>(null)
 	const errVerifyRef = useRef<BottomSheetModal>(null)
-	const { onSetLogin, onSetToken, onSetEmail } = useStorage()
+	const {  onSetUser } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
 	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>()
@@ -75,13 +75,11 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const doLogin = useCallback((data: { email: string, password: string }) => {
 		Keyboard.dismiss()
 		postLogin(data)
-		onSetEmail(data.email)
 	}, [])
 
 	useEffect(() => {
 		if (isSuccess) {
-			onSetToken(data.token)
-			onSetLogin()
+			onSetUser(data)
 		}
 		if (isError) {
 			errModalRef.current?.present()
@@ -96,8 +94,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 
 	useEffect(() => {
 		if (verifyData) {
-			onSetToken(verifyData.token)
-			onSetLogin()
+			onSetUser(verifyData)
 		}
 		if (verifyError) {
 			errVerifyRef.current?.present()

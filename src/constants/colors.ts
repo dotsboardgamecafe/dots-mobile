@@ -2,7 +2,10 @@ const customColor = {
 	gray500: '#667085',
 	lightWhite: '#fafafa',
 	black: '#000000',
-	neutralLink: '#232526'
+	neutralLink: '#232526',
+	gray300: '#D0D5DD',
+	blue500: '#2E90FA',
+	grayMedium: 'rgba(255, 255, 255, 0.5)'
 }
 
 const lightTheme = {

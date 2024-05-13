@@ -110,10 +110,11 @@
       "related-games": "Related Games"
     },
     "home-page": {
-      "activities-title": "Activities Highlight"
+      "activities-title": "Activities Highlight",
+      "activities-result-description": "{{username}} played {{gameName}} and earned {{point}}VP"
     },
     "tier-page": {
-      "rewards-title": "Your Rewards",
+      "rewards-title": "Your Benefits",
       "tab-activity": "Point Activity",
       "tab-earn-point": "How to Earn Points"
     },

@@ -18,3 +18,12 @@ export interface RegisterParam {
   password: string
   confirm_password: string
 }
+
+export type User = Pick<Profile,
+  'email' |
+  'token' |
+  'user_code'|
+  'fullname' |
+  'image_url' |
+  'phone_number'
+>

@@ -109,6 +109,9 @@ const styles = StyleSheet.create({
 	pointActivityContentTitleStyle: {
 		marginBottom: scaleVertical(8),
 	},
+	pointActivityDateStyle: {
+		color: colorsTheme.gray500
+	},
 	overflowHiddenStyle: {
 		overflow: 'hidden'
 	},

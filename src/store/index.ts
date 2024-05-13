@@ -8,6 +8,11 @@ import { rtkQueryErrorLogger } from '../middleware/rtkQueryErrorLogger'
 import { roomApi } from './room'
 import { gameApi } from './game'
 import { accessApi } from './access'
+import { userProfileApi } from './user'
+import { bannerApi } from './banner'
+import { activityApi } from './activity'
+import { gameBoardCollectionApi } from './game-board-collection'
+import { gameFavouriteApi } from './game-favourite'
 import { championApi } from './champion'
 
 export const store = configureStore({
@@ -17,7 +22,12 @@ export const store = configureStore({
 		[roomApi.reducerPath]: roomApi.reducer,
 		[gameApi.reducerPath]: gameApi.reducer,
 		[championApi.reducerPath]: championApi.reducer,
-		[miscSlice.name]: miscSlice.reducer
+		[miscSlice.name]: miscSlice.reducer,
+		[userProfileApi.reducerPath]: userProfileApi.reducer,
+		[bannerApi.reducerPath]: bannerApi.reducer,
+		[activityApi.reducerPath]: activityApi.reducer,
+		[gameBoardCollectionApi.reducerPath]: gameBoardCollectionApi.reducer,
+		[gameFavouriteApi.reducerPath]: gameFavouriteApi.reducer
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().concat([
@@ -25,6 +35,11 @@ export const store = configureStore({
 			accessApi.middleware,
 			roomApi.middleware,
 			gameApi.middleware,
+			userProfileApi.middleware,
+			bannerApi.middleware,
+			activityApi.middleware,
+			gameBoardCollectionApi.middleware,
+			gameFavouriteApi.middleware,
 			championApi.middleware,
 			rtkQueryErrorLogger
 		]),

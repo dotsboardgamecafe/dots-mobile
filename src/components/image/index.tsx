@@ -47,7 +47,11 @@ const Image = (props: ImageProps & { keepRatio?: boolean }): React.ReactNode => 
 		}
 	}, [])
 
-	if (valid) return <ImageLib { ...props } style={ [props.style, props.keepRatio && sizeStyle] } />
+	if (valid) return <ImageLib
+		{ ...props }
+		style={ [props.style, props.keepRatio && sizeStyle] }
+		onError={ () => { setValid(false) } }
+	/>
 
 	return (
 		<View

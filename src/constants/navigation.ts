@@ -23,6 +23,7 @@ const navigationConstant = {
 		editPassword: 'editPassword',
 		tnc: 'tnc',
 		privacyPolicy: 'privacyPolicy',
+		notifications: 'notifications'
 	}
 }
 

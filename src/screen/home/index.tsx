@@ -1,7 +1,14 @@
 import {
-	Alert, FlatList, Image, Pressable, ScrollView, TouchableOpacity, View
+	ActivityIndicator,
+	Alert, FlatList, Pressable, RefreshControl, ScrollView, TouchableOpacity, View
 } from 'react-native'
-import React, { Suspense, useCallback, lazy } from 'react'
+import React, {
+	Suspense, useCallback, lazy, useRef, useState,
+	useMemo
+} from 'react'
+import Carousel, { type ICarouselInstance } from 'react-native-reanimated-carousel'
+
+import isEmpty from 'lodash/isEmpty'
 
 import Container from '../../components/container'
 import styles from './styles'
@@ -13,43 +20,21 @@ import IconNotification from '../../assets/svg/notification.svg'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import { TabActions } from '@react-navigation/native'
+import { useGetUserProfileQuery } from '../../store/user'
+import Loading from '../loading'
+import ReloadView from '../../components/reload-view'
+import { LOGO } from '../../assets/images'
+import { PageIndicator } from 'react-native-page-indicator'
+import { colorsTheme } from '../../constants/theme'
+import { useGetBannerPublishedQuery } from '../../store/banner'
+import { useGetActivitiesHiglightQuery } from '../../store/activity'
+import useStorage from '../../hooks/useStorage'
+import moment from 'moment'
+import Image from '../../components/image'
 
 type Props = NavigationProps<'home'>
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
-
-const activitiesHightlight = [
-	{
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		latestUpdate: '10 minutes ago',
-		description: 'drevka played RISING SUN for the first time and eared 140VP',
-		title: 'RISING SUN'
-	},
-	{
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		latestUpdate: '10 minutes ago',
-		description: 'drevka played RISING SUN for the first time and eared 140VP',
-		title: 'RISING SUN'
-	},
-	{
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		latestUpdate: '10 minutes ago',
-		description: 'drevka played RISING SUN for the first time and eared 140VP',
-		title: 'RISING SUN'
-	},
-	{
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		latestUpdate: '10 minutes ago',
-		description: 'drevka played RISING SUN for the first time and eared 140VP',
-		title: 'RISING SUN'
-	},
-	{
-		image: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__itemrep/img/pu4eSfZNzf3r7B-7pES03cfFROY=/fit-in/246x300/filters:strip_icc()/pic7720813.png',
-		latestUpdate: '10 minutes ago',
-		description: 'drevka played RISING SUN for the first time and eared 140VP',
-		title: 'RISING SUN'
-	}
-]
 
 const textFormatter = (text:string, target:string): React.ReactNode => {
 	const newText = text.split(`${target}`)
@@ -86,23 +71,75 @@ const getGreetingMessage = (): string => {
 }
 
 const Home = ({ navigation, t }:Props): React.ReactNode => {
+	const { user } = useStorage()
+	const [carouselIndex, setCarouselIndex] = useState(0)
+	const carouselRef = useRef<ICarouselInstance>(null)
+	const {
+		data: userProfileData,
+		isLoading: isLoadingUser,
+		refetch: refetchUser,
+		isError: isErrorUser,
+	} = useGetUserProfileQuery()
+	const {
+		data: bannerPublishedData,
+		isLoading: isLoadingBannerPublished,
+		refetch: refetchBannerPublished,
+		isError: isErrorBannerPublished
+	} = useGetBannerPublishedQuery()
+	const {
+		data: activitiesHighlightData,
+		isLoading: isLoadingActivitiesHighlight,
+		refetch: refetchActivitiesHighlight,
+		isError: isErrorActivitiesHighlight
+	} = useGetActivitiesHiglightQuery(user?.user_code)
 
-	const navigateToProfile = useCallback(() => {
+	const _isLoading = useMemo(() => {
+		const loading = isLoadingUser || isLoadingBannerPublished || isLoadingActivitiesHighlight
+		const isEmptyData = isEmpty(userProfileData) || isEmpty(bannerPublishedData) || isEmpty(activitiesHighlightData)
+		return loading && isEmptyData
+	}, [
+		isLoadingUser,
+		isErrorBannerPublished,
+		userProfileData,
+		bannerPublishedData,
+		activitiesHighlightData,
+		isLoadingActivitiesHighlight
+	])
+
+	const _isError = useMemo(() => {
+		return isErrorUser || isErrorBannerPublished || isErrorActivitiesHighlight
+	}, [isErrorUser, isErrorBannerPublished, isErrorActivitiesHighlight])
+
+	const _navigateToProfile = useCallback(() => {
 		const jumpAction = TabActions.jumpTo('Profil')
 		navigation.dispatch(jumpAction)
 	}, [])
+	
+	const _navigateToNotifications = useCallback(() => {
+		navigation.navigate('notifications')
+	}, [])
 
-	const renderHeader = useCallback(() => {
+	const _navigateToTier = useCallback(() => {
+		navigation.navigate('tier')
+	}, [])
+
+	const _onRefresh = useCallback(() => {
+		refetchUser()
+		refetchBannerPublished()
+		refetchActivitiesHighlight()
+	}, [refetchUser, refetchBannerPublished, refetchActivitiesHighlight])
+
+	const _renderHeader = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
 				<View style={ styles.avatarWrapperStyle }>
-					<TouchableOpacity onPress={ navigateToProfile }>
-						<Avatar.Image size={ scaleWidth(48) } source={ require('../../assets/images/game-bg/game-img-bg.png') }/>
+					<TouchableOpacity onPress={ _navigateToProfile }>
+						<Avatar.Image size={ scaleWidth(48) } source={  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
 					</TouchableOpacity>
 					<View style={ styles.greetingWrapperStyle }>
 						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>{ getGreetingMessage() } 👋</Text>
-						<TouchableOpacity onPress={ navigateToProfile }>
-							<Text variant='bodyLargeDemi'>Olivia Ainsley</Text>
+						<TouchableOpacity onPress={ _navigateToProfile }>
+							<Text variant='bodyLargeDemi'>{ userProfileData?.fullname }</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -110,63 +147,96 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					<Pressable style={ styles.iconWrapperStyle }>
 						<IconReceipt/>
 					</Pressable>
-					<Pressable style={ styles.iconWrapperStyle }>
+					<TouchableOpacity style={ styles.iconWrapperStyle } onPress={ _navigateToNotifications }>
 						<IconNotification/>
 						<View style={ styles.badgeStyle }>
 							<Text style={ styles.badgeTextStyle } variant='bodyDoubleExtraSmallRegular'>12</Text>
 						</View>
-					</Pressable>
+					</TouchableOpacity>
 				</View>
 			</View>
 		)
-	}, [])
+	}, [userProfileData])
 	
-	const renderTier = useCallback(() => {
+	const _renderTier = useCallback(() => {
 		return (
 			<Pressable
-				onPress={ () => { navigation.navigate('tier') } }
+				onPress={ _navigateToTier }
 				style={ [styles.sectionWrapperStyle, styles.tierWrapperStyle] }>
-				<Suspense fallback={ <View/> }>
-					<LazyBannerTier screen='home' style={ styles.starFieldStyle }/>
+				<Suspense fallback={
+					<View style={ [styles.starFieldStyle, styles.loadingStarFieldStyle] }>
+						<ActivityIndicator/>
+					</View>
+				}>
+					<LazyBannerTier screen='home' style={ styles.starFieldStyle } userProfileData={ userProfileData } />
 				</Suspense>
 			</Pressable>
 		)
-	}, [navigation])
+	}, [navigation, userProfileData])
 
-	const renderGame = useCallback(() => {
+	const _renderBanner = useCallback(() => {
 		return (
-			<Pressable onPress={ () => { Alert.alert('ok') } }>
-				<Image
+			<View>
+				<Carousel
+					ref={ carouselRef }
+					autoPlay
+					autoPlayInterval={ 4000 }
+					snapEnabled
+					loop
 					width={ fullWidth }
 					height={ scaleHeight(180) }
-					resizeMode='cover'
-					source={ { uri: 'https://cf.geekdo-images.com/dT1vJbUizZFmJAphKg-byA__opengraph/img/Y6XRS8qo8oR5g7p_PUAz8qqjIY4=/0x447:960x951/fit-in/1200x630/filters:strip_icc()/pic7720813.png' } }
+					data={ bannerPublishedData ?? [] }
+					onProgressChange={ (_, absoluteProgress: number) => { setCarouselIndex(Math.round(absoluteProgress)) } }
+					renderItem={ ({ item }) => {
+						return (
+							<Pressable onPress={ () => { Alert.alert(item.banner_code) } }>
+								<Image
+									width={ fullWidth }
+									height={ scaleHeight(180) }
+									resizeMode='contain'
+									source={ { uri: item.image_url ? item.image_url : '/path/images.png' } }
+									style={ styles.bannerStyle }
+								/>
+							</Pressable>
+						)
+					} }
 				/>
-			</Pressable>
+				<View style={ styles.indicatorWrapperStyle }>
+					<PageIndicator count={ bannerPublishedData?.length ?? 0 } color={ colorsTheme.background } current={ carouselIndex } />
+				</View>
+			</View>
 		)
-	}, [])
+	}, [carouselIndex, bannerPublishedData])
 
-	const renderListGame = useCallback(() => {
+	const _renderListGame = useCallback(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
 				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
 				<FlatList
-					data={ activitiesHightlight }
+					data={ activitiesHighlightData }
 					style={ styles.listGameStyle }
 					scrollEnabled={ false }
 					renderItem={ ({ item }) => {
+						const description = t('home-page.activities-result-description', {
+							username: item.username,
+							gameName: item.game_name,
+							point: item.point
+						})
+						const resultData = moment(item.created_date).startOf('hour')
+							.fromNow()
+						
 						return (
 							<View style={ styles.gameItemWrapperStyle }>
 								<Pressable onPress={ () => { Alert.alert('image') } }>
 									<Image
-										source={ { uri: item.image } }
+										source={ { uri: item.game_image_url } }
 										style={ styles.imageGameStyle }
 									/>
 								</Pressable>
 								<View style={ styles.gameDescriptionWrapperStyle }>
-									<Text style={ styles.gameLatestUpdateLabelStyle } variant='bodySmallRegular'>{ item.latestUpdate }</Text>
+									<Text style={ styles.gameLatestUpdateLabelStyle } variant='bodySmallRegular'>{ resultData }</Text>
 									<View style={ [styles.gameDescriptionWrapperStyle, styles.gameDescriptionLabelStyle] }>
-										{ textFormatter(item.description, item.title) }
+										{ textFormatter(description, item.game_name) }
 									</View>
 								</View>
 							</View>
@@ -177,19 +247,29 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 				/>
 			</View>
 		)
-	}, [])
+	}, [activitiesHighlightData])
 
-	return (
-		<Container contentStyle={ styles.contentStyle }>
+	const _renderContent = useCallback(() => {
+		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
+
+		return (
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.scrollContentStyle }
-				bounces={ false }>
-				{ renderHeader() }
-				{ renderTier() }
-				{ renderGame() }
-				{ renderListGame() }
+				refreshControl={ <RefreshControl refreshing={ _isLoading } onRefresh={ _onRefresh }/> }
+			>
+				{ _renderHeader() }
+				{ _renderTier() }
+				{ _renderBanner() }
+				{ _renderListGame() }
 			</ScrollView>
+		)
+	}, [_isError, _onRefresh, _isLoading, _renderBanner, _renderHeader, _renderListGame, _renderTier])
+
+	return (
+		<Container contentStyle={ styles.contentStyle } barStyle='dark-content'>
+			{ _renderContent() }
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }

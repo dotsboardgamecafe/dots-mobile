@@ -1,10 +1,12 @@
 import React, {
 	Suspense, lazy, useCallback, useMemo, useRef, useState
 } from 'react'
+import isEmpty from 'lodash/isEmpty'
 import Container from '../../components/container'
-import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import styles from './styles'
-import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
+import {
+	Image, ImageBackground, TouchableOpacity, View, FlatList, ScrollView
+} from 'react-native'
 import Text from '../../components/text'
 import NegotitationIcon from '../../assets/svg/negotitation.svg'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
@@ -25,6 +27,9 @@ import UserEditIcon from '../../assets/svg/user-edit.svg'
 import { Lock, LogoutCurve, ShieldTick, TableDocument } from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import useStorage from '../../hooks/useStorage'
+import { useGetUserProfileQuery } from '../../store/user'
+import ReloadView from '../../components/reload-view'
+import Loading from '../loading'
 
 type Props = NavigationProps<'profile'>
 
@@ -68,6 +73,12 @@ const settings: SettingsType[] = [
 ]
 
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const {
+		data: userProfileData,
+		isLoading: isLoadingUser,
+		refetch: refetchUser,
+		isError: isErrorUser
+	} = useGetUserProfileQuery()
 	const [scrollY, setScrollY] = useState(0)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
@@ -92,6 +103,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		return scrollY > 24
 	}, [scrollY])
 
+	const _onRefresh = useCallback(() => {
+		refetchUser()
+	}, [refetchUser])
+
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
 		return (
 			<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.midContentHorizontalStyle] }>
@@ -110,6 +125,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		return (
 			<ScrollView
 				style={ [styles.midContentHorizontalStyle, styles.cardAwardItemWrapperStyle] }
+				contentContainerStyle={ styles.scrollContentStyle }
 				horizontal={ true }
 				bounces={ false }
 				showsHorizontalScrollIndicator={ false }
@@ -217,6 +233,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				<View style={ styles.starsFieldContentStyle } />
 			 }>
 				<LazyBannerTier
+					userProfileData={ userProfileData }
 					screen='profile'
 					style={ styles.bannerStyle }
 					starsFieldContentStyle={ styles.starsFieldContentStyle }
@@ -224,7 +241,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				/>
 			</Suspense>
 		)
-	}, [bottomSheetRef])
+	}, [bottomSheetRef, userProfileData])
 
 	const _renderBottomSheetTopContent = useCallback(() => {
 		return (
@@ -280,15 +297,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		)
 	}, [])
 
-	return (
-		<Container
-			manualAppbar
-			barStyle='light-content'
-		>
-			{
-				_getScrollY ?
-					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
-			}
+	const _renderMainContent = useCallback(() => {
+		if (isErrorUser) return <ReloadView onRefetch={ _onRefresh } />
+
+		return (
 			<ScrollView
 				bounces={ false }
 				showsVerticalScrollIndicator={ false }
@@ -299,11 +311,25 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				{ _renderTopContent() }
 				{ _renderMidContent() }
 			</ScrollView>
+		)
+	}, [_renderTopContent, _renderMidContent])
+	
+	return (
+		<Container
+			manualAppbar
+			barStyle={ _getScrollY || isErrorUser ? 'dark-content' : 'light-content' }
+		>
+			{
+				_getScrollY || isErrorUser ?
+					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
+			}
+			{ _renderMainContent() }
 			<BottomSheet
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }>
 				{ _renderBottomSheetContent() }
 			</BottomSheet>
+			<Loading isLoading={ isLoadingUser && isEmpty(userProfileData) } />
 		</Container>
 	)
 }

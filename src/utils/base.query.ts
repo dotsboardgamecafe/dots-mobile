@@ -44,15 +44,17 @@ BaseQueryFn<
 			const result = await instance(config)
 			return { data: result.data }
 		} catch (axiosError) {
-			const err = axiosError as AxiosError
-			const msg = (err.response && 'data' in err.response) ? (err.response?.data as {stat_msg?: string}).stat_msg : err.message
-			// const msg = (err.response?.data as {stat_msg: string}).stat_msg
-			return {
-				error: {
-					status: err.response?.status,
-					data: msg,
-				},
+			const error = {
+				status: 500,
+				data: 'Internal Server Error',
 			}
+			const err = axiosError as AxiosError
+			if (typeof axiosError !== 'string') {
+				const msg = (err.response?.data as {stat_msg: string}).stat_msg
+				if (err.response?.status) error.status = err.response?.status
+				error.data = msg || err.message
+			}
+			return { error }
 		}
 	}
 
