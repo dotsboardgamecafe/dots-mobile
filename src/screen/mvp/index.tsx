@@ -16,19 +16,20 @@ import Medal3 from '../../assets/svg/Medal3.svg'
 import VP from '../../assets/svg/VP.svg'
 import withCommon from '../../hoc/with-common'
 import Blush from '../../components/blush'
-import { mostVps } from '../champion/data'
 import MvpDetailItem from '../../components/mvp-detail-item'
 import createStyle from './styles'
 import FilterItem from '../../components/filter-item'
 import { ArrowDown2 } from 'iconsax-react-native'
 import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
+import { useGetMonthlyTopAchieverQuery } from '../../store/champion'
 
 type Props = NavigationProps<'mvp'>
 
 const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
 	const { unique } = route.params
+	const { data } = useGetMonthlyTopAchieverQuery(unique ? 'unique_game' : 'vp')
 	const filterLocRef = useRef<BottomSheetModal>(null)
 	const filterMonthRef = useRef<BottomSheetModal>(null)
 	const [locations, setLocations] = useState([
@@ -165,7 +166,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 				</View>
 			</View>
 			<FlatList
-				data={ mostVps.slice(0, 70) }
+				data={ data }
 				keyExtractor={ item => item.rank + item.user_name }
 				renderItem={ ({ item, index }) => <MvpDetailItem item={ item } index={ index + 3 } showVP={ !unique } /> }
 				showsVerticalScrollIndicator={ false }
