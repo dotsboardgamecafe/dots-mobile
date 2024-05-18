@@ -61,7 +61,6 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	}, [init])
 
 	const onSetUser = useCallback((data: User) => {
-		onSetLogin()
 		setUser(data)
 	}, [])
 
