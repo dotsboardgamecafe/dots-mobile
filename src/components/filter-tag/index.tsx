@@ -25,7 +25,7 @@ const FilterTag = ({
 				!active && styles.inactive,
 				!onClick && { backgroundColor: theme.colors.background }
 			] }
-			onPress={ () => onClick && onClick(id) }
+			onPress={ () => { onClick && onClick(id, label) } }
 			disabled={ !onClick }
 		>
 			{ icon }

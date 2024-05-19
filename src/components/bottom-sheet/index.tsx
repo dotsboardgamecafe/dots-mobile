@@ -1,8 +1,12 @@
-import React, { useCallback } from 'react'
-import { type BottomSheetBackdropProps, BottomSheetView, BottomSheetBackdrop, BottomSheetModal as BottomSheetLib } from '@gorhom/bottom-sheet'
+import React, { useCallback, useEffect } from 'react'
+import {
+	type BottomSheetBackdropProps, BottomSheetView, BottomSheetBackdrop, BottomSheetModal as BottomSheetLib, useBottomSheetModal
+} from '@gorhom/bottom-sheet'
 import { type AppBottomSheetProps } from './type'
+import { BackHandler } from 'react-native'
 
 const BottomSheet = ({ bsRef: ref, bsProps, viewProps, children }: AppBottomSheetProps): React.ReactNode => {
+	const { dismiss } = useBottomSheetModal()
 	const bottomSheetBackdrop = useCallback(
 		(props: BottomSheetBackdropProps) => (
 			<BottomSheetBackdrop
@@ -14,6 +18,12 @@ const BottomSheet = ({ bsRef: ref, bsProps, viewProps, children }: AppBottomShee
 		),
 		[]
 	)
+
+	useEffect(() => {
+		const onBackPress = (): boolean => { return dismiss() }
+		BackHandler.addEventListener('hardwareBackPress', onBackPress)
+		return () => { BackHandler.removeEventListener('hardwareBackPress', onBackPress) }
+	}, [])
 
 	return (
 		<BottomSheetLib

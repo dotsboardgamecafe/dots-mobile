@@ -5,5 +5,5 @@ export interface FilterTagType {
   active?: boolean | undefined,
   icon?: React.ReactNode | undefined,
   label: string,
-  onClick?: (id: number) => void | undefined
+  onClick?: (id: number, label: string) => void
 }

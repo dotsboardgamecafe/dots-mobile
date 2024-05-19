@@ -1,12 +1,8 @@
 import React, {
 	useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
-import {
-	Alert, Image, Keyboard, TouchableOpacity, View
-} from 'react-native'
-import {
-	ArrowDown2, type IconProps, Lock, Warning2, Unlock
-} from 'iconsax-react-native'
+import { Image, Keyboard, TouchableOpacity, View } from 'react-native'
+import { ArrowDown2, type IconProps, Lock, Unlock } from 'iconsax-react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { openInbox } from 'react-native-email-link'
@@ -16,7 +12,7 @@ import { LOGO } from '../../assets/images'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import TextInput from '../../components/text-input'
 import ActionButton from '../../components/action-button'
-import createStyle from './styles'
+import styles from './styles'
 import MailSent from '../../assets/svg/MailSent.svg'
 import BottomSheet from '../../components/bottom-sheet'
 import { type NavigationProps } from '../../models/navigation'
@@ -27,14 +23,16 @@ import { usePostRegisterMutation, usePostResendVerifyMutation, usePostVerifyMuta
 import useStorage from '../../hooks/useStorage'
 import LoadingDialog from '../../components/loading-dialog'
 import { Controller, useForm } from 'react-hook-form'
+import ErrorModal from '../../components/error-modal'
 
 type Props = NavigationProps<'register'>
 
 const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
-	const styles = createStyle(theme)
 	const { onSetLogin, onSetToken, email, onSetEmail } = useStorage()
 	const { control, handleSubmit, formState: { errors }, } = useForm<RegisterParam>()
 	const bsRegRef = useRef<BottomSheetModal>(null)
+	const bsErrRef = useRef<BottomSheetModal>(null)
+	const bsErrResendRef = useRef<BottomSheetModal>(null)
 	const bsResendRef = useRef<BottomSheetModal>(null)
 	const [countryCode] = useState('+62')
 	const [showPass, setShowPass] = useState(false)
@@ -46,7 +44,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		error: verifyError,
 		isLoading: verifyLoading
 	}] = usePostVerifyMutation()
-	const [postResendVerify, { isLoading: resendLoading, isSuccess: resendSuccess, isError: resendError }] = usePostResendVerifyMutation()
+	const [postResendVerify, { isLoading: resendLoading, isSuccess: resendSuccess, error: resendError }] = usePostResendVerifyMutation()
 
 	const phonePrefix = useMemo(() => {
 		return (
@@ -94,6 +92,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 
 	const resendVerify = useCallback(() => {
 		bsResendRef.current?.dismiss()
+		bsErrResendRef.current?.dismiss()
 		setLoadingLabel(t('register-page.send-email'))
 		postResendVerify(email)
 	}, [email])
@@ -103,8 +102,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 			bsRegRef.current?.present()
 		}
 		if (error) {
-			// TODO: change error layout, implement form error if possible
-			Alert.alert((error as {data: string}).data)
+			bsErrRef.current?.present()
 		}
 	}, [data, error])
 
@@ -123,8 +121,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 			bsRegRef.current?.present()
 		}
 		if (resendError)  {
-			// TODO: change error layout
-			Alert.alert('failed to send verification email')
+			bsErrResendRef.current?.present()
 		}
 	}, [resendSuccess, resendError])
 
@@ -171,6 +168,29 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 								editable: !isLoading
 							} }
 							errors={ errors.fullname }
+						/>
+					) }
+				/>
+
+				<Text variant='bodyMiddleMedium' style={ styles.inputLabel }>
+					{ t('register-page.username-label') }
+				</Text>
+				<Controller
+					control={ control }
+					name='username'
+					rules={ { required: { value: true, message: 'Username is required' } } }
+					render={ ({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							containerStyle={ styles.mt8 }
+							borderFocusColor={ theme.colors.blueAccent }
+							inputProps={ {
+								placeholder: t('register-page.username-hint'),
+								placeholderTextColor: theme.colors.gray,
+								value,
+								onChangeText: onChange,
+								editable: !isLoading
+							} }
+							errors={ errors.username }
 						/>
 					) }
 				/>
@@ -333,29 +353,25 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 					onPress={ openMail }
 				/>
 			</BottomSheet>
-			<BottomSheet
+			<ErrorModal
+				bsRef={ bsErrRef }
+				title='Failed To Register'
+				message={ error ? (error as { data: string }).data : '' }
+			/>
+			<ErrorModal
+				bsRef={ bsErrResendRef }
+				title='Failed To Resend Verification Email'
+				message={ resendError ? (resendError as { data: string }).data : '' }
+				actionLabel='Retry'
+				onClickAction={ resendVerify }
+			/>
+			<ErrorModal
 				bsRef={ bsResendRef }
-				viewProps={ { style: styles.bottomSheetView } }
-			>
-				<Warning2 size={ scaleWidth(120) } color={ theme.colors.onBackground } />
-				<Text
-					variant='bodyDoubleExtraLargeBold'
-				 style={ styles.successTitle }
-				 >
-					{ t('register-page.failed-verify') }
-				</Text>
-				<Text
-				 variant='bodyMiddleRegular'
-				  style={ styles.successInfo }
-				>
-					{ verifyError ? (verifyError as {data:string}).data : '' }
-				</Text>
-				<ActionButton
-					style={ styles.successAction }
-					label={ t('register-page.resend-token') }
-					onPress={ resendVerify }
-				/>
-			</BottomSheet>
+				title={ t('register-page.failed-verify') }
+				message={ verifyError ? (verifyError as {data:string}).data : '' }
+				actionLabel={ t('register-page.resend-token') }
+				onClickAction={ resendVerify }
+			/>
 			{ (verifyLoading || resendLoading) && <LoadingDialog visible title={ loadingLabel } /> }
 		</Container>
 	)

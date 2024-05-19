@@ -14,6 +14,7 @@ import { activityApi } from './activity'
 import { gameBoardCollectionApi } from './game-board-collection'
 import { gameFavouriteApi } from './game-favourite'
 import { badgesApi } from './badges'
+import { championApi } from './champion'
 
 export const store = configureStore({
 	reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
 		[accessApi.reducerPath]: accessApi.reducer,
 		[roomApi.reducerPath]: roomApi.reducer,
 		[gameApi.reducerPath]: gameApi.reducer,
+		[championApi.reducerPath]: championApi.reducer,
 		[miscSlice.name]: miscSlice.reducer,
 		[userProfileApi.reducerPath]: userProfileApi.reducer,
 		[bannerApi.reducerPath]: bannerApi.reducer,
@@ -41,6 +43,7 @@ export const store = configureStore({
 			gameBoardCollectionApi.middleware,
 			gameFavouriteApi.middleware,
 			badgesApi.middleware,
+			championApi.middleware,
 			rtkQueryErrorLogger
 		]),
 })
