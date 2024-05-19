@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
 		width: scaleWidth(95),
 		height: scaleWidth(95),
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		flex: 1
 	},
 	cardAwardAbsoluteStyle: {
 		position: 'absolute'

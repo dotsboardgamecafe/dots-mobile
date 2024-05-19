@@ -114,6 +114,15 @@ const bodyConfigs = {
 		fontSize: scaleFont(16),
 		color: colors.lightTheme.neutralLink
 	},
+	bodyLargeHeavy: {
+		fontFamily: 'FuturaPT-Heavy',
+		fontWeight: Platform.select({
+			android: '400',
+			ios: '700'
+		}),
+		fontSize: scaleFont(16),
+		color: colors.lightTheme.neutralLink
+	},
 	bodyMiddleRegular: {
 		fontFamily: 'FuturaPT-Book',
 		fontWeight: '400',
@@ -159,6 +168,12 @@ const bodyConfigs = {
 			android: '600',
 			ios: 'bold'
 		}),
+		fontSize: scaleFont(12),
+		color: colors.lightTheme.neutralLink
+	},
+	bodySmallDemi: {
+		fontFamily: 'FuturaPT-Demi',
+		fontWeight: '600',
 		fontSize: scaleFont(12),
 		color: colors.lightTheme.neutralLink
 	},

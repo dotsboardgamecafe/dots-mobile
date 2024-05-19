@@ -27,6 +27,8 @@ export enum EnumLogin {
 }
 
 const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageReturnType => {
+	const [token, setToken] = useMMKVString('token')
+
 	const [loginType, setLoginType] = useMMKVNumber('loginType')
 	const [lang, setLang] = useMMKVString('language')
 	const [user, setUser] = useMMKVObject<User>('user')
@@ -62,6 +64,7 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 
 	const onSetUser = useCallback((data: User) => {
 		onSetLogin()
+		setToken(data?.token)
 		setUser(data)
 	}, [])
 
@@ -72,7 +75,7 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	return {
 		isLoggedIn: Boolean(loginType === EnumLogin.IS_LOGGED_IN),
 		lang: String(lang),
-		token: String(user?.token),
+		token: String(token),
 		email: String(user?.email) ?? '',
 		user,
 		onSetLogin,

@@ -1,5 +1,7 @@
 import { StyleSheet } from 'react-native'
-import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
+import {
+	fullWidth, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
+} from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 
 const styles = StyleSheet.create({
@@ -7,6 +9,9 @@ const styles = StyleSheet.create({
 		marginTop: scaleVertical(6),
 		marginHorizontal: scaleHorizontal(16),
 		flex: 1
+	},
+	textCenterStyle: {
+		textAlign: 'center'
 	},
 	rowStyle: {
 		flexDirection: 'row'
@@ -17,8 +22,13 @@ const styles = StyleSheet.create({
 	justifyBetweenStyle: {
 		justifyContent: 'space-between'
 	},
+	justifyCenterStyle: {
+		justifyContent: 'center'
+	},
 	editLabelStyle: {
-		color: colorsTheme.blueAccent
+		color: colorsTheme.blueAccent,
+		width: scaleWidth(50),
+		textAlign: 'right'
 	},
 	cardWrapperStyle: {
 		paddingVertical: scaleVertical(10),
@@ -27,6 +37,13 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(255, 255, 255, 0.5)',
 		marginTop: scaleVertical(6),
 		marginBottom: scaleVertical(6),
+	},
+	deleteAccountWrapper: {
+		borderRadius: 12,
+		backgroundColor: 'rgba(255, 255, 255, 0.5)',
+		marginTop: scaleVertical(6),
+		marginBottom: scaleVertical(6),
+		paddingVertical: 4
 	},
 	verifyWrapperStyle: {
 		marginTop: scaleVertical(16),
@@ -96,6 +113,29 @@ const styles = StyleSheet.create({
 	},
 	successAction: {
 		marginTop: scaleHeight(32)
+	},
+	deleteDescriptionStyle: {
+		width: scaleWidth(fullWidth - 100)
+	},
+	deleteButtonStyle: {
+		marginBottom: 0,
+		backgroundColor: 'rgba(183, 63, 64, 1)',
+		paddingVertical: scaleHeight(8),
+		paddingHorizontal: scaleWidth(8),
+		borderRadius: 16,
+		paddingLeft: 0,
+		alignSelf: 'center',
+		width: '100%'
+	},
+	deleteLabelStyle: {
+		color: colorsTheme.background,
+		textAlign: 'center',
+	},
+	orderedStyle: {
+		width: 20,
+	},
+	shrinkTextStyle: {
+		flexShrink: 1
 	}
 })
 
