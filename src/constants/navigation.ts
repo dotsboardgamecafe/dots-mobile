@@ -36,8 +36,11 @@ export const linking: LinkingOptions<any> = {
 			[navigationConstant.screenName.register]: {
 				path: '/verify-token',
 			},
+			[navigationConstant.screenName.register]: {
+				path: '/verify/verify-token',
+			},
 			[navigationConstant.screenName.updatePassword]: {
-				path: '/forgot-password',
+				path: '/verify/forgot-password',
 			},
 			[navigationConstant.screenName.gameDetail]: {
 				path: 'game-detail/:id?'

@@ -71,17 +71,18 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 			room_img_url: r.room_img_url,
 			room_type: r.room_type
 		})) ?? []
-		setSections([
-			{ title: t('play-page.tournament'), data: tourney ?? [] },
-			{
-				title: t('play-page.special-event'),
-				data: raw.filter(r => r.room_type === 'special_event')
-			},
-			{
-				title: t('play-page.game-room'),
-				data: raw.filter(r => r.room_type === 'normal')
-			}
-		])
+
+		const sections: Sections[] = []
+
+		tourney && sections.push({ title: t('play-page.tournament'), data: tourney })
+
+		const events = raw.filter(r => r.room_type === 'special_event')
+		events.length && sections.push({ title: t('play-page.special-event'), data: events })
+
+		const rooms = raw.filter(r => r.room_type === 'normal')
+		rooms.length && sections.push({ title: t('play-page.game-room'), data: rooms })
+
+		setSections(sections)
 	}, [data, tourney])
 
 	return (
