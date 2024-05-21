@@ -1,10 +1,10 @@
 import {
-	View, ScrollView, Pressable, FlatList, Image,
+	View, ScrollView, Pressable, FlatList,
 	TouchableOpacity
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
 import RoundedBorder from '../../components/rounded-border'
@@ -22,58 +22,30 @@ import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import Modal from '../../components/modal'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
+import useStorage from '../../hooks/useStorage'
+import { useGetBadgesQuery } from '../../store/badges'
+import Loading from '../../components/loading'
+import ReloadView from '../../components/reload-view'
+import { type Badges } from '../../models/badges'
+import Image from '../../components/image'
 
 type Props = NavigationProps<'awards'>
 
-const listAwards = [
-	{
-		title: 'Little Genius Badge',
-		image: 'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
-		description: 'Play game Dungeon of Dragon 3 times and get',
-		point: 200,
-		claimed: false,
-		claimDate: ''
-	},
-	{
-		title: 'Curious Badge',
-		image: 'https://cf.geekdo-images.com/Nnzu4eqkUoGybbziFGPI6g__itemrep/img/iGanwQiMDaXz5AiNdf2ynDFHVXA=/fit-in/246x300/filters:strip_icc()/pic5212377.png',
-		description: 'Congratulations! You’re successfully played Dungeon of Dragon board game for 3 times.',
-		point: 200,
-		claimed: true,
-		claimDate: 'Nov, 25th 2023'
-	},
-	{
-		title: 'Little Genius Badge',
-		image: 'https://cf.geekdo-images.com/XNbpOGwHR2PkoZ3TiIfxaw__itemrep/img/07N0xOAF1zoCpbPtUYlmzYrYe9I=/fit-in/246x300/filters:strip_icc()/pic7545827.png',
-		description: 'Play game Dungeon of Dragon 3 times and get',
-		point: 200,
-		claimed: false,
-		claimDate: ''
-	},
-	{
-		title: 'Curious Badge',
-		image: 'https://cf.geekdo-images.com/A_XP2_VN3ugyqPhezowB_w__itemrep/img/wGng6fVAYRI5NKBX6x-pksZKJGI=/fit-in/246x300/filters:strip_icc()/pic8026369.png',
-		description: 'Congratulations! You’re successfully played Dungeon of Dragon board game for 3 times.',
-		point: 200,
-		claimed: true,
-		claimDate: 'Nov, 25th 2023'
-	},
-	{
-		title: 'Curious Badge',
-		image: 'https://cf.geekdo-images.com/JUrmY8GgFPQlENiPT7BGZw__itemrep/img/3ttYjcoLikqMvCeaX3iyc71YubI=/fit-in/246x300/filters:strip_icc()/pic6884563.jpg',
-		description: 'Congratulations! You’re successfully played Dungeon of Dragon board game for 3 times.',
-		point: 200,
-		claimed: true,
-		claimDate: 'Nov, 25th 2023'
-	}
-]
-
 const Awards = ({ t }: Props): React.ReactNode => {
+	const { user } = useStorage()
+	const {
+		data: badgesData,
+		isLoading: isLoadingBadges,
+		refetch: refetchBadges,
+		isError: isErrorBadges
+	} = useGetBadgesQuery({
+		code: user?.user_code,
+	})
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
-	const [selectedAward, setSelectedAward] = useState<any>()
+	const [selectedAward, setSelectedAward] = useState<Badges>()
 	const [modalVisible, setModalVisible] = useState(false)
 
-	const _onPressAward = useCallback((value: any) => () => {
+	const _onPressAward = useCallback((value: Badges) => () => {
 		setSelectedAward(value)
 		if (value) {
 			bottomSheetRef.current?.present()
@@ -90,9 +62,23 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		setModalVisible(!modalVisible)
 	}, [modalVisible])
 
+	const _isLoading = useMemo(() => {
+		const isLoading = isLoadingBadges
+		return isLoading
+	}, [isLoadingBadges])
+
+	const _isError = useMemo(() => {
+		const isError = isErrorBadges
+		return isError
+	}, [isErrorBadges])
+
+	const _onRefresh = useCallback(() => {
+		refetchBadges()
+	}, [])
+
 	const _renderFilterCardRedeem = useCallback(() => {
 		const listFilter = [
-			'All', 'Food and Beverage', 'Tournament', 'Game Room', 'Most Favorite'
+			'All', 'Owned', 'Unclaim'
 		]
 
 		return (
@@ -134,7 +120,9 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	}, [])
 
 	const _renderListGame = useCallback(() => {
-		const { numColumns, resultData } = formatGridData(listAwards)
+		const { numColumns, resultData } = formatGridData<Badges>(badgesData ?? [])
+
+		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
 		return (
 			<FlatList
@@ -144,7 +132,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					if (item) return (
 						<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
 							<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  />
-							<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item.image  } }  />
+							<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item.badge_image_url  } }  />
 						</TouchableOpacity>
 					)
 
@@ -158,12 +146,12 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				removeClippedSubviews
 			/>
 		)
-	}, [_onPressAward])
+	}, [_onPressAward, _isError, badgesData])
   
 	const _renderBottomSheetTopContent = useCallback(() => {
 		return (
 			<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
-				<Text variant='bodyExtraLargeHeavy'>{ selectedAward?.title }</Text>
+				<Text variant='bodyExtraLargeHeavy'>{ selectedAward?.badge_name }</Text>
 				<TouchableOpacity onPress={ _onPressClose }>
 					<CloseIcon />
 				</TouchableOpacity>
@@ -176,7 +164,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 			<View style={ styles.blurViewWrapperStyle }>
 				<Image
 					key={ 'blurryImage' }
-					source={ { uri: selectedAward.image } }
+					source={ { uri: selectedAward?.badge_image_url } }
 					style={ styles.absoluteStyle }
 				/>
 				<BlurView
@@ -185,17 +173,17 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					blurAmount={ 10 }
 					reducedTransparencyFallbackColor='white'
 				/>
-				<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedAward.image } } />
+				<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedAward?.badge_image_url } } />
 			</View>
 		)
 	}, [selectedAward])
 
 	const _renderButton =  useCallback(() => {
-		if (selectedAward.claimed) {
+		if (selectedAward?.is_claim) {
 			return (
 				<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.descriptionPointWrapperStyle] }>
 					<CalendarIcon/>
-					<Text style={ styles.claimDateStyle } variant='bodySmallRegular'>{ selectedAward.claimDate }</Text>
+					<Text style={ styles.claimDateStyle } variant='bodySmallRegular'>{ selectedAward.created_date }</Text>
 				</View>
 			)
 		}
@@ -212,11 +200,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		return (
 			<React.Fragment>
 				<View style={ [styles.rowCenterStyle, styles.rowStyle, styles.descriptionPointWrapperStyle] }>
-					<Text variant='bodyMiddleRegular'>{ selectedAward.description }</Text>
+					<Text variant='bodyMiddleRegular'>{ selectedAward?.badge_name }</Text>
 					{
-						selectedAward.claimed ? null :
+						selectedAward?.is_claim ? null :
 							<React.Fragment>
-								<Text variant='bodyMiddleMedium'> { selectedAward.point }</Text>
+								<Text variant='bodyMiddleMedium'>100</Text>
 								<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
 							</React.Fragment>
 					}
@@ -257,7 +245,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					<Text style={ styles.congratsStyle } variant='bodyExtraLargeBold'>Congratulations!</Text>
 					<View style={ [styles.rowStyle] }>
 						<Text variant='bodyMiddleRegular'>You’re successfully earned</Text>
-						<Text variant='bodyMiddleMedium'> { selectedAward?.point }</Text>
+						<Text variant='bodyMiddleMedium'>100</Text>
 						<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
 					</View>
 					<Text style={ styles.claimedDescriptionStyle } variant='bodyMiddleRegular'>for claiming the badge “Comedy Smile”</Text>
@@ -287,6 +275,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 			<Modal borderRadius={ 12 } visible={ modalVisible } onDismiss={ _toggleModal }>
 				{ _renderModalContent() }
 			</Modal>
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }

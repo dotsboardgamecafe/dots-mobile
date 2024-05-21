@@ -8,14 +8,14 @@ import ButtonBg from '../../assets/svg/ButtonBg.svg'
 import { ActivityIndicator } from 'react-native-paper'
 import { scaleHeight } from '../../utils/pixel.ratio'
 
-const ActionButton = ({ style, onPress, label, suffix, loading }: ActionButtonProps): React.ReactNode => {
+const ActionButton = ({ style, onPress, label, suffix, loading, labelStyle }: ActionButtonProps): React.ReactNode => {
 
 	const content = useMemo(() => {
 		if (loading) {
 			return <ActivityIndicator color='white' size={ scaleHeight(20) } />
 		}
 
-		const text = <Text variant='bodyMiddleBold' style={ styles.label }>{ label }</Text>
+		const text = <Text variant='bodyMiddleBold' style={ [styles.label, labelStyle] }>{ label }</Text>
 
 		if (suffix) {
 			return (

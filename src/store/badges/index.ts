@@ -7,9 +7,11 @@ export const badgesApi = createApi({
 	tagTypes: ['BadgesApi'],
 	baseQuery: baseQuery(),
 	endpoints: builder => ({
-		getBadges: builder.query<Badges[], BadgesQuery>({
-			query: (params: BadgesQuery) =>
-				({ url: `/v1/users/${params.code}/badges?limit=${params.limit}&page=${params.page}` }),
+		getBadges: builder.query<Badges[], BadgesQuery | undefined>({
+			query: (params: BadgesQuery) => {
+				const queryParam = params?.limit && params?.page ? `?limit=${params.limit}&page=${params.page}` : ''
+				return ({ url: `/v1/users/${params.code}/badges${queryParam}` })
+			},
 			transformResponse: result => (result as {data: Badges[]}).data,
 		}),
 	})

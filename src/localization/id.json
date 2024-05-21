@@ -139,6 +139,7 @@
     "account-info-page": {
       "header-title": "Account Information",
       "email-label": "Email Address",
+      "delete-label": "Delete Account",
       "mark-activate": "Has been activated",
       "btn-edit": "Edit",
       "email-info": "Your email is used to log in and process transactions.",

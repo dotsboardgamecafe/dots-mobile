@@ -21,7 +21,7 @@ import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import { TabActions } from '@react-navigation/native'
 import { useGetUserProfileQuery } from '../../store/user'
-import Loading from '../loading'
+import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
 import { LOGO } from '../../assets/images'
 import { PageIndicator } from 'react-native-page-indicator'
@@ -123,6 +123,10 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		navigation.navigate('tier')
 	}, [])
 
+	const _navigateToTransactions = useCallback(() => {
+		navigation.navigate('transactions')
+	}, [])
+
 	const _onRefresh = useCallback(() => {
 		refetchUser()
 		refetchBannerPublished()
@@ -144,9 +148,9 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					</View>
 				</View>
 				<View style={ styles.rightHeaderWrapperStyle }>
-					<Pressable style={ styles.iconWrapperStyle }>
+					<TouchableOpacity style={ styles.iconWrapperStyle } onPress={ _navigateToTransactions }>
 						<IconReceipt/>
-					</Pressable>
+					</TouchableOpacity>
 					<TouchableOpacity style={ styles.iconWrapperStyle } onPress={ _navigateToNotifications }>
 						<IconNotification/>
 						<View style={ styles.badgeStyle }>
@@ -180,7 +184,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 				<Carousel
 					ref={ carouselRef }
 					autoPlay
-					autoPlayInterval={ 4000 }
+					autoPlayInterval={ 5000 }
 					snapEnabled
 					loop
 					width={ fullWidth }
