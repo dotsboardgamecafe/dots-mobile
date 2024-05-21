@@ -1,6 +1,4 @@
-import React, {
-	useCallback, useEffect, useMemo, useRef, useState
-} from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Button } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
 import { ArrowDown2, SearchNormal, Setting4 } from 'iconsax-react-native'
@@ -67,9 +65,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		if (applyFilter) {
 			setParam(param => ({
 				...param,
-				game_type: [...filterType].join(','),
-				game_category_name: [...filterMechanic].join(','),
-				location: [...filterLocation].join(','),
+				game_type: [...filterType],
+				game_category_name: [...filterMechanic],
+				location: [...filterLocation],
 			}))
 		} else {
 			setFilterType([])
@@ -77,8 +75,6 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			setFilterLocation([])
 		}
 	}, [applyFilter, filterType, filterMechanic, filterLocation])
-
-	useEffect(() => { console.log('param: ', param) }, [param])
 
 	return (
 		<Container>

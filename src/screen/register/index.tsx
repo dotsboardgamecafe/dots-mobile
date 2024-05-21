@@ -28,7 +28,7 @@ import ErrorModal from '../../components/error-modal'
 type Props = NavigationProps<'register'>
 
 const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
-	const { onSetLogin, onSetToken, email, onSetEmail } = useStorage()
+	const { onSetLogin, user, onSetUser } = useStorage()
 	const { control, handleSubmit, formState: { errors }, } = useForm<RegisterParam>()
 	const bsRegRef = useRef<BottomSheetModal>(null)
 	const bsErrRef = useRef<BottomSheetModal>(null)
@@ -79,9 +79,16 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		return (<Lock { ...props } />)
 	}, [showConfirmPass])
 
+	const signIn = useCallback(() => {
+		if (navigation.canGoBack())
+			navigation.goBack()
+		else
+			navigation.replace('login', {})
+	}, [])
+
 	const doRegister = useCallback((data: RegisterParam) => {
 		Keyboard.dismiss()
-		onSetEmail(data.email)
+		onSetUser({ email: data.email })
 		postRegister(data)
 	}, [])
 
@@ -94,8 +101,8 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		bsResendRef.current?.dismiss()
 		bsErrResendRef.current?.dismiss()
 		setLoadingLabel(t('register-page.send-email'))
-		postResendVerify(email)
-	}, [email])
+		user?.email && postResendVerify(user.email)
+	}, [user])
 
 	useEffect(() => {
 		if (data) {
@@ -108,7 +115,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 
 	useEffect(() => {
 		if (verifyData) {
-			onSetToken(verifyData.token)
+			onSetUser(verifyData)
 			onSetLogin()
 		}
 		if (verifyError)  {
@@ -320,7 +327,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 
 						<TouchableOpacity
 							style={ styles.login }
-							onPress={ navigation.goBack }
+							onPress={ signIn }
 						>
 							<Text variant='bodyMiddleBold'>
 								{ t('register-page.sign-in') }

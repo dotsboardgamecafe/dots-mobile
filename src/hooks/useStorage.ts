@@ -6,7 +6,6 @@ import { type User } from '../models/profile'
 interface UseStorageReturnType {
   isLoggedIn: boolean,
 	lang: string,
-	token: string,
 	email: string,
 	user?: User,
   onSetLogin: () => void,
@@ -27,8 +26,6 @@ export enum EnumLogin {
 }
 
 const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageReturnType => {
-	const [token, setToken] = useMMKVString('token')
-
 	const [loginType, setLoginType] = useMMKVNumber('loginType')
 	const [lang, setLang] = useMMKVString('language')
 	const [user, setUser] = useMMKVObject<User>('user')
@@ -63,8 +60,6 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	}, [init])
 
 	const onSetUser = useCallback((data: User) => {
-		onSetLogin()
-		setToken(data?.token)
 		setUser(data)
 	}, [])
 
@@ -75,7 +70,6 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	return {
 		isLoggedIn: Boolean(loginType === EnumLogin.IS_LOGGED_IN),
 		lang: String(lang),
-		token: String(token),
 		email: String(user?.email) ?? '',
 		user,
 		onSetLogin,

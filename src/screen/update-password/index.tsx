@@ -29,7 +29,7 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 	const styles = createStyle(theme)
 	const bsVerifyErrRef = useRef<BottomSheetModal>(null)
 	const bsErrRef = useRef<BottomSheetModal>(null)
-	const { onSetToken } = useStorage()
+	const { onSetUser } = useStorage()
 	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>({
 		defaultValues: { new_password: '', confirm_password: '' }
 	})
@@ -81,7 +81,9 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 
 	useEffect(() => {
 		if (verifyData) {
-			onSetToken(verifyData.token)
+			onSetUser({ token: verifyData.token })
+			navigation.popToTop()
+			navigation.replace('login', {})
 		}
 		if (verifyError) {
 			bsVerifyErrRef.current?.present()
@@ -90,7 +92,6 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 
 	useEffect(() => {
 		if (isSuccess) {
-			navigation.popToTop()
 			navigation.navigate('login', {})
 		}
 		if (error) {

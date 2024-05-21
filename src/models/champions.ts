@@ -1,11 +1,11 @@
 export interface MostVP {
-  rank: number,
-  user_fullname: string
-  user_name: string
-  user_img_url: string
-  location: string
-  total_game_played: number
-  total_point: number
+  rank?: number,
+  user_fullname?: string
+  user_name?: string
+  user_img_url?: string
+  location?: string
+  total_game_played?: number
+  total_point?: number
 }
 
 export interface HallOfFame {
