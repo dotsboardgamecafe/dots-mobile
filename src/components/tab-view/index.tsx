@@ -63,17 +63,18 @@ const TabView = ({ tabs }:Props): React.ReactNode => {
 	}
 
 	return (
-		<View style={ styles.flexStyle }>
+		<View>
 			<ScrollView
 				horizontal
 				showsHorizontalScrollIndicator={ false }
 				bounces={ false }
 				removeClippedSubviews
+				contentContainerStyle={ styles.contentContainerStyle }
 			>
 				{ renderTabs() }
 				{ renderIndicator() }
 			</ScrollView>
-			<View style={ styles.flexStyle }>
+			<View>
 				{
 					tabs[activeTab].component()
 				}

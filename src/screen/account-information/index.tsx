@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
@@ -5,7 +6,8 @@ import Header from '../../components/header'
 import Text from '../../components/text'
 import {
 	type IconProps, Lock, Verify, Eye, EyeSlash,
-	Sms
+	Sms,
+	ArrowDown2
 } from 'iconsax-react-native'
 import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
@@ -18,6 +20,9 @@ import { type NavigationProps } from '../../models/navigation'
 import TextInput from '../../components/text-input'
 import ActionButton from '../../components/action-button'
 import MailSent from '../../assets/svg/MailSent.svg'
+import useStorage from '../../hooks/useStorage'
+import Modal from '../../components/modal'
+import { List } from 'react-native-paper'
 
 type Props = NavigationProps<'accountInformation'>
 
@@ -27,20 +32,30 @@ const initialState = {
 }
 
 const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => {
+	const { user } = useStorage()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [visiblePassword, setVisiblePassword] = useState(initialState.visiblePassword)
 	const [isChangeEmail, setIsChangeEmail] = useState(initialState.isChangeEmail)
+	const [actionType, setActionType] = useState<string | undefined>('')
+	const [visibleDeleteAccount, setVisibleDeleteAccount] = useState(false)
 
-	const _onOpenBottomSheet = useCallback(() => {
+	const _onOpenBottomSheet = useCallback((type?: string) => () => {
 		bottomSheetRef.current?.present()
+		setActionType(type)
 	}, [bottomSheetRef])
 
 	const _onPressSubmit = useCallback(() => {
-		if (!isChangeEmail) {
+		if (actionType === 'edit') {
+			if (!isChangeEmail) {
+				bottomSheetRef.current?.close()
+			}
+			setIsChangeEmail(!isChangeEmail)
+		}
+		if (actionType === 'delete') {
+			setVisibleDeleteAccount(!visibleDeleteAccount)
 			bottomSheetRef.current?.close()
 		}
-		setIsChangeEmail(!isChangeEmail)
-	}, [isChangeEmail])
+	}, [isChangeEmail, actionType])
 
 	const _onPressBack = useCallback(() => {
 		if (!isChangeEmail) {
@@ -63,23 +78,59 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 	const _renderPrimaryContent = useCallback(() => {
 		return (
 			<React.Fragment>
-				<Text variant='bodyMiddleMedium'>{ t('account-info-page.email-label') }</Text>
-				<View style={ styles.cardWrapperStyle }>
-					<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
-						<Text variant='bodyMiddleRegular'>olivia@gmail.com</Text>
-						<TouchableOpacity onPress={ _onOpenBottomSheet }>
-							<Text variant='bodyMiddleDemi' style={ styles.editLabelStyle }>{ t('account-info-page.btn-edit') }</Text>
-						</TouchableOpacity>
+				<View>
+					<Text variant='bodyMiddleMedium'>{ t('account-info-page.email-label') }</Text>
+					<View style={ styles.cardWrapperStyle }>
+						<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
+							<Text variant='bodyMiddleRegular'>{ user?.email }</Text>
+							<TouchableOpacity onPress={ _onOpenBottomSheet('edit') }>
+								<Text variant='bodyMiddleDemi' style={ styles.editLabelStyle }>{ t('account-info-page.btn-edit') }</Text>
+							</TouchableOpacity>
+						</View>
+						<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.verifyWrapperStyle] }>
+							<Verify size={ scaleWidth(14) } variant='Bold' color={ colorsTheme.blueAccent } />
+							<Text style={ styles.activatedLabelStyle } variant='bodyExtranSmallMedium'>{ t('account-info-page.mark-activate') }</Text>
+						</View>
 					</View>
-					<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.verifyWrapperStyle] }>
-						<Verify size={ scaleWidth(14) } variant='Bold' color={ colorsTheme.blueAccent } />
-						<Text style={ styles.activatedLabelStyle } variant='bodyExtranSmallMedium'>{ t('account-info-page.mark-activate') }</Text>
-					</View>
+					<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>{ t('account-info-page.email-info') }</Text>
 				</View>
-				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>{ t('account-info-page.email-info') }</Text>
+				<View style={ styles.successTitle }>
+					<Text variant='bodyMiddleMedium'>{ t('account-info-page.delete-label') }</Text>
+					<List.Accordion
+						title={ <Text variant='bodyMiddleRegular' style={ styles.deleteDescriptionStyle }>Deleting your account means:</Text> }
+						left={ () => null }
+						right={ () => <ArrowDown2 size={ scaleWidth(20) } color={ colorsTheme.black } /> }
+						theme={ { colors: { background: 'transparent',  } } }
+						style={ styles.deleteAccountWrapper }
+					>
+						<List.Item
+							style={ { paddingLeft: 0 } }
+							titleNumberOfLines={ 10 }
+							title={
+								<View style={ [styles.rowStyle] }>
+									<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, { width: 20 }] }>1. </Text>
+									<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle] }>Your account disappears forever. This means you`ll lose your level, benefits, and any other stuff you have in the app.</Text>
+								</View>
+							 }
+						/>
+						<List.Item
+							style={ { paddingLeft: 0 } }
+							titleNumberOfLines={ 10 }
+							title={
+								<View style={ [styles.rowStyle] }>
+									<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, { width: 20 }] }>2. </Text>
+									<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle] }>Starting over as new. If you rejoin later, it'll be a fresh account.</Text>
+								</View>
+							 }
+						/>
+						<TouchableOpacity style={ styles.deleteButtonStyle } onPress={ _onOpenBottomSheet('delete') }>
+							<Text style={ styles.deleteLabelStyle } variant='bodyExtraLargeBold'>Delete</Text>
+						</TouchableOpacity>
+					</List.Accordion>
+				</View>
 			</React.Fragment>
 		)
-	}, [])
+	}, [user])
 
 	const _renderSecondaryContent = useCallback(() => {
 		return (
@@ -106,7 +157,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 					<ActionButton
 						style={ styles.actionButton }
 						label={ t('account-info-page.btn-change-email') }
-						onPress={ _onOpenBottomSheet }
+						onPress={ _onOpenBottomSheet() }
 					/>
 				</View>
 			</React.Fragment>
@@ -195,7 +246,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 				/>
 			</React.Fragment>
 		)
-	}, [_renderBottomSheetTopContent, _renderPasswordFields])
+	}, [_renderBottomSheetTopContent, _renderPasswordFields, _onPressSubmit])
 
 	const _renderSecondaryBottomSheetContent = useCallback(() => {
 		return (
@@ -233,6 +284,34 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		_renderPrimaryBottomSheetContent
 	])
 
+	const _renderModalDeleteAccount = useCallback(() => {
+		return (
+			<View>
+				<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
+					<View/>
+					<TouchableOpacity onPress={ () => { setVisibleDeleteAccount(visibleDeleteAccount) } }>
+						<CloseIcon />
+					</TouchableOpacity>
+				</View>
+				<Text style={ [styles.textCenterStyle, styles.bottomSheetTitleStyle] } variant='bodyLargeBold'>Are you sure wanna delete your account?</Text>
+				<Text variant='bodyMiddleRegular'>If you have any questions regarding account deletion or require further assistance, please contact us at [Support Email Address].</Text>
+				<View style={ styles.input }>
+					<View style={ [styles.rowStyle] }>
+						<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, styles.orderedStyle] }>{ '\u2022' } </Text>
+						<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle,  styles.shrinkTextStyle] }>Account deletion is a permanent action.</Text>
+					</View>
+					<View style={ [styles.rowStyle] }>
+						<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, styles.orderedStyle] }>{ '\u2022' } </Text>
+						<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, styles.shrinkTextStyle] }>We cannot recover your account or data once it is deleted.</Text>
+					</View>
+				</View>
+				<TouchableOpacity style={ [styles.deleteButtonStyle, styles.actionButton] } onPress={ _onOpenBottomSheet('delete') }>
+					<Text style={ styles.deleteLabelStyle } variant='bodyMiddleBold'>Yes, Sure</Text>
+				</TouchableOpacity>
+			</View>
+		)
+	}, [])
+
 	return (
 		<Container>
 			<Header title={ _getHeaderTitle } onPressBack={ _onPressBack } />
@@ -240,6 +319,9 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
 				{ _renderBottomSheetContent() }
 			</BottomSheet>
+			<Modal visible={ visibleDeleteAccount } dismissable={ false } borderRadius={ 8 }>
+				{ _renderModalDeleteAccount() }
+			</Modal>
 		</Container>
 	)
 }

@@ -13,6 +13,7 @@ import { bannerApi } from './banner'
 import { activityApi } from './activity'
 import { gameBoardCollectionApi } from './game-board-collection'
 import { gameFavouriteApi } from './game-favourite'
+import { badgesApi } from './badges'
 import { championApi } from './champion'
 
 export const store = configureStore({
@@ -27,7 +28,8 @@ export const store = configureStore({
 		[bannerApi.reducerPath]: bannerApi.reducer,
 		[activityApi.reducerPath]: activityApi.reducer,
 		[gameBoardCollectionApi.reducerPath]: gameBoardCollectionApi.reducer,
-		[gameFavouriteApi.reducerPath]: gameFavouriteApi.reducer
+		[gameFavouriteApi.reducerPath]: gameFavouriteApi.reducer,
+		[badgesApi.reducerPath]: badgesApi.reducer
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().concat([
@@ -40,6 +42,7 @@ export const store = configureStore({
 			activityApi.middleware,
 			gameBoardCollectionApi.middleware,
 			gameFavouriteApi.middleware,
+			badgesApi.middleware,
 			championApi.middleware,
 			rtkQueryErrorLogger
 		]),

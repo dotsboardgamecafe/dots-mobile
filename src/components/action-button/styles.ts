@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 	bg: {
 		position: 'absolute',
 		top: 0,
-		left: 0
+		left: 0,
 	},
 	label: {
 		color: 'white'

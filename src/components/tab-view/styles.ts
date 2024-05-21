@@ -21,7 +21,11 @@ const styles:StyleProps = {
 	}),
 	labelStyle: (isSelected: boolean) => ({
 		color: isSelected ? colorsTheme.black : colorsTheme.gray500
-	})
+	}),
+	contentContainerStyle: {
+		borderBottomColor: colorsTheme.gray300,
+		borderBottomWidth: 1
+	}
 }
 
 export default styles

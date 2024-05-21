@@ -138,10 +138,6 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		}
 	}, [route.params])
 
-	useEffect(() => {
-		onSetUser({ email: 'jemmae44@kohelps.com' })
-	}, [])
-
 	return (
 		<Container>
 			<KeyboardAwareScrollView

@@ -6,7 +6,6 @@ import { type User } from '../models/profile'
 interface UseStorageReturnType {
   isLoggedIn: boolean,
 	lang: string,
-	token: string,
 	email: string,
 	user?: User,
   onSetLogin: () => void,
@@ -71,7 +70,6 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 	return {
 		isLoggedIn: Boolean(loginType === EnumLogin.IS_LOGGED_IN),
 		lang: String(lang),
-		token: String(user?.token),
 		email: String(user?.email) ?? '',
 		user,
 		onSetLogin,

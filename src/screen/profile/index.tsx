@@ -1,14 +1,12 @@
 import React, {
 	Suspense, lazy, useCallback, useMemo, useRef, useState
 } from 'react'
-import isEmpty from 'lodash/isEmpty'
 import Container from '../../components/container'
 import styles from './styles'
 import {
-	Image, ImageBackground, TouchableOpacity, View, FlatList, ScrollView
+	ImageBackground, TouchableOpacity, View, FlatList, ScrollView
 } from 'react-native'
 import Text from '../../components/text'
-import NegotitationIcon from '../../assets/svg/negotitation.svg'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
 import { colorsTheme } from '../../constants/theme'
 import RoundedBorder from '../../components/rounded-border'
@@ -24,12 +22,22 @@ import DiceIcon from '../../assets/svg/dice.svg'
 import MaskIcon from '../../assets/svg/mask.svg'
 import ChevronIcon from '../../assets/svg/chevron.svg'
 import UserEditIcon from '../../assets/svg/user-edit.svg'
-import { Lock, LogoutCurve, ShieldTick, TableDocument } from 'iconsax-react-native'
+import {
+	Lock,
+	LogoutCurve,
+	// ShieldTick, --------------> TODO
+	// TableDocument
+} from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import useStorage from '../../hooks/useStorage'
 import { useGetUserProfileQuery } from '../../store/user'
 import ReloadView from '../../components/reload-view'
-import Loading from '../loading'
+import Loading from '../../components/loading'
+import { useGetGameBoardCollectionQuery } from '../../store/game-board-collection'
+import { useGetBadgesQuery } from '../../store/badges'
+import { useGetGameFavouriteQuery } from '../../store/game-favourite'
+import Image from '../../components/image'
+import { type GameBoardCollection } from '../../models/game-board-collection'
 
 type Props = NavigationProps<'profile'>
 
@@ -45,40 +53,49 @@ type Destionation = 'awards' | 'gameBoardCollection'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
-const listGame = [
-	'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
-	'https://cf.geekdo-images.com/Nnzu4eqkUoGybbziFGPI6g__itemrep/img/iGanwQiMDaXz5AiNdf2ynDFHVXA=/fit-in/246x300/filters:strip_icc()/pic5212377.png',
-	'https://cf.geekdo-images.com/XNbpOGwHR2PkoZ3TiIfxaw__itemrep/img/07N0xOAF1zoCpbPtUYlmzYrYe9I=/fit-in/246x300/filters:strip_icc()/pic7545827.png',
-]
-
-const listAward = [
-	'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
-	'https://cf.geekdo-images.com/Nnzu4eqkUoGybbziFGPI6g__itemrep/img/iGanwQiMDaXz5AiNdf2ynDFHVXA=/fit-in/246x300/filters:strip_icc()/pic5212377.png',
-	'https://cf.geekdo-images.com/XNbpOGwHR2PkoZ3TiIfxaw__itemrep/img/07N0xOAF1zoCpbPtUYlmzYrYe9I=/fit-in/246x300/filters:strip_icc()/pic7545827.png',
-	'https://cf.geekdo-images.com/A_XP2_VN3ugyqPhezowB_w__itemrep/img/wGng6fVAYRI5NKBX6x-pksZKJGI=/fit-in/246x300/filters:strip_icc()/pic8026369.png',
-]
-
-const listFavGameMechanics = [
-	{ icon: DiceIcon, title: 'Dice Rolling' },
-	{ icon: MaskIcon, title: 'Bluffing' },
-	{ icon: NegotitationIcon, title: 'Negotiation' },
-]
+const listFavGameMechanics = {
+	fun: <DiceIcon/>,
+	excited: <MaskIcon/>
+}
 
 const settings: SettingsType[] = [
 	{ name: 'accountInformation', title: 'profile-page.settings.account-information-title', icon: UserEditIcon },
 	{ name: 'editPassword', title: 'profile-page.settings.edit-password-title', icon: Lock },
-	{ name: 'tnc', title: 'profile-page.settings.tnc-title', icon: ShieldTick },
-	{ name: 'privacyPolicy', title: 'profile-page.settings.privacy-policy-title', icon: TableDocument },
+	// { name: 'tnc', title: 'profile-page.settings.tnc-title', icon: ShieldTick },
+	// { name: 'privacyPolicy', title: 'profile-page.settings.privacy-policy-title', icon: TableDocument },
 	{ name: 'logout', title: 'profile-page.settings.logout-title', icon: LogoutCurve },
 ]
 
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const { user } = useStorage()
 	const {
 		data: userProfileData,
 		isLoading: isLoadingUser,
 		refetch: refetchUser,
 		isError: isErrorUser
 	} = useGetUserProfileQuery()
+	const {
+		data: gameBoardCollectionData,
+		isLoading: isLoadingGameBoardCollection,
+		refetch: refetchGameBoardCollection,
+		isError: isErrorGameBoardCollection
+	} = useGetGameBoardCollectionQuery(user?.user_code)
+	const {
+		data: badgesData,
+		isLoading: isLoadingBadges,
+		refetch: refetchBadges,
+		isError: isErrorBadges
+	} = useGetBadgesQuery({
+		code: user?.user_code,
+		limit: 1,
+		page: 3
+	})
+	const {
+		data: gameFavouriteData,
+		isLoading: isLoadingGameFavourite,
+		refetch: refetchGameFavourite,
+		isError: isErrorGameFavourite
+	} = useGetGameFavouriteQuery(user?.user_code)
 	const [scrollY, setScrollY] = useState(0)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
@@ -105,7 +122,20 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 
 	const _onRefresh = useCallback(() => {
 		refetchUser()
-	}, [refetchUser])
+		refetchGameBoardCollection()
+		refetchBadges()
+		refetchGameFavourite()
+	}, [])
+
+	const _isLoading = useMemo(() => {
+		const isLoading = isLoadingUser || isLoadingBadges || isLoadingGameFavourite || isLoadingGameBoardCollection
+		return isLoading
+	}, [isLoadingUser, isLoadingBadges, isLoadingGameFavourite, isLoadingGameBoardCollection])
+
+	const _isError = useMemo(() => {
+		const isError = isErrorUser || isErrorBadges || isErrorGameFavourite || isErrorGameBoardCollection
+		return isError
+	}, [isErrorUser, isErrorBadges, isErrorGameFavourite, isErrorGameBoardCollection])
 
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
 		return (
@@ -130,7 +160,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				bounces={ false }
 				showsHorizontalScrollIndicator={ false }
 				pagingEnabled
+				decelerationRate='fast'
 				removeClippedSubviews
+				scrollEventThrottle={ 16 }
+				snapToAlignment='start'
 			>
 				{ component }
 			</ScrollView>
@@ -138,14 +171,14 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	}, [])
 
 	const _renderListGame = useCallback(() => {
-		const { numColumns, resultData } = formatGridData(listGame)
+		const { numColumns, resultData } = formatGridData<GameBoardCollection>(gameBoardCollectionData ?? [])
 
 		return (
 			<FlatList
 				style={ styles.listGameWrapperStyle }
 				data={ resultData }
 				renderItem={ ({ item }) => {
-					if (item) return <Image source={ { uri: item } } style={ styles.boardGameItemStyle } />
+					if (item) return <Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } />
 
 					return <View style={ styles.boardGameItemStyle }/>
 				} }
@@ -159,7 +192,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				removeClippedSubviews
 			/>
 		)
-	}, [])
+	}, [gameBoardCollectionData])
 
 	const _renderBoardGameCollection = useCallback((): React.ReactNode => {
 		return (
@@ -168,54 +201,54 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				{ _renderListGame() }
 			</React.Fragment>
 		)
-	}, [])
+	}, [_renderListGame])
 
 	const _renderAward = useCallback((): React.ReactNode => {
 		return (
 			<View style={ [styles.awardWrapperStyle] }>
 				{ _renderTitle(t('profile-page.awards-title'), 'awards') }
 				{ _renderScrollView(
-					listAward.map(item => {
+					badgesData?.map(item => {
 						return (
 							<View
 								style={ styles.cardAwardItemStyle }
-								key={ item }
+								key={ item.badge_id }
 							>
 								<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  />
-								<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item  } }  />
+								<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item.badge_image_url  } }  />
 							</View>
 						)
 					})
 				) }
 			</View>
 		)
-	}, [])
+	}, [badgesData])
 
 	const _renderFavoriteGame = useCallback((): React.ReactNode => {
 		return (
 			<View style={ styles.awardWrapperStyle }>
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
-					listFavGameMechanics.map(item => {
+					gameFavouriteData?.map(item => {
 						return (
 							<RoundedBorder
 								style={ styles.roundedGameFavStyle }
 								spaceBorder={ 0.5 }
 								radius={ 12 }
 								borderWidth={ 1 }
-								key={ item.title }
+								key={ item.game_category_id }
 								colors={ [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent] }
 								contentStyle={ [styles.rowStyle, styles.rowCenterStyle, styles.itemGameFavWrapperStyle] }
 							>
-								<item.icon/>
-								<Text style={ styles.gamefavTitleStyle } variant='bodyMiddleRegular'>{ item.title }</Text>
+								{ listFavGameMechanics[item.game_category_name.toLowerCase() as keyof typeof listFavGameMechanics] }
+								<Text style={ styles.gamefavTitleStyle } variant='bodyMiddleRegular'>{ item.game_category_name }</Text>
 							</RoundedBorder>
 						)
 					})
 				) }
 			</View>
 		)
-	}, [])
+	}, [gameFavouriteData])
 
 	const _renderMidContent = useCallback(() => {
 		return (
@@ -225,7 +258,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				{ _renderFavoriteGame() }
 			</View>
 		)
-	}, [])
+	}, [_renderBoardGameCollection, _renderAward, _renderFavoriteGame])
 
 	const _renderTopContent = useCallback(() => {
 		return (
@@ -298,7 +331,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	}, [])
 
 	const _renderMainContent = useCallback(() => {
-		if (isErrorUser) return <ReloadView onRefetch={ _onRefresh } />
+		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
 		return (
 			<ScrollView
@@ -329,7 +362,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				viewProps={ { style: styles.bottomSheetView } }>
 				{ _renderBottomSheetContent() }
 			</BottomSheet>
-			<Loading isLoading={ isLoadingUser && isEmpty(userProfileData) } />
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }

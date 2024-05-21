@@ -1,4 +1,9 @@
-export const formatGridData = (data: any[]): any => {
+interface GridData<T> {
+	numColumns: number
+	resultData: T[]
+}
+
+export const formatGridData = <T>(data: T[]): GridData<T> => {
 	const numColumns = 3
 	if (data.length % numColumns === 0) {
 		return {

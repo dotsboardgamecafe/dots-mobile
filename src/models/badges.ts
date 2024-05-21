@@ -10,7 +10,7 @@ export interface Badges {
 }
 
 export interface BadgesQuery {
-  code: string,
-  limit: string,
-  page: string
+  code?: string,
+  limit?: number,
+  page?: number
 }
