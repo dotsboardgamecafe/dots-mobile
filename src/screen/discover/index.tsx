@@ -22,6 +22,9 @@ import { type GameListParams, type Games } from '../../models/games'
 import BottomSheet from '../../components/bottom-sheet'
 import { useGetListGameQuery } from '../../store/game'
 import Text from '../../components/text'
+import { useGetSettingQuery } from '../../store/setting'
+import { type Settings } from '../../models/settings'
+import FilterIcon from '../../components/filter-icon'
 
 type Props = NavigationProps<'discover'>
 
@@ -29,8 +32,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const defaultParam: GameListParams = { status: 'active', limit: 100, sort: 'desc' }
 	const [search, setSearch] = useState('')
 	const [param, setParam] = useState<GameListParams>(defaultParam)
-	const [filterType, setFilterType] = useState<string[]>([])
-	const [filterMechanic, setFilterMechanic] = useState<string[]>([])
+	const [filterType, setFilterType] = useState<Settings[]>([])
+	const [filterMechanic, setFilterMechanic] = useState<Settings[]>([])
 	const [filterLocation, setFilterLocation] = useState<string[]>([])
 	const [filterSection, setFilterSection] = useState(filterSections)
 	const [applyFilter, setApplyFilter] = useState(false)
@@ -38,6 +41,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
+	const { data: listGameType } = useGetSettingQuery('game_type')
+	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
 
 	const arrowDown = useMemo(() => (<ArrowDown2
 		variant='Linear'
@@ -65,8 +70,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		if (applyFilter) {
 			setParam(param => ({
 				...param,
-				game_type: [...filterType],
-				game_category_name: [...filterMechanic],
+				game_type: [...filterType].map(f => f.setting_code),
+				game_category_name: [...filterMechanic].map(f => f.setting_code),
 				location: [...filterLocation],
 			}))
 		} else {
@@ -75,6 +80,24 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			setFilterLocation([])
 		}
 	}, [applyFilter, filterType, filterMechanic, filterLocation])
+
+	const _onFilterGameType = useCallback((id: number, code: string, label: string) => {
+		const idx = filterType.findIndex(f => f.setting_code === code)
+		if (idx > -1) {
+			setFilterType([...filterType].splice(idx, 1))
+		} else if (listGameType) {
+			setFilterType([...filterType, listGameType[idx]])
+		}
+	}, [filterType, listGameType])
+
+	const _onFilterGameMechanic = useCallback((id: number, code: string, label: string) => {
+		const idx = filterMechanic.findIndex(f => f.setting_code === code)
+		if (idx > -1) {
+			setFilterMechanic([...filterMechanic].splice(idx, 1))
+		} else if (listGameMechanic) {
+			setFilterMechanic([...filterMechanic, listGameMechanic[idx]])
+		}
+	}, [filterMechanic, listGameMechanic])
 
 	return (
 		<Container>
@@ -174,20 +197,16 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					<>
 						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
 						<FlatList
-							data={ gameTypes }
-							keyExtractor={ i => i.name }
+							data={ listGameType }
+							keyExtractor={ i => i.setting_code }
 							extraData={ [filterType] }
 							renderItem={ ({ item }) => <FilterTag
-								id={ item.id }
-								icon={ item.icon }
-								label={ item.name }
-								active={ [...filterType].includes(item.name) }
-								onClick={ (_id, label) => {
-									setFilterType(types => {
-										if (types.includes(label)) return [...types.filter(t => t !== label)]
-										return [...types, label]
-									})
-								} }
+								id={ item.set_order }
+								icon={ <FilterIcon { ...item }/> }
+								code={ item.setting_code }
+								label={ item.content_value }
+								active={ [...filterType].includes(item) }
+								onClick={ _onFilterGameType }
 							/>
 							}
 							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameTypes.length > 3 ? 8 : 0) } } /> }
@@ -201,21 +220,16 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					<>
 						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
 						<FlatList
-							data={ gameMechanics }
-							keyExtractor={ i => i.name }
+							data={ listGameMechanic }
+							keyExtractor={ i => i.setting_code }
 							extraData={ [filterMechanic] }
 							renderItem={ ({ item }) => <FilterTag
-								id={ item.id }
-								icon={ item.icon }
-								label={ item.name }
-								active={ [...filterMechanic].includes(item.name) }
-								onClick={ (_id, label) => {
-									setFilterMechanic(mechs => {
-										if (mechs.includes(label)) return [...mechs.filter(t => t !== label)]
-										return [...mechs, label]
-									})
-								}
-								}
+								id={ item.set_order }
+								code={ item.setting_code }
+								icon={ <FilterIcon { ...item }/> }
+								label={ item.content_value }
+								active={ [...filterMechanic].includes(item) }
+								onClick={ _onFilterGameMechanic }
 							/> }
 							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }
 							contentContainerStyle={ styles.wrapList }
@@ -233,6 +247,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 							extraData={ [filterLocation] }
 							renderItem={ ({ item }) => <FilterTag
 								id={ item.id }
+								code={ item.name }
 								label={ item.name }
 								active={ [...filterLocation].includes(item.name) }
 								onClick={ (_id, label) => {

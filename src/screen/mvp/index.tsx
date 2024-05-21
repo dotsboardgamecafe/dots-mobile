@@ -149,9 +149,9 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 				 />
 				<Text variant='headingBold' style={ styles.title }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
 				<View style={ styles.topRank }>
-					{ data && data?.length >= 3 && _topRank(data[2]) }
-					{ data?.length && _topRank(data[0]) }
-					{ data && data?.length >= 2 && _topRank(data[1]) }
+					{ data && data?.length >= 3 ? _topRank(data[2]) : <View style={ styles.topPlayer } /> }
+					{ data?.length ? _topRank(data[0]) : <View style={ styles.topPlayer } /> }
+					{ data && data?.length >= 2 ? _topRank(data[1]) : <View style={ styles.topPlayer } /> }
 				</View>
 			</View>
 			<View style={ styles.listHeaderBg }>
