@@ -23,23 +23,28 @@ import { ArrowDown2 } from 'iconsax-react-native'
 import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
 import { useGetMonthlyTopAchieverQuery } from '../../store/champion'
-import { type MostVP } from '../../models/champions'
+import { type MostVPParam, type MostVP } from '../../models/champions'
 
 type Props = NavigationProps<'mvp'>
 
 const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
+	const date = new Date()
 	const { unique } = route.params
-	const { data } = useGetMonthlyTopAchieverQuery(unique ? 'unique_game' : 'vp')
 	const filterLocRef = useRef<BottomSheetModal>(null)
 	const filterMonthRef = useRef<BottomSheetModal>(null)
 	const [locations, setLocations] = useState([
-		{ name: 'Jakarta', selected: true },
+		{ name: 'All Location', selected: true },
+		{ name: 'Jakarta', selected: false },
 		{ name: 'Bandung', selected: false },
 	])
-	const [location, setLocation] = useState('Jakarta')
-	const date = new Date()
-	const [months, setMonths] = useState(Array.from({ length: 24 }, (_, i) => {
+	const [location, setLocation] = useState('All Location')
+	const [param, setParam] = useState<MostVPParam>({
+		category: unique ? 'unique_game' : 'vp',
+		month: date.getMonth(),
+		year: date.getFullYear(),
+	})
+	const [months, setMonths] = useState(Array.from({ length: 6 }, (_, i) => {
 		date.setDate(0)
 		return {
 			name: date.toLocaleDateString('en-us', { month: 'long', year: 'numeric' }),
@@ -47,8 +52,9 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		}
 	}))
 	const [month, setMonth] = useState(months[0].name)
+	const { data } = useGetMonthlyTopAchieverQuery(param)
 
-	const arrowDown = useMemo(() => {
+	const _arrowDown = useMemo(() => {
 		return (
 			<ArrowDown2 variant='Linear'
 				color={ theme.colors.onBackground }
@@ -56,7 +62,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		)
 	}, [])
 
-	const topRank = useCallback((item: MostVP) => {
+	const _topRank = useCallback((item: MostVP) => {
 		let imgSize = scaleWidth(42)
 		let paddingBottom = 0
 		let borderColor = '#DCA16A'
@@ -113,13 +119,14 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		)
 	}, [])
 
-	const setLoc = useCallback((label: string) => {
+	const _setLoc = useCallback((label: string) => {
 		setLocations(locations.map(loc => ({ ...loc, selected: label === loc.name })))
 		setLocation(label)
+		setParam({ ...param, cafe_city: label.toLowerCase() === 'all location' ? '' :  label.toLowerCase() })
 		filterLocRef.current?.dismiss()
-	}, [locations])
+	}, [locations, param])
 
-	const setMon = useCallback((label: string) => {
+	const _setMon = useCallback((label: string) => {
 		setMonths(months.map(loc => ({ ...loc, selected: label === loc.name })))
 		setMonth(label)
 		filterMonthRef.current?.dismiss()
@@ -142,22 +149,22 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 				 />
 				<Text variant='headingBold' style={ styles.title }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
 				<View style={ styles.topRank }>
-					{ data && data?.length >= 3 && topRank(data[2]) }
-					{ data && topRank(data[0]) }
-					{ data && data?.length >= 2 && topRank(data[1]) }
+					{ data && data?.length >= 3 && _topRank(data[2]) }
+					{ data?.length && _topRank(data[0]) }
+					{ data && data?.length >= 2 && _topRank(data[1]) }
 				</View>
 			</View>
 			<View style={ styles.listHeaderBg }>
 				<View style={ styles.listHeader }>
 					<FilterItem
 						label={ location }
-						suffix={ arrowDown }
+						suffix={ _arrowDown }
 						style={ styles.filter }
 						onPress={ () => filterLocRef.current?.present() }
 					/>
 					<FilterItem
 						label={ month }
-						suffix={ arrowDown }
+						suffix={ _arrowDown }
 						style={ styles.filter }
 						onPress={ () => filterMonthRef.current?.present() }
 					/>
@@ -180,9 +187,9 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 					data: locations,
 					ListHeaderComponent: filterHeader(
 						t('champion-page.filter-loc'),
-						() => { setLoc('Jakarta') }
+						() => { _setLoc('Jakarta') }
 					),
-					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ setLoc } />),
+					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ _setLoc } />),
 					ItemSeparatorComponent: () => <View style={ styles.filterItemSeparator } />,
 					stickyHeaderIndices: [0]
 				} }
@@ -196,9 +203,9 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 					data: months,
 					ListHeaderComponent: filterHeader(
 						t('champion-page.filter-month'),
-						() => { setMon(months[0].name) }
+						() => { _setMon(months[0].name) }
 					),
-					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ setMon } />),
+					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ _setMon } />),
 					ItemSeparatorComponent: () => <View style={ styles.filterItemSeparator } />,
 					stickyHeaderIndices: [0]
 				} }

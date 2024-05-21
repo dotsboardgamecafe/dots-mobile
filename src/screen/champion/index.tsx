@@ -15,6 +15,7 @@ import MvpItem from '../../components/mvp-item'
 import { useSharedValue } from 'react-native-reanimated'
 import PageIndicator from '../../components/page-indicator'
 import { useGetHallOfFameQuery, useGetMonthlyTopAchieverQuery } from '../../store/champion'
+import { type MostVPParam } from '../../models/champions'
 
 type Props = NavigationProps<'champion'>
 
@@ -22,9 +23,14 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 	const statusBarHeight = getStatusBarHeight() ?? 0
 	const navBarHeight = useBottomTabBarHeight()
 	const progressValue = useSharedValue<number>(0)
-	const { data: mvpData } = useGetMonthlyTopAchieverQuery('vp')
-	const { data: uniqueData } = useGetMonthlyTopAchieverQuery('unique_game')
-	const { data: hallData } = useGetHallOfFameQuery()
+	const date = new Date()
+	const param: MostVPParam = {
+		month: date.getMonth(),
+		year: date.getFullYear()
+	}
+	const { data: mvpData } = useGetMonthlyTopAchieverQuery({ ...param, category: 'vp' })
+	const { data: uniqueData } = useGetMonthlyTopAchieverQuery({ ...param, category: 'unique_game' })
+	const { data: hallData } = useGetHallOfFameQuery(date.getFullYear())
 
 	const cardMVP = useMemo(() => {
 		return (
@@ -43,7 +49,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [mvpData])
 
 	const cardUnique = useMemo(() => {
 		return (
@@ -62,7 +68,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [uniqueData])
 
 	const cardHof = useMemo(() => {
 		return (
@@ -81,7 +87,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [hallData])
 
 	const cards = useMemo(() => ([cardMVP, cardUnique, cardHof]), [])
 

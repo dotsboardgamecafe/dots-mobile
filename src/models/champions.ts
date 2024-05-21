@@ -17,3 +17,10 @@ export interface HallOfFame {
   cafe_name: string
   tournament_banner_url: string
 }
+
+export interface MostVPParam {
+  category?: 'vp' | 'unique_game'
+  month?: number
+  year?: number
+  cafe_city?: string
+}
