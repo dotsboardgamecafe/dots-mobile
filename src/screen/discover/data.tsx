@@ -1,20 +1,18 @@
 import React from 'react'
 import GiDominoTiles from '../../assets/svg/GiDominoTiles.svg'
-import { type GameType, type Games } from '../../models/games'
+import GiCardRandom from '../../assets/svg/GiCardRandom.svg'
+import GiPartyPopper from '../../assets/svg/GiPartyPopper.svg'
+import GiShakingHands from '../../assets/svg/GiShakingHands.svg'
+import GiDualityMask from '../../assets/svg/GiDualityMask.svg'
+import GiEmptyChessboard from '../../assets/svg/GiEmptyChessboard.svg'
+import GiGears from '../../assets/svg/GiGears.svg'
+import GiRollingDices from '../../assets/svg/GiRollingDices.svg'
+import GiTeamIdea from '../../assets/svg/GiTeamIdea.svg'
+import GiSwordsPower from '../../assets/svg/GiSwordsPower.svg'
+import { type GameType } from '../../models/games'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 
-export const games: Games[] = Array.from({ length: 30 }, (_, i) => ({
-	game_code: `CODE-${i + 1}`,
-	game_type: 'War Game',
-	cafe_id: 1,
-	name: `Rising Game ${i + 1}`,
-	image_url: 'https://picsum.photos/200',
-	description: '',
-	collection_url: '',
-	status: 'ok',
-	created_date: '01-01-2024',
-	is_popular: i < 4
-}))
+export const filterSections = ['type', 'mechanics', 'location']
 
 export const gameTypes: GameType[] = [
 	{
@@ -25,21 +23,54 @@ export const gameTypes: GameType[] = [
 	{
 		id: 1,
 		name: 'Cards',
-		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+		icon: <GiCardRandom width={ scaleWidth(17) } height={ scaleHeight(17) }/>
 	},
 	{
 		id: 2,
 		name: 'Party',
-		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } />
+		icon: <GiPartyPopper width={ scaleWidth(17) } height={ scaleHeight(17) } />
+	},
+]
+
+export const gameMechanics: GameType[] = [
+	{
+		id: 0,
+		name: 'Negotiation',
+		icon: <GiShakingHands width={ scaleWidth(17) } height={ scaleHeight(17) } />
+	},
+	{
+		id: 1,
+		name: 'Bluffing',
+		icon: <GiDualityMask width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+	},
+	{
+		id: 2,
+		name: 'Tile Placement',
+		icon: <GiEmptyChessboard width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 3,
-		name: 'Party',
-		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } />
+		name: 'Engine Building',
+		icon: <GiGears width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 4,
-		name: 'Party',
-		icon: <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+		name: 'Dice Rolling',
+		icon: <GiRollingDices width={ scaleWidth(17) } height={ scaleHeight(17) }/>
 	},
+	{
+		id: 5,
+		name: 'Worker Placement',
+		icon: <GiTeamIdea width={ scaleWidth(17) } height={ scaleHeight(17) } />
+	},
+	{
+		id: 6,
+		name: 'Variable Player Powers',
+		icon: <GiSwordsPower width={ scaleWidth(17) } height={ scaleHeight(17) } />
+	},
+]
+
+export const locations: GameType[] = [
+	{ id: 0, name: 'Bandung', },
+	{ id: 1, name: 'Jakarta', },
 ]

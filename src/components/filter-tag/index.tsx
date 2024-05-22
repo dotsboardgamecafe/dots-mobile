@@ -4,12 +4,13 @@ import { useTheme } from 'react-native-paper'
 
 import RoundedBorder from '../rounded-border'
 import { type ThemeType } from '../../models/theme'
-import createStyle from './styles'
+import styles from './styles'
 import { type FilterTagType } from './type'
 import Text from '../text'
 
 const FilterTag = ({
 	id,
+	code,
 	icon,
 	label,
 	active,
@@ -17,20 +18,19 @@ const FilterTag = ({
 }: FilterTagType): React.ReactNode => {
 
 	const theme = useTheme<ThemeType>()
-	const style = createStyle(theme)
 
 	const content = useMemo(() => (
 		<TouchableOpacity
 			style={ [
-				style.content,
-				!active && style.inactive,
+				styles.content,
+				!active && styles.inactive,
 				!onClick && { backgroundColor: theme.colors.background }
 			] }
-			onPress={ () => onClick && onClick(id) }
-			disabled={ onClick !== null }
+			onPress={ () => { onClick && onClick(id, code, label) } }
+			disabled={ !onClick }
 		>
 			{ icon }
-			<Text variant='bodyMiddleRegular' style={ icon ? style.hasIcon : {} }>{ label }</Text>
+			<Text variant='bodyMiddleRegular' style={ icon ? styles.hasIcon : {} }>{ label }</Text>
 		</TouchableOpacity>
 	), [active])
 
@@ -38,8 +38,8 @@ const FilterTag = ({
 		return (
 			<RoundedBorder
 				radius={ 16 }
-				style={ style.container }
-				contentStyle={ style.active }
+				style={ styles.container }
+				contentStyle={ styles.active }
 			>
 				{ content }
 			</RoundedBorder>
@@ -50,5 +50,5 @@ const FilterTag = ({
 
 export default React.memo(
 	FilterTag,
-	(prev, next) => prev.active === next.active
+	// (prev, next) => prev.active === next.active
 )

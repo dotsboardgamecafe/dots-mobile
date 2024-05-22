@@ -29,12 +29,12 @@ const MvpItem = ({ item, index, showVP }: MvpItemProps): React.ReactNode => {
 		] }>
 			{ medal(index) }
 			<Image
-				source={ { uri: item.photo } }
+				source={ { uri: item.user_img_url } }
 				resizeMode='cover'
 				style={ styles.mvpPlayerImage }
 			/>
-			<Text variant='bodyMiddleRegular' style={ styles.mvpPlayerName }>{ item.name }</Text>
-			<Text variant='bodyMiddleMedium' style={ styles.mvpVp }>{ item.vp }</Text>
+			<Text variant='bodyMiddleRegular' style={ styles.mvpPlayerName }>{ item.user_name }</Text>
+			<Text variant='bodyMiddleMedium' style={ styles.mvpVp }>{ showVP ? item.total_point : item.total_game_played }</Text>
 			{ showVP && <VP width={ scaleWidth(14) } /> }
 		</View>
 	)

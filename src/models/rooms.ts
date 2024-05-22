@@ -24,4 +24,20 @@ export interface Rooms {
   reward_point: number,
   current_used_slot: number,
   room_participants?: Users[]
+  tournament_code?: string,
+  prizes_img_url?: string,
+  image_url?: string,
+  tournament_rules?: string,
+  start_time?: string,
+  end_time?: string,
+  player_slot?: number,
+  participant_vp?: number,
+  status?: string,
+}
+
+export interface RoomListParam {
+  keyword?: string
+  tournament_date?: string
+  location?: string
+  status: string
 }

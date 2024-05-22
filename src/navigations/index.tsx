@@ -10,7 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import Main from '../screen/main'
 import Profile from '../screen/profile'
 import Login from '../screen/login'
-import navigationConstant from '../constants/navigation'
+import navigationConstant, { linking } from '../constants/navigation'
 import useStorage from '../hooks/useStorage'
 import themeConstant from '../constants/theme'
 import MainTab from './main'
@@ -21,8 +21,16 @@ import RoomDetail from '../screen/room-detail'
 import Webview from '../screen/webview'
 import ForgotPassword from '../screen/forgot-password'
 import UpdatePassword from '../screen/update-password'
+import Tier from '../screen/tier'
 import MVP from '../screen/mvp'
 import HallOfFame from '../screen/hall-of-fame'
+import Awards from '../screen/awards'
+import GameBoardCollection from '../screen/game-board-collection'
+import AccountInformation from '../screen/account-information'
+import EditPassword from '../screen/edit-password'
+import TncPrivacyPolicy from '../screen/tnc-privacy-policy'
+import Notifications from '../screen/notifications'
+import Transactions from '../screen/transactions'
 
 const { screenName, } = navigationConstant
 
@@ -88,12 +96,8 @@ const privateNavigations = (): ReactNode => {
 				component={ Webview }
 			/>
 			<Stack.Screen
-				name={ screenName.mvp }
-				component={ MVP }
-			/>
-			<Stack.Screen
-				name={ screenName.hallOfFame }
-				component={ HallOfFame }
+				name={ screenName.tier }
+				component={ Tier }
 			/>
 			<Stack.Screen
 				name={ screenName.mvp }
@@ -104,12 +108,36 @@ const privateNavigations = (): ReactNode => {
 				component={ HallOfFame }
 			/>
 			<Stack.Screen
-				name={ screenName.mvp }
-				component={ MVP }
+				name={ screenName.gameBoardCollection }
+				component={ GameBoardCollection }
 			/>
 			<Stack.Screen
-				name={ screenName.hallOfFame }
-				component={ HallOfFame }
+				name={ screenName.awards }
+				component={ Awards }
+			/>
+			<Stack.Screen
+				name={ screenName.accountInformation }
+				component={ AccountInformation }
+			/>
+			<Stack.Screen
+				name={ screenName.editPassword }
+				component={ EditPassword }
+			/>
+			<Stack.Screen
+				name={ screenName.tnc }
+				component={ TncPrivacyPolicy }
+			/>
+			<Stack.Screen
+				name={ screenName.privacyPolicy }
+				component={ TncPrivacyPolicy }
+			/>
+			<Stack.Screen
+				name={ screenName.notifications }
+				component={ Notifications }
+			/>
+			<Stack.Screen
+				name={ screenName.transactions }
+				component={ Transactions }
 			/>
 		</Stack.Group>
 	)
@@ -145,6 +173,7 @@ const Navigations = (): React.ReactNode => {
 					<NavigationContainer
 						theme={ themeFactory.navigationTheme }
 						onReady={ BootSplash.hide }
+						linking={ linking }
 					>
 						<Stack.Navigator initialRouteName={ screenName.login }>
 							{ renderScreenContent }
