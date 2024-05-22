@@ -4,8 +4,8 @@ export interface MostVP {
   user_name?: string
   user_img_url?: string
   location?: string
-  total_game_played?: number
-  total_point?: number
+  total_game_played?: number | undefined
+  total_point?: number | undefined
 }
 
 export interface HallOfFame {

@@ -1,8 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, {
+	Suspense, lazy, useCallback, useMemo, useRef, useState
+} from 'react'
 import {
 	Image, View,
 	FlatList,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform,
 } from 'react-native'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
@@ -26,6 +29,8 @@ import { useGetMonthlyTopAchieverQuery } from '../../store/champion'
 import { type MostVPParam, type MostVP } from '../../models/champions'
 
 type Props = NavigationProps<'mvp'>
+
+const LazyStarsField = lazy(async() => await import('../../components/stars-field'))
 
 const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
@@ -108,6 +113,31 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		)
 	}, [])
 
+	const _renderHeader = useCallback(() => {
+		return (
+			<>
+				<Blush
+					color={ unique ? '#F00793' : '#EE1872' }
+					distance={ 300 }
+					opacity={ .5 }
+					style={ styles.blush1 }
+				 />
+				<Blush
+					color={ unique ? '#F18725' : '#15D1FB' }
+					distance={ 200 }
+					opacity={ .5 }
+					style={ styles.blush2 }
+				 />
+				<Text variant='headingBold' style={ [styles.title, { backgroundColor: 'transparent' }] }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
+				<View style={ [styles.topRank, { backgroundColor: 'transparent' }] }>
+					{ data && data?.length >= 3 ? _topRank(data[2]) : <View style={ styles.topPlayer } /> }
+					{ data?.length ? _topRank(data[0]) : <View style={ styles.topPlayer } /> }
+					{ data && data?.length >= 2 ? _topRank(data[1]) : <View style={ styles.topPlayer } /> }
+				</View>
+			</>
+		)
+	}, [data])
+
 	const filterHeader = useCallback((title: string, onReset: () => void) => {
 		return (
 			<View style={ styles.filterHeader }>
@@ -134,26 +164,15 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 
 	return (
 		<Container barStyle='light-content' contentStyle={ styles.container }>
-			<View style={ [styles.header, unique && { backgroundColor: '#90352F' }] }>
-				<Blush
-					color={ unique ? '#F00793' : '#EE1872' }
-					distance={ 300 }
-					opacity={ .5 }
-					style={ styles.blush1 }
-				 />
-				<Blush
-					color={ unique ? '#F18725' : '#15D1FB' }
-					distance={ 200 }
-					opacity={ .5 }
-					style={ styles.blush2 }
-				 />
-				<Text variant='headingBold' style={ styles.title }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
-				<View style={ styles.topRank }>
-					{ data && data?.length >= 3 ? _topRank(data[2]) : <View style={ styles.topPlayer } /> }
-					{ data?.length ? _topRank(data[0]) : <View style={ styles.topPlayer } /> }
-					{ data && data?.length >= 2 ? _topRank(data[1]) : <View style={ styles.topPlayer } /> }
-				</View>
-			</View>
+			<Suspense fallback={ <View style={ { height: 300 } } /> } >
+				<LazyStarsField starCount={ Platform.OS === 'android' ? 100 : 300 } style={ { ...styles.header, backgroundColor: unique  ? '#90352F' :  theme.colors.blueAccent } }>
+					{ _renderHeader() }
+
+				</LazyStarsField>
+			</Suspense>
+			{ /* <Suspense fallback={ <View style={ { height: 150 } } /> } >
+				<LazyStarsField starCount={ 10 } style={ { height: 150 } } />
+			</Suspense> */ }
 			<View style={ styles.listHeaderBg }>
 				<View style={ styles.listHeader }>
 					<FilterItem

@@ -89,7 +89,10 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 		)
 	}, [hallData])
 
-	const cards = useMemo(() => ([cardMVP, cardUnique, cardHof]), [])
+	const cards = useMemo(
+		() => ([cardMVP, cardUnique, cardHof]),
+		[mvpData, uniqueData, hallData]
+	)
 
 	return (
 		<Container contentStyle={ styles.page }>

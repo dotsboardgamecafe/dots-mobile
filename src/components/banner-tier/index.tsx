@@ -62,7 +62,7 @@ const BannerTier = ({
 			useNativeDriver: false,
 			duration: 1500
 		}).start(() => {
-			setStarCount(Platform.OS === 'android' ? 1 : 300)
+			setStarCount(Platform.OS === 'android' ? 100 : 300)
 		})
 		return () => { setStarCount(0) }
 	}, [userProfileData])
