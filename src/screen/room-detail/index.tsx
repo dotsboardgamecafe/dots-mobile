@@ -211,7 +211,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<ActionButton
 					label={ t('room-detail.join', { vp }) }
 					suffix={ vp && <VP width={ scaleWidth(20) } /> }
-					onPress={ showRegModal }
+					onPress={ () => { setRegModalVisible(true) } }
 				/>
 			</View>
 		)
@@ -243,7 +243,6 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		)
 	}, [playerColors, data])
 
-	const showRegModal = useCallback(() => { setRegModalVisible(true) }, [])
 	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
 	useEffect(() => {
@@ -286,12 +285,13 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<>
 					<ScrollView showsVerticalScrollIndicator={ false }>
 						<Image
-							source={ { uri: params.room_img_url ?? '' } }
+							source={ { uri: params.room_img_url ?? data?.image_url } }
 							resizeMode='cover'
 							style={ {
 								width: SCREEN_WIDTH,
 								height: scaleHeight(210)
 							} }
+							keepRatio
 						/>
 						<View style={ styles.imageInfo }>
 							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.currency') }{ data?.booking_price ?? 0 }</Text>
@@ -315,13 +315,6 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 						</View>
 					</ScrollView>
 					{ joinAction }
-					{ /* <View style={ styles.actionJoin }>
-						<ActionButton
-							label={ `${t('room-detail.join')} ${data?.participant_vp ?? data?.reward_point}` }
-							suffix={ <VP width={ scaleWidth(20) } /> }
-							onPress={ showRegModal }
-						/>
-					</View> */ }
 				</>
 			}
 			<ShareBottomSheet

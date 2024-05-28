@@ -243,6 +243,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							id={ index }
 							icon={ <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } /> }
 							label={ item.category_name }
+							code={ item.category_name }
 							active
 						/>
 						}
