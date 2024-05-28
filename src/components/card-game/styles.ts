@@ -4,10 +4,15 @@ import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../u
 import { colorsTheme } from '../../constants/theme'
 
 export const styles = StyleSheet.create({
-	image: {
+	imageContainer: {
+		alignSelf: 'stretch',
+		aspectRatio: 1,
+		overflow: 'hidden',
 		borderRadius: 11,
+	},
+	image: {
 		width: '100%',
-		aspectRatio: 1
+		height: '100%'
 	},
 
 	popularContainer: {
