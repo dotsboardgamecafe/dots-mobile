@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 	},
 	item: {
 		width: '100%',
-		// height: scaleHeight(160),
+		height: scaleHeight(180),
 		borderRadius: 16
 	},
 	itemSeparator: {

@@ -32,9 +32,9 @@ export interface GameListParams {
   sort: 'desc' | 'asc',
   order?: string
   limit: number
-  location?: string[]
-  game_type?: string[],
-  game_category_name?: string[]
+  location?: string
+  game_type?: string,
+  game_category_name?: string
 }
 
 export interface GameMasters {

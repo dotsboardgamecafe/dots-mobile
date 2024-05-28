@@ -92,7 +92,7 @@
       "location": "Location",
       "level": "Level",
       "players": "Joined Players",
-      "join": "Join Room - Get",
+      "join": "Join Room {{vp}}",
       "booking": "Booking Confirmation",
       "pay": "Pay with Xendit"
     },
