@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import baseQuery from '../../utils/base.query'
-import { type RegisterParam, type Profile } from '../../models/profile'
+import { type RegisterParam, type Profile, type User } from '../../models/profile'
 
 export const accessApi = createApi({
 	reducerPath: 'accessApi',
@@ -24,13 +24,13 @@ export const accessApi = createApi({
 				data
 			}),
 		}),
-		postVerify: builder.mutation<Profile, string>({
+		postVerify: builder.mutation<User, string>({
 			query: token => ({
 				method: 'post',
 				url: '/v1/auths/verify-token',
 				params: { type: 'verify_registration', token },
 				isPrivate: false,
-				transformResponse: (result: {data: Profile}) => result.data
+				transformResponse: (result: {data: User}) => result.data
 			}),
 		}),
 		postResendVerify: builder.mutation<unknown, string>({

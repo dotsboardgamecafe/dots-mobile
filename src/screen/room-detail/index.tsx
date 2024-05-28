@@ -198,6 +198,25 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 	}, [data])
 
+	const joinAction = useMemo(() => {
+		let vp
+		if (isTourney) {
+			vp = ` - Get ${data?.participant_vp}`
+		} else if (isRoom) {
+			vp = ` - Get ${data?.reward_point}`
+		}
+
+		return (
+			<View style={ styles.actionJoin }>
+				<ActionButton
+					label={ t('room-detail.join', { vp }) }
+					suffix={ vp && <VP width={ scaleWidth(20) } /> }
+					onPress={ showRegModal }
+				/>
+			</View>
+		)
+	}, [data, isTourney, isRoom])
+
 	const players = useCallback(({ item, index }: ListRenderItemInfo<Users>) => {
 		return (
 			<View style={ styles.playerContainer }>
@@ -295,13 +314,14 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 							/>
 						</View>
 					</ScrollView>
-					<View style={ styles.actionJoin }>
+					{ joinAction }
+					{ /* <View style={ styles.actionJoin }>
 						<ActionButton
-							label={ `${t('room-detail.join')} ${isTourney ? data?.participant_vp : data?.reward_point}` }
+							label={ `${t('room-detail.join')} ${data?.participant_vp ?? data?.reward_point}` }
 							suffix={ <VP width={ scaleWidth(20) } /> }
 							onPress={ showRegModal }
 						/>
-					</View>
+					</View> */ }
 				</>
 			}
 			<ShareBottomSheet

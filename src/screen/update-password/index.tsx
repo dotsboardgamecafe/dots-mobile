@@ -82,8 +82,6 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 	useEffect(() => {
 		if (verifyData) {
 			onSetUser({ token: verifyData.token })
-			navigation.popToTop()
-			navigation.replace('login', {})
 		}
 		if (verifyError) {
 			bsVerifyErrRef.current?.present()

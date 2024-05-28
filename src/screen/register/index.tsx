@@ -2,7 +2,10 @@ import React, {
 	useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
 import { Image, Keyboard, TouchableOpacity, View } from 'react-native'
-import { ArrowDown2, type IconProps, Lock, Unlock } from 'iconsax-react-native'
+import {
+	ArrowDown2, type IconProps, Lock, Unlock,
+	TickCircle
+} from 'iconsax-react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { openInbox } from 'react-native-email-link'
@@ -24,6 +27,7 @@ import useStorage from '../../hooks/useStorage'
 import LoadingDialog from '../../components/loading-dialog'
 import { Controller, useForm } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
+import Modal from '../../components/modal'
 
 type Props = NavigationProps<'register'>
 
@@ -37,6 +41,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 	const [countryCode] = useState('+62')
 	const [showPass, setShowPass] = useState(false)
 	const [showConfirmPass, setShowConfirmPass] = useState(false)
+	const [emailVerified, setEmailVerified] = useState(false)
 	const [loadingLabel, setLoadingLabel] = useState(t('register-page.verify-email'))
 	const [postRegister, { data, error, isLoading }] = usePostRegisterMutation()
 	const [postVerify, {
@@ -116,7 +121,11 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 	useEffect(() => {
 		if (verifyData) {
 			onSetUser(verifyData)
-			onSetLogin()
+			if (verifyData.token && verifyData.user_code) {
+				onSetLogin()
+			} else {
+				setEmailVerified(true)
+			}
 		}
 		if (verifyError)  {
 			bsResendRef.current?.present()
@@ -380,6 +389,20 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				onClickAction={ resendVerify }
 			/>
 			{ (verifyLoading || resendLoading) && <LoadingDialog visible title={ loadingLabel } /> }
+			<Modal
+				visible={ emailVerified }
+				onDismiss={ signIn }
+				borderRadius={ 16 }
+				style={ { alignItems: 'center' } }
+			>
+				<TickCircle variant='Bold' size={ scaleWidth(64) } color={ theme.colors.black } />
+				<Text variant='bodyLargeMedium' style={ [styles.successTitle, { textAlign: 'center' }] }>Email verified, you may sign in with your email and password now.</Text>
+				<ActionButton
+					style={ styles.successAction }
+					label={ t('register-page.sign-in') }
+					onPress={ signIn }
+				/>
+			</Modal>
 		</Container>
 	)
 }
