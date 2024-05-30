@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
 	ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent,
 	TouchableOpacity
@@ -18,16 +18,17 @@ import FilterTag from '../../components/filter-tag'
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import { PageIndicator } from 'react-native-page-indicator'
 import CardGame from '../../components/card-game'
-import { avatars, gamePlays } from './data'
-import { type GameMasters } from '../../models/games'
+import { avatars } from './data'
+import { type Games, type GameMasters } from '../../models/games'
 import Blush from '../../components/blush'
 import exitApp from '../../utils/exit.app'
 import { useGetDetailGameQuery } from '../../store/game'
 import Modal from '../../components/modal'
 import ActionButton from '../../components/action-button'
-import GiDominoTiles from '../../assets/svg/GiDominoTiles.svg'
 import { type Rooms } from '../../models/rooms'
 import Image from '../../components/image'
+import { useGetSettingQuery } from '../../store/setting'
+import FilterIcon from '../../components/filter-icon'
 
 type Props = NavigationProps<'gameDetail'>
 
@@ -37,6 +38,35 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const [blushOp, setBlushOp] = useState(1)
 	const [gamePlayIndex, setGamePlayIndex] = useState(0)
 	const { data, error } = useGetDetailGameQuery(game.game_code ?? '')
+	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
+
+	const _gameMechanic = useMemo(() => {
+		if (!data?.game_categories) return
+
+		const categories = data.game_categories.map(c => c.category_name)
+		const list = listGameMechanic?.filter(m => categories.includes(m.set_key))
+		if (list?.length) {
+			return (
+				<>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
+					<FlatList
+						data={ list }
+						keyExtractor={ i => i.setting_code }
+						renderItem={ ({ item }) => <FilterTag
+							id={ item.set_order }
+							code={ item.setting_code }
+							icon={ <FilterIcon { ...item }/> }
+							label={ item.content_value }
+						/> }
+						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
+						contentContainerStyle={ styles.wrapList }
+						showsVerticalScrollIndicator={ false }
+						scrollEnabled={ false }
+					/>
+				</>
+			)
+		}
+	}, [data, listGameMechanic])
 
 	const onPageScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const start = 30
@@ -62,6 +92,8 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 			<Image
 				source={ { uri: item } }
 				style={ styles.gamePlay }
+				resizeMode='stretch'
+				// keepRatio
 			/>
 		)
 	}, [])
@@ -73,7 +105,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 					source={ { uri: item.image_url } }
 					style={ styles.gameMaster }
 				/>
-				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.name }</Text>
+				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.user_name }</Text>
 			</View>
 		)
 	}, [])
@@ -100,6 +132,10 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 			exitApp()
 		}
 	}, [navigation])
+
+	const navigateToDetail = useCallback((game: Games) => {
+		navigation.navigate('gameDetail', game)
+	}, [])
 
 	return (
 		<Container contentStyle={ styles.container }>
@@ -149,7 +185,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						style={ styles.gameImageBg }
 					>
 						<Image
-							source={ { uri: game.image_url } }
+							source={ { uri: data?.image_url ?? game.image_url } }
 							resizeMode='cover'
 							style={ styles.gameImage }
 						/>
@@ -190,7 +226,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Slot: { game.minimal_participant }-{ game.maximum_participant } players</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Slot: { data?.minimal_participant }-{ data?.maximum_participant } players</Text>
 
 						<Level
 							variant='Bold'
@@ -198,7 +234,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { game.difficulty }</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.difficulty }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Clock
@@ -207,7 +243,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Duration: { game.duration } min</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Duration: { data?.duration } min</Text>
 
 						<Category
 							variant='Bold'
@@ -215,7 +251,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: { game.game_type }</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: { data?.game_type }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Location
@@ -224,56 +260,43 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Location: { game.cafe_name }</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Location: { data?.cafe_name }</Text>
 					</View>
 				</View>
 
 				<View style={ styles.section }>
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Description</Text>
 					<Text variant='paragraphMiddleRegular' style={ styles.mt12 }>
-						{ game.description }
+						{ data?.description }
 					</Text>
 					{ /* <Text variant='bodyMiddleBold' style={ styles.contReading }>Continue Reading</Text> */ }
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
-					<FlatList
-						scrollEnabled={ false }
-						data={ game.game_categories }
-						renderItem={ ({ item, index }) => <FilterTag
-							id={ index }
-							icon={ <GiDominoTiles width={ scaleWidth(17) } height={ scaleHeight(17) } /> }
-							label={ item.category_name }
-							code={ item.category_name }
-							active
-						/>
-						}
-						ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
-						contentContainerStyle={ styles.wrapList }
-					/>
+					{ _gameMechanic }
 
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Components</Text>
 				</View>
-				<View
-				>
+				<View>
 					<FlatList
 						horizontal
-						data={ gamePlays }
+						data={ data?.collection_url }
 						renderItem={ gamePlay }
 						pagingEnabled
 						onScroll={ onGamePlaySroll }
 						showsHorizontalScrollIndicator={ false }
 					/>
-					<PageIndicator
-						count={ gamePlays.length }
-						current={ gamePlayIndex }
-						color='#2325269E'
-						activeColor='#232526'
-						style={ {
-							position: 'absolute',
-							bottom: scaleVertical(16),
-							alignSelf: 'center',
-						} }
-					/>
+					{ (data?.collection_url?.length ?? 0) > 1 &&
+						<PageIndicator
+							count={ data?.collection_url?.length ?? 0 }
+							current={ gamePlayIndex }
+							color='#2325269E'
+							activeColor='#232526'
+							style={ {
+								position: 'absolute',
+								bottom: scaleVertical(16),
+								alignSelf: 'center',
+							} }
+						/>
+					}
 				</View>
 
 				<View style={ styles.section }>
@@ -286,7 +309,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						contentContainerStyle={ [styles.wrapList] }
 					/>
 
-					{ game.game_rooms && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
+					{ data?.game_rooms && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
 					<FlatList
 						data={ data?.game_rooms }
 						renderItem={ room }
@@ -295,11 +318,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						contentContainerStyle={ styles.mt16 }
 					/>
 
-					{ game.game_related && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
+					{ data?.game_related && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
 					<FlatList
-						data={ game.game_related }
+						data={ data?.game_related }
 						keyExtractor={ item => item.game_code }
-						renderItem={ ({ item }) => <CardGame item={ item } /> }
+						renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
 						ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 						style={ styles.list }
 						columnWrapperStyle={ styles.columnWrapper }

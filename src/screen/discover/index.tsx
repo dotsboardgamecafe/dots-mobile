@@ -28,7 +28,7 @@ import FilterIcon from '../../components/filter-icon'
 type Props = NavigationProps<'discover'>
 
 const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const defaultParam: GameListParams = { status: 'active', limit: 100, sort: 'desc' }
+	const defaultParam: GameListParams = { status: 'active', limit: 500, sort: 'desc' }
 	const [search, setSearch] = useState('')
 	const [param, setParam] = useState<GameListParams>(defaultParam)
 	const [filterType, setFilterType] = useState<string[]>([])
@@ -67,36 +67,47 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 	const _onFilterDismiss = useCallback(() => {
 		if (applyFilter) {
-			setParam(param => ({
-				...param,
-				game_type: [...filterType].join(','),
-				game_category_name: [...filterMechanic].join('.'),
-				location: [...filterLocation].join(','),
-			}))
+			const obj: GameListParams = { ...param }
+
+			if (filterType.length) {
+				obj.game_type = [...filterType].join('%2C')
+			} else {
+				delete obj.game_type
+			}
+			
+			if (filterMechanic.length) {
+				obj.game_category_name = [...filterMechanic].join('%2C')
+			} else {
+				delete obj.game_category_name
+			}
+			
+			if (filterLocation.length) {
+				obj.location = [...filterLocation].join('%2C')
+			} else {
+				delete obj.location
+			}
+			
+			setParam(obj)
 		} else {
 			setFilterType([])
 			setFilterMechanic([])
 			setFilterLocation([])
 		}
-	}, [applyFilter, filterType, filterMechanic, filterLocation])
+	}, [applyFilter, param, filterType, filterMechanic, filterLocation])
 
 	const _onFilterGameType = useCallback((id: number, code: string, label: string) => {
-		const idx = filterType.findIndex(f => f === code)
-		if (idx > -1) {
-			setFilterType([...filterType].splice(idx, 1))
-		} else if (listGameType) {
-			setFilterType([...filterType, listGameType[idx].setting_code])
-		}
-	}, [filterType, listGameType])
+		setFilterType(types => {
+			if (types.includes(label)) return [...types.filter(t => t !== label)]
+			return [...types, label]
+		})
+	}, [])
 
 	const _onFilterGameMechanic = useCallback((id: number, code: string, label: string) => {
-		const idx = filterMechanic.findIndex(f => f === code)
-		if (idx > -1) {
-			setFilterMechanic([...filterMechanic].splice(idx, 1))
-		} else if (listGameMechanic) {
-			setFilterMechanic([...filterMechanic, listGameMechanic[idx].setting_code])
-		}
-	}, [filterMechanic, listGameMechanic])
+		setFilterMechanic(types => {
+			if (types.includes(label)) return [...types.filter(t => t !== label)]
+			return [...types, label]
+		})
+	}, [])
 
 	return (
 		<Container>
@@ -204,7 +215,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 								icon={ <FilterIcon { ...item }/> }
 								code={ item.setting_code }
 								label={ item.content_value }
-								active={ [...filterType].includes(item.setting_code) }
+								active={ [...filterType].includes(item.content_value) }
 								onClick={ _onFilterGameType }
 							/>
 							}
@@ -227,7 +238,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 								code={ item.setting_code }
 								icon={ <FilterIcon { ...item }/> }
 								label={ item.content_value }
-								active={ [...filterMechanic].includes(item.setting_code) }
+								active={ [...filterMechanic].includes(item.content_value) }
 								onClick={ _onFilterGameMechanic }
 							/> }
 							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }

@@ -188,7 +188,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					snapEnabled
 					loop
 					width={ fullWidth }
-					height={ scaleHeight(180) }
+					height={ scaleHeight(220) }
 					data={ bannerPublishedData ?? [] }
 					onProgressChange={ (_, absoluteProgress: number) => { setCarouselIndex(Math.round(absoluteProgress)) } }
 					renderItem={ ({ item }) => {
@@ -196,10 +196,11 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 							<Pressable onPress={ () => { Alert.alert(item.banner_code) } }>
 								<Image
 									width={ fullWidth }
-									height={ scaleHeight(180) }
-									resizeMode='contain'
+									height={ scaleHeight(220) }
+									resizeMode='cover'
 									source={ { uri: item.image_url ? item.image_url : '/path/images.png' } }
 									style={ styles.bannerStyle }
+									keepRatio
 								/>
 							</Pressable>
 						)

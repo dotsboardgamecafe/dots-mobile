@@ -46,10 +46,11 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 	const [location, setLocation] = useState('All Location')
 	const [param, setParam] = useState<MostVPParam>({
 		category: unique ? 'unique_game' : 'vp',
-		month: date.getMonth(),
+		month: date.getMonth() + 1,
 		year: date.getFullYear(),
 	})
 	const [months, setMonths] = useState(Array.from({ length: 6 }, (_, i) => {
+		date.setMonth(date.getMonth() + 1)
 		date.setDate(0)
 		return {
 			name: date.toLocaleDateString('en-us', { month: 'long', year: 'numeric' }),
@@ -57,7 +58,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		}
 	}))
 	const [month, setMonth] = useState(months[0].name)
-	const { data } = useGetMonthlyTopAchieverQuery(param)
+	const { data, isLoading, refetch } = useGetMonthlyTopAchieverQuery(param)
 
 	const _arrowDown = useMemo(() => {
 		return (
@@ -164,7 +165,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 
 	return (
 		<Container barStyle='light-content' contentStyle={ styles.container }>
-			<Suspense fallback={ <View style={ { height: 300 } } /> } >
+			<Suspense fallback={ <View style={ { ...styles.header, backgroundColor: unique  ? '#90352F' :  theme.colors.blueAccent, height: 100 } } /> } >
 				<LazyStarsField starCount={ Platform.OS === 'android' ? 100 : 300 } style={ { ...styles.header, backgroundColor: unique  ? '#90352F' :  theme.colors.blueAccent } }>
 					{ _renderHeader() }
 
@@ -196,6 +197,8 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.listContent }
 				ItemSeparatorComponent={ () => <View style={ styles.listSeparator } /> }
+				refreshing={ isLoading }
+				onRefresh={ refetch }
 			/>
 			<BottomSheetList
 				bsRef={ filterLocRef }

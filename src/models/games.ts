@@ -8,7 +8,7 @@ export interface Games {
   game_type: string,
   name: string,
   image_url: string,
-  collection_url: string,
+  collection_url?: string[],
   description: string,
   status: string,
   difficulty: number,
@@ -18,8 +18,13 @@ export interface Games {
   game_categories: GameCategory[],
   game_related?: Games[],
   game_rooms?: Rooms[],
-  game_masters?: GameMasters[]
-  
+  game_masters?: GameMasters[],
+}
+
+export interface GameRelated {
+  game_id: number
+  image_url?: string
+
 }
 
 export interface GameCategory {
@@ -41,6 +46,7 @@ export interface GameMasters {
   admin_code: string,
   email: string,
   name: string,
+  user_name: string,
   status: string
   image_url?: string
 }
