@@ -25,12 +25,12 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 	const progressValue = useSharedValue<number>(0)
 	const date = new Date()
 	const param: MostVPParam = {
-		month: date.getMonth(),
+		month: date.getMonth() + 1,
 		year: date.getFullYear()
 	}
-	const { data: mvpData } = useGetMonthlyTopAchieverQuery({ ...param, category: 'vp' })
-	const { data: uniqueData } = useGetMonthlyTopAchieverQuery({ ...param, category: 'unique_game' })
-	const { data: hallData } = useGetHallOfFameQuery(date.getFullYear())
+	const { data: mvpData, isLoading: loadingMvp, refetch: refetchMvp } = useGetMonthlyTopAchieverQuery({ ...param, category: 'vp' })
+	const { data: uniqueData, isLoading: loadingUnique, refetch: refetchUnique } = useGetMonthlyTopAchieverQuery({ ...param, category: 'unique_game' })
+	const { data: hallData, isLoading: loadingHall, refetch: refetchHall } = useGetHallOfFameQuery(date.getFullYear())
 
 	const cardMVP = useMemo(() => {
 		return (
@@ -46,6 +46,8 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 					style={ { marginVertical: scaleVertical(16) } }
 					showsVerticalScrollIndicator={ false }
 					ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
+					refreshing={ loadingMvp }
+					onRefresh={ refetchMvp }
 				/>
 			</CardChampion>
 		)
@@ -65,6 +67,8 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 					style={ { marginVertical: scaleVertical(16) } }
 					showsVerticalScrollIndicator={ false }
 					ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
+					refreshing={ loadingUnique }
+					onRefresh={ refetchUnique }
 				/>
 			</CardChampion>
 		)
@@ -84,6 +88,8 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 					style={ { marginVertical: scaleVertical(32) } }
 					columnWrapperStyle={ { gap: scaleWidth(16) } }
 					numColumns={ 2 }
+					refreshing={ loadingHall }
+					onRefresh={ refetchHall }
 				/>
 			</CardChampion>
 		)
