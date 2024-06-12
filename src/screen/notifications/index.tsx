@@ -1,8 +1,10 @@
 import {
-	type ListRenderItemInfo, View, Pressable, Image, Alert,
+	type ListRenderItemInfo, View, Pressable,
 	TouchableOpacity
 } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
 import styles from './styles'
@@ -15,52 +17,25 @@ import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { BlurView } from '@react-native-community/blur'
 import CloseIcon from '../../assets/svg/close.svg'
 import RoundedBorder from '../../components/rounded-border'
-
-type NotifType = 	'upcoming' | 'canceled' | 'confirmation'
-
-interface ListPointActivityType {
-	code: string,
-	title: string,
-	schedule: string,
-	image:string,
-	type: NotifType
-}
+import {  notificationsApi, useLazyGetNotificationsQuery, useUpdateSeenNotificationMutation } from '../../store/notifications'
+import { type Notification } from '../../models/notification'
+import Image from '../../components/image'
+import Loading from '../../components/loading'
+import ReloadView from '../../components/reload-view'
+import moment from 'moment'
+import { useDispatch } from 'react-redux'
 
 interface TitleStyleType {
 	title: string,
 	color: string
 }
 
-const listPointActivity: ListPointActivityType[] = [
-	{
-		code: '1',
-		title: 'Apiary Tournament Game',
-		schedule: 'Feb 10, 2024 - 15:00 PM',
-		image: 'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
-		type: 'upcoming'
-	},
-	{
-		code: '2',
-		title: 'Vanguard Game Room',
-		schedule: 'Feb 03, 2024 - 09:00 AM',
-		image: 'https://cf.geekdo-images.com/XNbpOGwHR2PkoZ3TiIfxaw__itemrep/img/07N0xOAF1zoCpbPtUYlmzYrYe9I=/fit-in/246x300/filters:strip_icc()/pic7545827.png',
-		type: 'confirmation'
-	},
-	{
-		code: '3',
-		title: 'Apiary Tournament Game',
-		schedule: 'Jan 25, 2024 - 08:00 PM',
-		image: 'https://cf.geekdo-images.com/Nnzu4eqkUoGybbziFGPI6g__itemrep/img/iGanwQiMDaXz5AiNdf2ynDFHVXA=/fit-in/246x300/filters:strip_icc()/pic5212377.png',
-		type: 'canceled'
-	},
-]
-
-const _generateNotifTitle = (type: NotifType): TitleStyleType => {
+const _generateNotifTitle = (type: string): TitleStyleType => {
 	const result = {
 		title: 'CANCELED ROOM',
 		color: colors.lightTheme.redAccent
 	}
-	if (type === 'upcoming') {
+	if (type === 'tournament_reminder') {
 		result.title = 'UPCOMING REMINDER'
 		result.color = colors.lightTheme.blueAccent
 	}
@@ -72,47 +47,69 @@ const _generateNotifTitle = (type: NotifType): TitleStyleType => {
 }
 
 const Notifications = (): React.ReactNode => {
-	const [selectedNotif, setSelectedNotif] = useState<ListPointActivityType>()
+	const dispatch = useDispatch()
+	const pageRef = useRef(1)
+	const [
+		fetchNotifications, { data: notificationsData, isFetching: isFetchingNotifications, isError: isErrorNotifications,  }
+	] = useLazyGetNotificationsQuery()
+	const [updateSeenNotification] = useUpdateSeenNotificationMutation()
+	const [selectedNotif, setSelectedNotif] = useState<Notification>()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 
-	const _onPressNotif = useCallback((notif: ListPointActivityType) => {
+	const _onPressNotif = useCallback((notif: Notification) => {
 		setSelectedNotif(notif)
 		bottomSheetRef.current?.present()
+		updateSeenNotification(notif)
 	}, [])
 
 	const _onPressClose = useCallback(() => {
 		bottomSheetRef.current?.close()
 	}, [bottomSheetRef])
 
-	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<ListPointActivityType>): React.ReactElement => {
+	const onFetchNotifications = useCallback(() => {
+		fetchNotifications(pageRef.current)
+		pageRef.current += 1
+	}, [fetchNotifications])
+
+	useEffect(() => {
+		onFetchNotifications()
+		
+		return () => {
+			dispatch(notificationsApi.util.resetApiState())
+		}
+	}, [])
+
+	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<Notification>): React.ReactElement => {
 		const { title, color } = _generateNotifTitle(item.type)
 		return (
 			<Pressable style={ {
 				...styles.rowStyle,
 				...styles.itemWrapperStyle,
-				backgroundColor: index === 0 ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
+				backgroundColor: !item.status_read ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
 			} }
 			onPress={ () => { _onPressNotif(item) } }
 			>
 				<View style={ {
 					...styles.dotStyle,
-					backgroundColor: index === 0 ? colorsTheme.black : colorsTheme.gray300,
+					backgroundColor: !item.status_read ? colorsTheme.black : colorsTheme.gray300,
 				} } />
-				<Pressable onPress={ () => { Alert.alert('image') } }>
+				<Pressable
+					// onPress={ () => { Alert.alert('image') } }
+				>
 					<Image
-						source={ { uri: item.image } }
+						source={ { uri: item.image_url } }
 						style={ styles.imageGameStyle }
 					/>
 				</Pressable>
 				<View style={ styles.growStyle }>
 					<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
 						<Text variant='bodyMiddleBold' style={ { color, letterSpacing: -1 } }>{ title }</Text>
-						<Text variant='bodySmallMedium'>30 Minutes Ago</Text>
+						<Text variant='bodySmallMedium'>{ moment(item.created_date).fromNow() }</Text>
 					</View>
 					<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
 						<View>
 							<Text variant='bodyMiddleDemi' style={ styles.titleStyle }>{ item.title }</Text>
-							<Text variant='bodySmallRegular' >{ item.schedule }</Text>
+							<Text variant='bodySmallRegular' >{ item.created_date }</Text>
 						</View>
 					</View>
 				</View>
@@ -120,21 +117,27 @@ const Notifications = (): React.ReactNode => {
 		)
 	}, [])
 
-	const _renderContent = useCallback(() => {
+	const _renderContent = useMemo(() => {
+		if (isErrorNotifications) {
+			return (
+				<ReloadView onRefetch={ async() => await fetchNotifications(0) } />
+			)
+		}
 		return (
 			<View>
 				<FlatList
-					data={ listPointActivity }
+					data={ notificationsData ?? [] }
 					renderItem={ _renderItem }
-					keyExtractor={ item => item.code }
-					scrollEnabled={ false }
+					keyExtractor={ (_, index) => index.toString() }
 					ItemSeparatorComponent={ () => <View style={ styles.itemSeparatorStyle }/> }
+					onEndReached={ onFetchNotifications }
+					onEndReachedThreshold={ 0.8 }
 				/>
 			</View>
 		)
-	}, [])
+	}, [notificationsData, isErrorNotifications])
 
-	const _renderBottomSheetTopContent = useCallback(() => {
+	const _renderBottomSheetTopContent = useMemo(() => {
 		return (
 			<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
 				<Text variant='bodyExtraLargeHeavy'>{ selectedNotif?.title }</Text>
@@ -145,12 +148,12 @@ const Notifications = (): React.ReactNode => {
 		)
 	}, [_onPressClose, selectedNotif])
 
-	const _renderBottomSheetMidContent = useCallback(() => {
+	const _renderBottomSheetMidContent = useMemo(() => {
 		return (
 			<View style={ styles.blurViewWrapperStyle }>
 				<Image
 					key={ 'blurryImage' }
-					source={ { uri: selectedNotif?.image } }
+					source={ { uri: selectedNotif?.image_url } }
 					style={ styles.absoluteStyle }
 				/>
 				<BlurView
@@ -164,38 +167,42 @@ const Notifications = (): React.ReactNode => {
 						style={ styles.roundedBorderStyle }
 						radius={ 20 }
 						contentStyle={ styles.roundedBorderContentStyle }>
-						<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedNotif?.image } } />
+						<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedNotif?.image_url } } />
 					</RoundedBorder>
 				</View>
 			</View>
 		)
 	}, [selectedNotif])
 
-	const _renderBottomSheetBottomContent = useCallback(() => {
+	const _renderBottomSheetBottomContent = useMemo(() => {
+		const separateSchedule = selectedNotif?.description.split('at')
+		const schedule = separateSchedule ? separateSchedule[0] : ''
+		const locations = separateSchedule ? separateSchedule[1] : ''
+
 		return (
 			<View style={ styles.bottomsheetBottomContentStyle }>
 				<View style={ styles.rowStyle }>
 					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Schedule</Text>
-					<Text variant='bodyMiddleMedium'>{ selectedNotif?.schedule }</Text>
+					<Text variant='bodyMiddleMedium'>{ schedule  }</Text>
 				</View>
 				<View style={ styles.rowStyle }>
 					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Location</Text>
-					<Text variant='bodyMiddleMedium'>{ selectedNotif?.schedule }</Text>
+					<Text variant='bodyMiddleMedium'>{ locations }</Text>
 				</View>
 				<View style={ styles.rowStyle }>
 					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Level</Text>
-					<Text variant='bodyMiddleMedium'>{ selectedNotif?.schedule }</Text>
+					<Text variant='bodyMiddleMedium'>unknown todo</Text>
 				</View>
 			</View>
 		)
 	}, [selectedNotif])
 
-	const _bottomSheetContent = useCallback(() => {
+	const _bottomSheetContent = useMemo(() => {
 		return (
 			<React.Fragment>
-				{ _renderBottomSheetTopContent() }
-				{ _renderBottomSheetMidContent() }
-				{ _renderBottomSheetBottomContent() }
+				{ _renderBottomSheetTopContent }
+				{ _renderBottomSheetMidContent }
+				{ _renderBottomSheetBottomContent }
 			</React.Fragment>
 		)
 
@@ -207,13 +214,14 @@ const Notifications = (): React.ReactNode => {
 	return (
 		<Container>
 			<Header title='Notifications' />
-			{ _renderContent() }
+			{ _renderContent }
 			<BottomSheet
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }
 			>
-				{ _bottomSheetContent() }
+				{ _bottomSheetContent }
 			</BottomSheet>
+			<Loading isLoading={ isFetchingNotifications } />
 		</Container>
 	)
 }

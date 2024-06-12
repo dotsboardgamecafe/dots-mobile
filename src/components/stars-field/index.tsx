@@ -121,7 +121,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 		return ['#000', '#000']
 	}, [tier])
 
-	const _renderSmokeImage = useCallback(() => {
+	const _renderSmokeImage = useMemo(() => {
 		return (
 			<View style={ StyleSheet.absoluteFill }>
 				<Image
@@ -152,7 +152,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			useAngle
 			angle={ 100 }
 		>
-			{ _renderSmokeImage() }
+			{ _renderSmokeImage }
 			<FlatList
 				style={ StyleSheet.absoluteFill }
 				scrollEnabled={ false }

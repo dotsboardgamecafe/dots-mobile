@@ -16,7 +16,7 @@ import Medal3 from '../../assets/svg/Medal3.svg'
 import VP from '../../assets/svg/VP.svg'
 import withCommon from '../../hoc/with-common'
 import Blush from '../../components/blush'
-import { mostVps } from '../champion/data'
+// import { mostVps } from '../champion/data'
 import MvpDetailItem from '../../components/mvp-detail-item'
 import createStyle from './styles'
 import FilterItem from '../../components/filter-item'
@@ -164,14 +164,14 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 					/>
 				</View>
 			</View>
-			<FlatList
+			{ /* <FlatList
 				data={ mostVps.slice(0, 70) }
 				keyExtractor={ item => item.rank + item.user_name }
 				renderItem={ ({ item, index }) => <MvpDetailItem item={ item } index={ index + 3 } showVP={ !unique } /> }
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.listContent }
 				ItemSeparatorComponent={ () => <View style={ styles.listSeparator } /> }
-			/>
+			/> */ }
 			<BottomSheetList
 				bsRef={ filterLocRef }
 				bsProps={ {

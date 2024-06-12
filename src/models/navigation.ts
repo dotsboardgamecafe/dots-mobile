@@ -48,7 +48,8 @@ export type RootStackParamList =  {
   tnc: undefined
   privacyPolicy: undefined,
   notifications: undefined,
-  transactions: undefined
+  transactions: undefined,
+  editProfile: undefined
 }
 
 export interface WithCommonProps {

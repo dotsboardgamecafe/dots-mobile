@@ -29,12 +29,14 @@ interface Props {
 	screen: 'home' | 'tier' | 'profile',
 	onPressTripleDot?: (() => void) | undefined;
 	userProfileData?: UserProfile,
+	onPressChangeAvatar?: (() => void) | undefined;
+	selectedImage?: string
 }
 
 const defaultDevide = 1.5
 
 const BannerTier = ({
-	style, starsFieldContentStyle, screen, onPressTripleDot, userProfileData
+	style, starsFieldContentStyle, screen, onPressTripleDot, userProfileData, onPressChangeAvatar, selectedImage
 }: Props): React.ReactNode => {
 
 	const { t } = useTranslation()
@@ -64,10 +66,13 @@ const BannerTier = ({
 		}).start(() => {
 			setStarCount(Platform.OS === 'android' ? 100 : 300)
 		})
-		return () => { setStarCount(0) }
-	}, [userProfileData])
+		return () => {
+			setStarCount(0)
+			animatedValue.stopAnimation()
+		 }
+	}, [userProfileData, selectedImage])
 
-	const _renderTopContent = useCallback(() => {
+	const _renderTopContent = useMemo(() => {
 		return (
 			<View style={ styles.starsFieldTopContentStyle }>
 				{
@@ -75,9 +80,9 @@ const BannerTier = ({
 						<View style={ styles.avatarUserWrapperStyle }>
 							<View>
 								<View style={ styles.imageBorderStyle }>
-									<Avatar.Image size={ scaleWidth(62) } source={  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
+									<Avatar.Image size={ scaleWidth(62) } source={ selectedImage ? { uri: selectedImage } : userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
 								</View>
-								<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] }>
+								<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] } onPress={ onPressChangeAvatar }>
 									<PencilIcon/>
 								</TouchableOpacity>
 							</View>
@@ -98,7 +103,7 @@ const BannerTier = ({
 					{
 						screen === 'tier' ?
 							<View style={ styles.imageBorderStyle } >
-								<Avatar.Image size={ scaleWidth(48) } source={  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
+								<Avatar.Image size={ scaleWidth(48) } source={ selectedImage ? { uri: selectedImage } :  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
 							</View> :
 							screen === 'profile' ?
 								<TouchableOpacity style={ styles.tripleDotsWrapperStyle } onPress={ onPressTripleDot }>
@@ -110,9 +115,9 @@ const BannerTier = ({
 				</View>
 			</View>
 		)
-	}, [screen, onPressTripleDot, userProfileData])
+	}, [screen, onPressTripleDot, userProfileData, onPressChangeAvatar, selectedImage])
 
-	const _renderBottomContent = useCallback(() => {
+	const _renderBottomContent = useMemo(() => {
 		return (
 			<View style={ styles.starsFieldContentStyle }>
 				<View style={ [styles.starsFieldMidContentStyle, styles.profileBottomWrapperStyle] }>
@@ -157,8 +162,8 @@ const BannerTier = ({
 		 } >
 			<LazyStarsField starCount={ starCount } style={ style } tier={ userProfileData?.latest_tier.toLowerCase() }>
 				<View style={ [starsFieldContentStyle] }>
-					{ _renderTopContent() }
-					{ _renderBottomContent() }
+					{ _renderTopContent }
+					{ _renderBottomContent }
 				</View>
 			</LazyStarsField>
 		</Suspense>

@@ -24,7 +24,8 @@ const navigationConstant = {
 		tnc: 'tnc',
 		privacyPolicy: 'privacyPolicy',
 		notifications: 'notifications',
-		transactions: 'transactions'
+		transactions: 'transactions',
+		editProfile: 'editProfile'
 	}
 }
 

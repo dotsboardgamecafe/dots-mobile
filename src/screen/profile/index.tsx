@@ -2,6 +2,7 @@ import React, {
 	Suspense, lazy, useCallback, useMemo, useRef, useState
 } from 'react'
 import Container from '../../components/container'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import styles from './styles'
 import {
 	ImageBackground, TouchableOpacity, View, FlatList, ScrollView
@@ -23,6 +24,9 @@ import MaskIcon from '../../assets/svg/mask.svg'
 import ChevronIcon from '../../assets/svg/chevron.svg'
 import UserEditIcon from '../../assets/svg/user-edit.svg'
 import {
+	Camera,
+	Edit2,
+	Gallery,
 	Lock,
 	LogoutCurve,
 	// ShieldTick, --------------> TODO
@@ -38,10 +42,14 @@ import { useGetBadgesQuery } from '../../store/badges'
 import { useGetGameFavouriteQuery } from '../../store/game-favourite'
 import Image from '../../components/image'
 import { type GameBoardCollection } from '../../models/game-board-collection'
+import ActionButton from '../../components/action-button'
+import Modal from '../../components/modal'
+import { Avatar } from 'react-native-paper'
+import { Grayscale } from 'react-native-color-matrix-image-filters'
 
 type Props = NavigationProps<'profile'>
 
-type SettingName = 'accountInformation' | 'editPassword' | 'tnc' | 'privacyPolicy' | 'logout'
+type SettingName = 'accountInformation' | 'editPassword' | 'tnc' | 'privacyPolicy' | 'logout' | 'editProfile' | 'takePhoto' | 'selectImage'
 
 interface SettingsType {
 	name: SettingName,
@@ -50,6 +58,8 @@ interface SettingsType {
 }
 
 type Destionation = 'awards' | 'gameBoardCollection'
+
+type BottomSheetType = 'settings' | 'changeAvatar'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
@@ -60,39 +70,46 @@ const listFavGameMechanics = {
 
 const settings: SettingsType[] = [
 	{ name: 'accountInformation', title: 'profile-page.settings.account-information-title', icon: UserEditIcon },
+	{ name: 'editProfile', title: 'profile-page.settings.edit-profile-title', icon: Edit2 },
 	{ name: 'editPassword', title: 'profile-page.settings.edit-password-title', icon: Lock },
 	// { name: 'tnc', title: 'profile-page.settings.tnc-title', icon: ShieldTick },
 	// { name: 'privacyPolicy', title: 'profile-page.settings.privacy-policy-title', icon: TableDocument },
 	{ name: 'logout', title: 'profile-page.settings.logout-title', icon: LogoutCurve },
 ]
 
+const changeAvatar: SettingsType[] = [
+	{ name: 'takePhoto', title: 'profile-page.settings.take-photo-title', icon: Camera },
+	{ name: 'selectImage', title: 'profile-page.settings.select-library-title', icon: Gallery },
+]
+
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const [selectedImage, setSelectedImage] = useState('')
+	const [selectedBottomSheet, setSelectedBottomSheet] = useState<BottomSheetType | null>(null)
+	const [modalVisible, setModalVisible] = useState(false)
 	const { user } = useStorage()
 	const {
 		data: userProfileData,
-		isLoading: isLoadingUser,
+		isFetching: isLoadingUser,
 		refetch: refetchUser,
 		isError: isErrorUser
 	} = useGetUserProfileQuery()
 	const {
 		data: gameBoardCollectionData,
-		isLoading: isLoadingGameBoardCollection,
+		isFetching: isLoadingGameBoardCollection,
 		refetch: refetchGameBoardCollection,
 		isError: isErrorGameBoardCollection
 	} = useGetGameBoardCollectionQuery(user?.user_code)
 	const {
 		data: badgesData,
-		isLoading: isLoadingBadges,
+		isFetching: isLoadingBadges,
 		refetch: refetchBadges,
 		isError: isErrorBadges
 	} = useGetBadgesQuery({
 		code: user?.user_code,
-		limit: 1,
-		page: 3
 	})
 	const {
 		data: gameFavouriteData,
-		isLoading: isLoadingGameFavourite,
+		isFetching: isLoadingGameFavourite,
 		refetch: refetchGameFavourite,
 		isError: isErrorGameFavourite
 	} = useGetGameFavouriteQuery(user?.user_code)
@@ -107,13 +124,43 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		[],
 	)
 
-	const _onPressSettingItem = useCallback((name: SettingName) => () => {
-		if (name !== 'logout') {
-			navigation.navigate(name)
+	const _toggleModal = useCallback(() => {
+		setModalVisible(!modalVisible)
+	}, [modalVisible])
+
+	const _handleResponseImage = useCallback((response: any) => {
+		 if (response.errorCode) {
+			console.log('Camera Error: ', response.errorCode)
 		} else {
-			onSetLogout()
+			const imageUri: string = response.assets ? response.assets[0].uri : ''
+
+			_toggleModal()
+			setSelectedImage(imageUri)
 		}
+	}, [_toggleModal])
+
+	const _onPressSettingItem = useCallback((name: SettingName) => () => {
 		bottomSheetRef.current?.close()
+		if (name === 'logout') {
+			onSetLogout()
+
+			return
+		}
+		if (name === 'takePhoto' || name === 'selectImage') {
+			if (name === 'takePhoto')  {
+				launchCamera({ mediaType: 'photo' }, _handleResponseImage)
+			} else {
+				launchImageLibrary({
+					mediaType: 'photo',
+					maxWidth: 5000,
+					maxHeight: 5000
+				}, _handleResponseImage)
+			}
+
+			return
+		}
+		
+		navigation.navigate(name)
 	}, [bottomSheetRef, onSetLogout])
 
 	const _getScrollY = useMemo(() => {
@@ -127,6 +174,11 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		refetchGameFavourite()
 	}, [])
 
+	const _onShowBottomSheet = useCallback((bottomSheetType: BottomSheetType) => {
+		setSelectedBottomSheet(bottomSheetType)
+		bottomSheetRef.current?.present()
+	}, [])
+
 	const _isLoading = useMemo(() => {
 		const isLoading = isLoadingUser || isLoadingBadges || isLoadingGameFavourite || isLoadingGameBoardCollection
 		return isLoading
@@ -136,6 +188,44 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		const isError = isErrorUser || isErrorBadges || isErrorGameFavourite || isErrorGameBoardCollection
 		return isError
 	}, [isErrorUser, isErrorBadges, isErrorGameFavourite, isErrorGameBoardCollection])
+
+	const _greyScaledImage = useCallback((image: string, shouldGrayScale: boolean) => {
+		const imageStyle = shouldGrayScale ? styles.cardAwardUnClaimStyle :  styles.cardAwardItemImageStyle
+		if (shouldGrayScale) {
+			return (
+				<Grayscale style={ [styles.rowCenterStyle, styles.justifyCenterStyle] }>
+					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
+				</Grayscale>
+			)
+		}
+
+		return <Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
+	}, [])
+
+	const _renderModalContent = useMemo(() => {
+		return (
+			<React.Fragment>
+				<View style={ styles.rowEndStyle }>
+					<TouchableOpacity onPress={ _toggleModal }>
+						<CloseIcon />
+					</TouchableOpacity>
+				</View>
+				<View style={ styles.rowCenterStyle }>
+					<Avatar.Image size={ scaleWidth(120) } source={ { uri: selectedImage } }/>
+					<Text style={ styles.changePictureDescriptionStyle } variant='bodyLargeRegular'>
+						Are you sure want to change this picture ?
+					</Text>
+					<ActionButton
+						label={ 'Change Picture' }
+						onPress={ _toggleModal }
+					/>
+				</View>
+			</React.Fragment>
+		)
+	}, [
+		_toggleModal,
+		selectedImage
+	])
 
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
 		return (
@@ -170,52 +260,56 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		)
 	}, [])
 
-	const _renderListGame = useCallback(() => {
+	const _renderListGame = useMemo(() => {
 		const { numColumns, resultData } = formatGridData<GameBoardCollection>(gameBoardCollectionData ?? [])
 
 		return (
 			<FlatList
 				style={ styles.listGameWrapperStyle }
 				data={ resultData }
-				renderItem={ ({ item }) => {
+				renderItem={ ({ item, index }) => {
 					if (item) return <Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } />
 
-					return <View style={ styles.boardGameItemStyle }/>
+					return <View key={ index } style={ styles.boardGameItemStyle }/>
 				} }
-				keyExtractor={ (_, index) => index.toString() as any }
+				keyExtractor={ (item, index) => item ? item.game_id.toString() : index.toString() }
 				numColumns={ numColumns }
 				scrollEnabled={ false }
 				contentContainerStyle={ [styles.justifyCenterStyle, styles.rowCenterStyle] }
 				columnWrapperStyle={ styles.justifyCenterStyle }
 				ItemSeparatorComponent={ () => <Image resizeMode='contain' source={ rackIllu } style={ styles.boardGameItemSeparatorStyle } /> }
 				ListFooterComponent={ () => <Image resizeMode='contain' source={ rackIllu } style={ styles.boardGameItemSeparatorStyle } />  }
+				ListEmptyComponent={ () => <View/> }
 				removeClippedSubviews
 			/>
 		)
 	}, [gameBoardCollectionData])
 
-	const _renderBoardGameCollection = useCallback((): React.ReactNode => {
+	const _renderBoardGameCollection = useMemo((): React.ReactNode => {
 		return (
 			<React.Fragment>
 				{ _renderTitle(t('profile-page.game-collection-title'), 'gameBoardCollection') }
-				{ _renderListGame() }
+				{ _renderListGame }
 			</React.Fragment>
 		)
 	}, [_renderListGame])
 
-	const _renderAward = useCallback((): React.ReactNode => {
+	const _renderAward = useMemo((): React.ReactNode => {
 		return (
 			<View style={ [styles.awardWrapperStyle] }>
 				{ _renderTitle(t('profile-page.awards-title'), 'awards') }
 				{ _renderScrollView(
-					badgesData?.map(item => {
+					badgesData?.filter((_, index) => index < 4)?.map(item => {
 						return (
 							<View
 								style={ styles.cardAwardItemStyle }
 								key={ item.badge_id }
 							>
-								<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  />
-								<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item.badge_image_url  } }  />
+								{
+									item?.is_badge_owned ?
+										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
+								}
+								{ _greyScaledImage(item?.badge_image_url, !item?.is_badge_owned) }
 							</View>
 						)
 					})
@@ -224,7 +318,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		)
 	}, [badgesData])
 
-	const _renderFavoriteGame = useCallback((): React.ReactNode => {
+	const _renderFavoriteGame = useMemo((): React.ReactNode => {
 		return (
 			<View style={ styles.awardWrapperStyle }>
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
@@ -250,17 +344,17 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		)
 	}, [gameFavouriteData])
 
-	const _renderMidContent = useCallback(() => {
+	const _renderMidContent = useMemo(() => {
 		return (
 			<View style={ styles.midContentStyle }>
-				{ _renderBoardGameCollection() }
-				{ _renderAward() }
-				{ _renderFavoriteGame() }
+				{ _renderBoardGameCollection }
+				{ _renderAward }
+				{ _renderFavoriteGame }
 			</View>
 		)
 	}, [_renderBoardGameCollection, _renderAward, _renderFavoriteGame])
 
-	const _renderTopContent = useCallback(() => {
+	const _renderTopContent = useMemo(() => {
 		return (
 			<Suspense fallback={
 				<View style={ styles.starsFieldContentStyle } />
@@ -270,28 +364,31 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 					screen='profile'
 					style={ styles.bannerStyle }
 					starsFieldContentStyle={ styles.starsFieldContentStyle }
-					onPressTripleDot={ () => bottomSheetRef.current?.present() }
+					onPressTripleDot={ () => { _onShowBottomSheet('settings') } }
+					onPressChangeAvatar={ () => { _onShowBottomSheet('changeAvatar') } }
 				/>
 			</Suspense>
 		)
-	}, [bottomSheetRef, userProfileData])
+	}, [bottomSheetRef, userProfileData, selectedImage])
 
-	const _renderBottomSheetTopContent = useCallback(() => {
+	const _renderBottomSheetTopContent = useMemo(() => {
+		const title = selectedBottomSheet === 'settings' ? 'Settings' : 'Change Avatar'
 		return (
 			<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
-				<Text variant='bodyExtraLargeHeavy'>Settings</Text>
+				<Text variant='bodyExtraLargeHeavy'>{ title }</Text>
 				<TouchableOpacity onPress={ () => bottomSheetRef.current?.close() }>
 					<CloseIcon />
 				</TouchableOpacity>
 			</View>
 		)
-	}, [])
+	}, [selectedBottomSheet])
 
-	const _renderBottomSheetMidContent = useCallback(() => {
+	const _renderBottomSheetMidContent = useMemo(() => {
+		const listMenu = selectedBottomSheet === 'settings' ? settings : changeAvatar
 		return (
 			<FlatList
 				style={ styles.settingWrapperStyle }
-				data={ settings }
+				data={ listMenu }
 				renderItem={ ({ item }) => {
 					return (
 						<View>
@@ -313,13 +410,13 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				bounces={ false }
 			 />
 		)
-	}, [])
+	}, [selectedBottomSheet])
 
-	const _renderBottomSheetContent = useCallback(() => {
+	const _renderBottomSheetContent = useMemo(() => {
 		return (
 			<React.Fragment>
-				{ _renderBottomSheetTopContent() }
-				{ _renderBottomSheetMidContent() }
+				{ _renderBottomSheetTopContent }
+				{ _renderBottomSheetMidContent }
 				<Text
 					variant='bodyExtraSmallRegular'
 					style={ styles.versionSyle }
@@ -328,9 +425,9 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				</Text>
 			</React.Fragment>
 		)
-	}, [])
+	}, [_renderBottomSheetTopContent])
 
-	const _renderMainContent = useCallback(() => {
+	const _renderMainContent = useMemo(() => {
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
 		return (
@@ -340,9 +437,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				removeClippedSubviews
 				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
 				scrollEventThrottle={ 16 }
+				contentContainerStyle={ styles.mainContentStyle }
 			>
-				{ _renderTopContent() }
-				{ _renderMidContent() }
+				{ _renderTopContent }
+				{ _renderMidContent }
 			</ScrollView>
 		)
 	}, [_renderTopContent, _renderMidContent])
@@ -356,12 +454,15 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				_getScrollY || isErrorUser ?
 					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
 			}
-			{ _renderMainContent() }
+			{ _renderMainContent }
 			<BottomSheet
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }>
-				{ _renderBottomSheetContent() }
+				{ _renderBottomSheetContent }
 			</BottomSheet>
+			<Modal borderRadius={ 12 } visible={ modalVisible } onDismiss={ _toggleModal }>
+				{ _renderModalContent }
+			</Modal>
 			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
