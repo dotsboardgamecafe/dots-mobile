@@ -13,7 +13,6 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		paddingHorizontal: scaleHorizontal(16),
 		paddingTop: statusBarHeight,
 		paddingBottom: scaleVertical(48),
-		backgroundColor: colors.blueAccent,
 		alignItems: 'center',
 		overflow: 'hidden'
 	},

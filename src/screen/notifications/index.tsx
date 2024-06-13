@@ -59,7 +59,7 @@ const Notifications = (): React.ReactNode => {
 	const _onPressNotif = useCallback((notif: Notification) => {
 		setSelectedNotif(notif)
 		bottomSheetRef.current?.present()
-		updateSeenNotification(notif)
+		if (!notif.status_read) updateSeenNotification(notif)
 	}, [])
 
 	const _onPressClose = useCallback(() => {

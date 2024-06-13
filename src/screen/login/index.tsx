@@ -18,8 +18,7 @@ import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
-import { usePostLoginMutation, usePostVerifyMutation } from '../../store/access'
-import LoadingDialog from '../../components/loading-dialog'
+import { usePostLoginMutation } from '../../store/access'
 import { useForm, Controller, type FieldValues } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -30,8 +29,7 @@ interface FormData extends FieldValues { email: string, password: string }
 
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const errModalRef = useRef<BottomSheetModal>(null)
-	const errVerifyRef = useRef<BottomSheetModal>(null)
-	const {  onSetUser } = useStorage()
+	const {  onSetUser, onSetLogin } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
 	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>()
@@ -45,11 +43,6 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			error
 		}
 	] = usePostLoginMutation()
-	const [postVerify, {
-		data: verifyData,
-		error: verifyError,
-		isLoading: verifyLoading
-	}] = usePostVerifyMutation()
 
 	const passSuffix = useMemo(() => {
 		const props: IconProps = {
@@ -80,26 +73,12 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	useEffect(() => {
 		if (isSuccess) {
 			onSetUser(data)
+			onSetLogin()
 		}
 		if (isError) {
 			errModalRef.current?.present()
 		}
 	}, [data, error, isError, isSuccess])
-
-	useEffect(() => {
-		if (route.params?.token) {
-			postVerify(route.params.token)
-		}
-	}, [route.params])
-
-	useEffect(() => {
-		if (verifyData) {
-			onSetUser(verifyData)
-		}
-		if (verifyError) {
-			errVerifyRef.current?.present()
-		}
-	}, [verifyData, verifyError])
 
 	return (
 		<Container>
@@ -193,15 +172,9 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 					</View>
 				</View>
 			</KeyboardAwareScrollView>
-			{ verifyLoading && <LoadingDialog visible title='Verifying email' /> }
 			<ErrorModal
 				bsRef={ errModalRef }
 				title='Failed To Login'
-				message={ error ? (error as { data: string }).data : '' }
-			/>
-			<ErrorModal
-				bsRef={ errVerifyRef }
-				title='Failed To Verify Account'
 				message={ error ? (error as { data: string }).data : '' }
 			/>
 		</Container>

@@ -2,7 +2,10 @@ import React, {
 	useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
 import { Image, Keyboard, TouchableOpacity, View } from 'react-native'
-import { ArrowDown2, type IconProps, Lock, Unlock } from 'iconsax-react-native'
+import {
+	ArrowDown2, type IconProps, Lock, Unlock,
+	TickCircle
+} from 'iconsax-react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { openInbox } from 'react-native-email-link'
@@ -24,11 +27,12 @@ import useStorage from '../../hooks/useStorage'
 import LoadingDialog from '../../components/loading-dialog'
 import { Controller, useForm } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
+import Modal from '../../components/modal'
 
 type Props = NavigationProps<'register'>
 
 const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
-	const { onSetLogin, onSetToken, email, onSetEmail } = useStorage()
+	const { onSetLogin, user, onSetUser } = useStorage()
 	const { control, handleSubmit, formState: { errors }, } = useForm<RegisterParam>()
 	const bsRegRef = useRef<BottomSheetModal>(null)
 	const bsErrRef = useRef<BottomSheetModal>(null)
@@ -37,6 +41,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 	const [countryCode] = useState('+62')
 	const [showPass, setShowPass] = useState(false)
 	const [showConfirmPass, setShowConfirmPass] = useState(false)
+	const [emailVerified, setEmailVerified] = useState(false)
 	const [loadingLabel, setLoadingLabel] = useState(t('register-page.verify-email'))
 	const [postRegister, { data, error, isLoading }] = usePostRegisterMutation()
 	const [postVerify, {
@@ -79,9 +84,16 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		return (<Lock { ...props } />)
 	}, [showConfirmPass])
 
+	const signIn = useCallback(() => {
+		if (navigation.canGoBack())
+			navigation.goBack()
+		else
+			navigation.replace('login', {})
+	}, [])
+
 	const doRegister = useCallback((data: RegisterParam) => {
 		Keyboard.dismiss()
-		onSetEmail(data.email)
+		onSetUser({ email: data.email })
 		postRegister(data)
 	}, [])
 
@@ -94,8 +106,8 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 		bsResendRef.current?.dismiss()
 		bsErrResendRef.current?.dismiss()
 		setLoadingLabel(t('register-page.send-email'))
-		postResendVerify(email)
-	}, [email])
+		user?.email && postResendVerify(user.email)
+	}, [user])
 
 	useEffect(() => {
 		if (data) {
@@ -108,8 +120,12 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 
 	useEffect(() => {
 		if (verifyData) {
-			onSetToken(verifyData.token)
-			onSetLogin()
+			onSetUser(verifyData)
+			if (verifyData.token && verifyData.user_code) {
+				onSetLogin()
+			} else {
+				setEmailVerified(true)
+			}
 		}
 		if (verifyError)  {
 			bsResendRef.current?.present()
@@ -320,7 +336,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 
 						<TouchableOpacity
 							style={ styles.login }
-							onPress={ navigation.goBack }
+							onPress={ signIn }
 						>
 							<Text variant='bodyMiddleBold'>
 								{ t('register-page.sign-in') }
@@ -373,6 +389,20 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				onClickAction={ resendVerify }
 			/>
 			{ (verifyLoading || resendLoading) && <LoadingDialog visible title={ loadingLabel } /> }
+			<Modal
+				visible={ emailVerified }
+				onDismiss={ signIn }
+				borderRadius={ 16 }
+				style={ { alignItems: 'center' } }
+			>
+				<TickCircle variant='Bold' size={ scaleWidth(64) } color={ theme.colors.black } />
+				<Text variant='bodyLargeMedium' style={ [styles.successTitle, { textAlign: 'center' }] }>Email verified, you may sign in with your email and password now.</Text>
+				<ActionButton
+					style={ styles.successAction }
+					label={ t('register-page.sign-in') }
+					onPress={ signIn }
+				/>
+			</Modal>
 		</Container>
 	)
 }

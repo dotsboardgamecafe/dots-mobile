@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type PaginationNotificationType, type Notification } from '../../models/notification'
+import { baseApi } from '../../utils/base.api'
 
-export const notificationsApi = createApi({
-	reducerPath: 'notificationApi',
-	tagTypes: ['Notification'],
-	baseQuery: baseQuery(),
+export const notificationsApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getNotifications: builder.query<Notification[], number | undefined>({
 			query: page => ({ url: `/v1/notifications?page=${page}` }),
@@ -28,16 +24,17 @@ export const notificationsApi = createApi({
 			query: ({ notification_code }) => ({
 				url: `/v1/notifications/${notification_code}`,
 				method: 'put',
-				body: {
+				data: {
 					is_seen: true
 				},
 			}),
-			async onQueryStarted({ notification_code, ...patch }, { dispatch, queryFulfilled }) {
+			async onQueryStarted(patch, { dispatch, queryFulfilled }) {
 				const patchResult = dispatch(
 					notificationsApi.util.updateQueryData('getNotifications', undefined, draft => {
-						console.log({
-							draft, patch
-						})
+						const indexOfPatch = draft.findIndex(item => item.notification_code === patch.notification_code)
+						draft[indexOfPatch].status_read = true
+						
+						return draft
 					})
 				)
 				try {
@@ -47,7 +44,8 @@ export const notificationsApi = createApi({
 				}
 			},
 		}),
-	})
+	}),
+	overrideExisting: false
 })
 
 export const {

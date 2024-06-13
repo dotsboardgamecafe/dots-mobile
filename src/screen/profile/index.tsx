@@ -19,8 +19,6 @@ import BottomSheet from '../../components/bottom-sheet'
 
 import ArrowRightIcon from '../../assets/svg/arrow-right.svg'
 import CloseIcon from '../../assets/svg/close.svg'
-import DiceIcon from '../../assets/svg/dice.svg'
-import MaskIcon from '../../assets/svg/mask.svg'
 import ChevronIcon from '../../assets/svg/chevron.svg'
 import UserEditIcon from '../../assets/svg/user-edit.svg'
 import {
@@ -46,6 +44,10 @@ import ActionButton from '../../components/action-button'
 import Modal from '../../components/modal'
 import { Avatar } from 'react-native-paper'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
+import FilterIcon from '../../components/filter-icon'
+import { useDispatch } from 'react-redux'
+import Toast from 'react-native-toast-message'
+import { baseApi } from '../../utils/base.api'
 
 type Props = NavigationProps<'profile'>
 
@@ -63,11 +65,6 @@ type BottomSheetType = 'settings' | 'changeAvatar'
 
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
-const listFavGameMechanics = {
-	fun: <DiceIcon/>,
-	excited: <MaskIcon/>
-}
-
 const settings: SettingsType[] = [
 	{ name: 'accountInformation', title: 'profile-page.settings.account-information-title', icon: UserEditIcon },
 	{ name: 'editProfile', title: 'profile-page.settings.edit-profile-title', icon: Edit2 },
@@ -83,6 +80,7 @@ const changeAvatar: SettingsType[] = [
 ]
 
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
+	const dispatch = useDispatch()
 	const [selectedImage, setSelectedImage] = useState('')
 	const [selectedBottomSheet, setSelectedBottomSheet] = useState<BottomSheetType | null>(null)
 	const [modalVisible, setModalVisible] = useState(false)
@@ -105,6 +103,8 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		refetch: refetchBadges,
 		isError: isErrorBadges
 	} = useGetBadgesQuery({
+		limit: 4,
+		page: 1,
 		code: user?.user_code,
 	})
 	const {
@@ -130,7 +130,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 
 	const _handleResponseImage = useCallback((response: any) => {
 		 if (response.errorCode) {
-			console.log('Camera Error: ', response.errorCode)
+			Toast.show({
+				type: 'error',
+				text1: 'Camera Error: ' + response.errorCode
+			})
 		} else {
 			const imageUri: string = response.assets ? response.assets[0].uri : ''
 
@@ -142,8 +145,8 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	const _onPressSettingItem = useCallback((name: SettingName) => () => {
 		bottomSheetRef.current?.close()
 		if (name === 'logout') {
+			dispatch(baseApi.util.resetApiState())
 			onSetLogout()
-
 			return
 		}
 		if (name === 'takePhoto' || name === 'selectImage') {
@@ -299,7 +302,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 			<View style={ [styles.awardWrapperStyle] }>
 				{ _renderTitle(t('profile-page.awards-title'), 'awards') }
 				{ _renderScrollView(
-					badgesData?.filter((_, index) => index < 4)?.map(item => {
+					badgesData?.map(item => {
 						return (
 							<View
 								style={ styles.cardAwardItemStyle }
@@ -324,6 +327,8 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
 					gameFavouriteData?.map(item => {
+						const codeGame = item.game_category_name.toLowerCase().split(' ')
+							.join('_')
 						return (
 							<RoundedBorder
 								style={ styles.roundedGameFavStyle }
@@ -334,7 +339,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 								colors={ [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent] }
 								contentStyle={ [styles.rowStyle, styles.rowCenterStyle, styles.itemGameFavWrapperStyle] }
 							>
-								{ listFavGameMechanics[item.game_category_name.toLowerCase() as keyof typeof listFavGameMechanics] }
+								<FilterIcon set_group='game_mechanic' set_key={ codeGame }  />
 								<Text style={ styles.gamefavTitleStyle } variant='bodyMiddleRegular'>{ item.game_category_name }</Text>
 							</RoundedBorder>
 						)

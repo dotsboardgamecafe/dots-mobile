@@ -10,6 +10,7 @@ import Text from '../text'
 
 const FilterTag = ({
 	id,
+	code,
 	icon,
 	label,
 	active,
@@ -25,7 +26,7 @@ const FilterTag = ({
 				!active && styles.inactive,
 				!onClick && { backgroundColor: theme.colors.background }
 			] }
-			onPress={ () => { onClick && onClick(id, label) } }
+			onPress={ () => { onClick && onClick(id, code, label) } }
 			disabled={ !onClick }
 		>
 			{ icon }

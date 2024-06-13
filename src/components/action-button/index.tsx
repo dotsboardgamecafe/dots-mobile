@@ -30,7 +30,7 @@ const ActionButton = ({ style, onPress, label, suffix, loading, labelStyle }: Ac
 		}
 
 		return text
-	}, [loading])
+	}, [loading, label, labelStyle, suffix])
 
 	const handleClick = useCallback(() => {
 		!loading && onPress && onPress()

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
+import { SCREEN_HEIGHT, WINDOW_HEIGHT } from '@gorhom/bottom-sheet'
 
 import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { type ThemeType } from '../../models/theme'
@@ -10,6 +10,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		alignItems: 'stretch',
 		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
+		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT
 	},
 	headerImage: {
 		width: scaleWidth(72),

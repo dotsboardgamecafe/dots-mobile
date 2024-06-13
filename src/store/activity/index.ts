@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type PointActivity, type Activity } from '../../models/activity'
+import { baseApi } from '../../utils/base.api'
 
-export const activityApi = createApi({
-	reducerPath: 'activityApi',
-	tagTypes: ['Activity'],
-	baseQuery: baseQuery(),
+export const activityApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getActivitiesHiglight: builder.query<Activity[], string | undefined>({
 			query: (user_code?:string) => ({ url: `/v1/users/${user_code}/activity` }),
@@ -15,7 +11,8 @@ export const activityApi = createApi({
 			query: (user_code?:string) => ({ url: `/v1/users/${user_code}/point-activity` }),
 			transformResponse: result => (result as {data: PointActivity[]})?.data,
 		}),
-	})
+	}),
+	overrideExisting: false
 })
 
 export const {

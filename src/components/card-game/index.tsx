@@ -18,11 +18,13 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 	const theme = useTheme<ThemeType>()
 
 	const renderImage = (): React.ReactNode => {
-		const image = <Image
-			style={ styles.image }
-			source={ { uri: item.image_url } }
-			resizeMode='cover'
-		/>
+		const image = <View style={ styles.imageContainer }>
+			<Image
+				style={ styles.image }
+				source={ { uri: item.image_url } }
+				resizeMode='cover'
+			/>
+		</View>
 
 		if (item.is_popular) {
 			return (
@@ -40,7 +42,7 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 
 	return (
 		<RoundedBorder style={ style } radius={ 12 } borderWidth={ 1 } key={ item.game_code }>
-			<TouchableOpacity onPress={ () => onPress && onPress(item) } disabled={ onPress === null }>
+			<TouchableOpacity onPress={ () => { onPress && onPress(item) } } disabled={ onPress === null }>
 				{ renderImage() }
 				<Text variant='bodyLargeBold' style={ styles.title }>{ item.name }</Text>
 				<View style={ styles.row }>
@@ -65,5 +67,5 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 
 export default React.memo(
 	CardGame,
-	(prev, next) => prev.item.game_code === next.item.game_code
+	// (prev, next) => prev.item.game_code === next.item.game_code
 )

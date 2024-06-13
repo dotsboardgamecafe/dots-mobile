@@ -5,6 +5,7 @@ import { MMKV } from 'react-native-mmkv'
 import instance from './instance'
 import { BASE_URL } from '@env'
 import { EnumLogin } from '../hooks/useStorage'
+import { type User } from '../models/profile'
 
 interface BaseQueryType {
   baseUrl: string
@@ -36,9 +37,10 @@ BaseQueryFn<
 				headers
 			}
 			if (isPrivate || isLoggedIn) {
+				const user: User = JSON.parse(storage.getString('user') ?? '')
 				config.headers = {
 					...headers,
-					Authorization: storage.getString('token')
+					Authorization: user.token
 				}
 			}
 			const result = await instance(config)

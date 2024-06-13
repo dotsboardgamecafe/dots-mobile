@@ -14,7 +14,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 type Props = NavigationProps<'login'>
 
-type FieldType = 'userName' | 'fullName' | 'phoneNumber'
+type FieldType = 'fullName' | 'phoneNumber'
 
 const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 
@@ -29,12 +29,6 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 	const _fieldFactory = useCallback((contentType: FieldType) => {
 		const content = {
-			userName: {
-				label: 'Username',
-				rules: {
-
-				}
-			},
 			fullName: {
 				label: 'Fullname'
 			},
@@ -97,7 +91,6 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 				bounces={ false }
 				enableOnAndroid
 			>
-				{ _renderFields('userName') }
 				{ _renderFields('fullName') }
 				{ _renderFields('phoneNumber') }
 				<ActionButton

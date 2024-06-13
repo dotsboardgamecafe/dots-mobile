@@ -15,6 +15,7 @@ import MvpItem from '../../components/mvp-item'
 import { useSharedValue } from 'react-native-reanimated'
 import PageIndicator from '../../components/page-indicator'
 import { useGetHallOfFameQuery, useGetMonthlyTopAchieverQuery } from '../../store/champion'
+import { type MostVPParam } from '../../models/champions'
 
 type Props = NavigationProps<'champion'>
 
@@ -22,9 +23,14 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 	const statusBarHeight = getStatusBarHeight() ?? 0
 	const navBarHeight = useBottomTabBarHeight()
 	const progressValue = useSharedValue<number>(0)
-	const { data: mvpData } = useGetMonthlyTopAchieverQuery('vp')
-	const { data: uniqueData } = useGetMonthlyTopAchieverQuery('unique_game')
-	const { data: hallData } = useGetHallOfFameQuery()
+	const date = new Date()
+	const param: MostVPParam = {
+		month: date.getMonth() + 1,
+		year: date.getFullYear()
+	}
+	const { data: mvpData, isLoading: loadingMvp, refetch: refetchMvp } = useGetMonthlyTopAchieverQuery({ ...param, category: 'vp' })
+	const { data: uniqueData, isLoading: loadingUnique, refetch: refetchUnique } = useGetMonthlyTopAchieverQuery({ ...param, category: 'unique_game' })
+	const { data: hallData, isLoading: loadingHall, refetch: refetchHall } = useGetHallOfFameQuery(date.getFullYear())
 
 	const cardMVP = useMemo(() => {
 		return (
@@ -34,16 +40,18 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 			>
 				<FlatList
 					data={ mvpData?.slice(0, 10) }
-					keyExtractor={ item => item.rank + item.user_name }
+					keyExtractor={ (item, index) => `${item.rank}.${item.user_name}.${index}` }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
 					showsVerticalScrollIndicator={ false }
 					ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
+					refreshing={ loadingMvp }
+					onRefresh={ refetchMvp }
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [mvpData])
 
 	const cardUnique = useMemo(() => {
 		return (
@@ -53,16 +61,18 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 			>
 				<FlatList
 					data={ uniqueData?.slice(0, 10) }
-					keyExtractor={ item => item.rank + item.user_name }
+					keyExtractor={ (item, index) => `${item.rank}.${item.user_name}.${index}` }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP={ false } /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
 					showsVerticalScrollIndicator={ false }
 					ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
+					refreshing={ loadingUnique }
+					onRefresh={ refetchUnique }
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [uniqueData])
 
 	const cardHof = useMemo(() => {
 		return (
@@ -78,12 +88,17 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 					style={ { marginVertical: scaleVertical(32) } }
 					columnWrapperStyle={ { gap: scaleWidth(16) } }
 					numColumns={ 2 }
+					refreshing={ loadingHall }
+					onRefresh={ refetchHall }
 				/>
 			</CardChampion>
 		)
-	}, [])
+	}, [hallData])
 
-	const cards = useMemo(() => ([cardMVP, cardUnique, cardHof]), [])
+	const cards = useMemo(
+		() => ([cardMVP, cardUnique, cardHof]),
+		[mvpData, uniqueData, hallData]
+	)
 
 	return (
 		<Container contentStyle={ styles.page }>
