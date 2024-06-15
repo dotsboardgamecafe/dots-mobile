@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
-	Image, ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent
+	ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent,
+	TouchableOpacity
 } from 'react-native'
 import {
 	ArrowLeft, Category, Clock, ExportCurve, Level, Location, Profile2User
@@ -13,21 +14,59 @@ import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import createStyle from './styles'
 import { GameImageBackground } from '../../assets/images'
-import { gameTypes, games } from '../discover/data'
 import FilterTag from '../../components/filter-tag'
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import { PageIndicator } from 'react-native-page-indicator'
 import CardGame from '../../components/card-game'
-import { avatars, gameMasters, gamePlays, rooms } from './data'
-import { type GameMaster } from '../../models/games'
+import { avatars } from './data'
+import { type Games, type GameMasters } from '../../models/games'
 import Blush from '../../components/blush'
+import exitApp from '../../utils/exit.app'
+import { useGetDetailGameQuery } from '../../store/game'
+import Modal from '../../components/modal'
+import ActionButton from '../../components/action-button'
+import { type Rooms } from '../../models/rooms'
+import Image from '../../components/image'
+import { useGetSettingQuery } from '../../store/setting'
+import FilterIcon from '../../components/filter-icon'
 
 type Props = NavigationProps<'gameDetail'>
 
-const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
+const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => {
+	const { params: game } = route
 	const styles = createStyle(theme)
 	const [blushOp, setBlushOp] = useState(1)
 	const [gamePlayIndex, setGamePlayIndex] = useState(0)
+	const { data, error } = useGetDetailGameQuery(game.game_code ?? '')
+	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
+
+	const _gameMechanic = useMemo(() => {
+		if (!data?.game_categories) return
+
+		const categories = data.game_categories.map(c => c.category_name)
+		const list = listGameMechanic?.filter(m => categories.includes(m.set_key))
+		if (list?.length) {
+			return (
+				<>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
+					<FlatList
+						data={ list }
+						keyExtractor={ i => i.setting_code }
+						renderItem={ ({ item }) => <FilterTag
+							id={ item.set_order }
+							code={ item.setting_code }
+							icon={ <FilterIcon { ...item }/> }
+							label={ item.content_value }
+						/> }
+						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
+						contentContainerStyle={ styles.wrapList }
+						showsVerticalScrollIndicator={ false }
+						scrollEnabled={ false }
+					/>
+				</>
+			)
+		}
+	}, [data, listGameMechanic])
 
 	const onPageScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const start = 30
@@ -53,26 +92,28 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 			<Image
 				source={ { uri: item } }
 				style={ styles.gamePlay }
+				resizeMode='stretch'
+				// keepRatio
 			/>
 		)
 	}, [])
 
-	const gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMaster>) => {
+	const gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMasters>) => {
 		return (
 			<View style={ { alignContent: 'center', marginHorizontal: scaleHorizontal(16) } }>
 				<Image
-					source={ { uri: item.photo } }
+					source={ { uri: item.image_url } }
 					style={ styles.gameMaster }
 				/>
-				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.name }</Text>
+				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.user_name }</Text>
 			</View>
 		)
 	}, [])
 
-	const room = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
+	const room = useCallback(({ item }: ListRenderItemInfo<Rooms>) => {
 		return (
 			<Image
-				source={ { uri: item } }
+				source={ { uri: item.room_img_url } }
 				resizeMode='cover'
 				style={ styles.room }
 			/>
@@ -82,6 +123,18 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const onGamePlaySroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const x = nativeEvent.contentOffset.x
 		setGamePlayIndex(x / SCREEN_WIDTH)
+	}, [])
+
+	const _onPressBack = useCallback(() => {
+		if (navigation.canGoBack()) {
+			navigation.goBack()
+		} else {
+			exitApp()
+		}
+	}, [navigation])
+
+	const navigateToDetail = useCallback((game: Games) => {
+		navigation.navigate('gameDetail', game)
 	}, [])
 
 	return (
@@ -105,14 +158,15 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 				opacity={ blushOp }
 			/>
 			<View style={ styles.header }>
-				<ArrowLeft
-					variant='Linear'
-					color={ theme.colors.onBackground }
-					size={ scaleWidth(24) }
-					onPress={ navigation.goBack }
-				/>
+				<TouchableOpacity onPress={ _onPressBack }>
+					<ArrowLeft
+						variant='Linear'
+						color={ theme.colors.onBackground }
+						size={ scaleWidth(24) }
+					/>
+				</TouchableOpacity>
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
-					Rising Sun Game
+					{ data?.name }
 				</Text>
 				<ExportCurve
 					variant='Linear'
@@ -131,7 +185,7 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 						style={ styles.gameImageBg }
 					>
 						<Image
-							source={ { uri: 'https://picsum.photos/210' } }
+							source={ { uri: data?.image_url ?? game.image_url } }
 							resizeMode='cover'
 							style={ styles.gameImage }
 						/>
@@ -172,7 +226,7 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Slot: 3-5 players</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Slot: { data?.minimal_participant }-{ data?.maximum_participant } players</Text>
 
 						<Level
 							variant='Bold'
@@ -180,7 +234,7 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: 3.3</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.difficulty }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Clock
@@ -189,7 +243,7 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Duration: 120 min</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Duration: { data?.duration } min</Text>
 
 						<Category
 							variant='Bold'
@@ -197,7 +251,7 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: War Game</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: { data?.game_type }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Location
@@ -206,82 +260,69 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Location: Bandung, Paskal 23 Mall</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Location: { data?.cafe_name }</Text>
 					</View>
 				</View>
 
 				<View style={ styles.section }>
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Description</Text>
 					<Text variant='paragraphMiddleRegular' style={ styles.mt12 }>
-						Rising Sun is a board game for 3 to 5 players set in legendary feudal Japan. Each player chooses a Clan and competes to lead theirs to victory by accumulating Victory Points over the course of the Seasons. Each Clan possesses a unique ability and differs in Seasonal Income, Starting Honor Rank, and Home Province. Over the course of the game, players will forge and break alliances, choose political actions, worship the gods, customize their clans, and position their figures around Japan..
+						{ data?.description }
 					</Text>
-					<Text variant='bodyMiddleBold' style={ styles.contReading }>Continue Reading</Text>
+					{ /* <Text variant='bodyMiddleBold' style={ styles.contReading }>Continue Reading</Text> */ }
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
-					<FlatList
-						scrollEnabled={ false }
-						data={ gameTypes }
-						renderItem={ ({ item }) => <FilterTag
-							id={ item.id }
-							icon={ item.icon }
-							label={ item.name }
-							active
-						/>
-						}
-						ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
-						contentContainerStyle={ styles.wrapList }
-					/>
+					{ _gameMechanic }
 
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Components</Text>
 				</View>
-				<View
-				>
+				<View>
 					<FlatList
 						horizontal
-						data={ gamePlays }
+						data={ data?.collection_url }
 						renderItem={ gamePlay }
 						pagingEnabled
 						onScroll={ onGamePlaySroll }
 						showsHorizontalScrollIndicator={ false }
 					/>
-					<PageIndicator
-						count={ gamePlays.length }
-						current={ gamePlayIndex }
-						color='#2325269E'
-						activeColor='#232526'
-						style={ {
-							position: 'absolute',
-							bottom: scaleVertical(16),
-							alignSelf: 'center',
-						} }
-					/>
+					{ (data?.collection_url?.length ?? 0) > 1 &&
+						<PageIndicator
+							count={ data?.collection_url?.length ?? 0 }
+							current={ gamePlayIndex }
+							color='#2325269E'
+							activeColor='#232526'
+							style={ {
+								position: 'absolute',
+								bottom: scaleVertical(16),
+								alignSelf: 'center',
+							} }
+						/>
+					}
 				</View>
 
 				<View style={ styles.section }>
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Game Master</Text>
 					<FlatList
 						scrollEnabled={ false }
-						data={ gameMasters }
+						data={ data?.game_masters }
 						renderItem={ gameMaster }
 						ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
 						contentContainerStyle={ [styles.wrapList] }
 					/>
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text>
+					{ data?.game_rooms && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
 					<FlatList
-						data={ rooms }
+						data={ data?.game_rooms }
 						renderItem={ room }
 						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(16) } } /> }
 						scrollEnabled={ false }
 						contentContainerStyle={ styles.mt16 }
 					/>
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text>
-
+					{ data?.game_related && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
 					<FlatList
-						data={ games.slice(0, 2) }
+						data={ data?.game_related }
 						keyExtractor={ item => item.game_code }
-						renderItem={ ({ item }) => <CardGame item={ item } /> }
+						renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
 						ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 						style={ styles.list }
 						columnWrapperStyle={ styles.columnWrapper }
@@ -290,6 +331,18 @@ const GameDetail = ({ theme, navigation, t }: Props): React.ReactNode => {
 					/>
 				</View>
 			</ScrollView>
+
+			{
+				typeof error === 'object' && error && 'data' in error &&
+				<Modal
+					visible
+					onDismiss={ navigation.goBack }
+					style={ { alignItems: 'center' } }
+				>
+					<Text>{ (error as {data:string}).data }</Text>
+					<ActionButton label='Go Back' onPress={ navigation.goBack } />
+				</Modal>
+			}
 		</Container>
 	)
 }

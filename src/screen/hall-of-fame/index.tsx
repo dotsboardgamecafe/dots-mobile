@@ -7,21 +7,23 @@ import Text from '../../components/text'
 import FilterItem from '../../components/filter-item'
 import { ArrowDown2 } from 'iconsax-react-native'
 import { type NavigationProps } from '../../models/navigation'
-import { hofData } from '../champion/data'
 import CardHof from '../../components/card-hof'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
 import createStyle from './styles'
+import { useGetHallOfFameQuery } from '../../store/champion'
 
 type Props = NavigationProps<'hallOfFame'>
 
 const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
+	const { data, isLoading, refetch, isFetching } = useGetHallOfFameQuery()
 	const filterRef = useRef<BottomSheetModal>(null)
 	const date = new Date()
-	const [years, setYears] = useState(Array.from({ length: 5 }, (_, i) => {
+	date.setFullYear(date.getFullYear() + 1)
+	const [years, setYears] = useState(Array.from({ length: 1 }, (_, i) => {
 		date.setFullYear(date.getFullYear() - 1)
 		return {
 			name: date.toLocaleDateString('en-us', { year: 'numeric' }),
@@ -71,8 +73,10 @@ const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 				/>
 			</View>
 			<FlatList
-				data={ hofData }
-				keyExtractor={ item => item.game.game_code + item.player.user_code }
+				data={ data }
+				refreshing={ isLoading || isFetching }
+				onRefresh={ refetch }
+				keyExtractor={ item => item.user_fullname + item.location }
 				renderItem={ ({ item }) => <CardHof { ...item } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 8 } } /> }
 				columnWrapperStyle={ { gap: scaleWidth(8) } }

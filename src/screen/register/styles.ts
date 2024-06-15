@@ -1,15 +1,15 @@
 import { StyleSheet } from 'react-native'
-import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
+import { SCREEN_HEIGHT, WINDOW_HEIGHT } from '@gorhom/bottom-sheet'
 
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { type ThemeType } from '../../models/theme'
+import { colorsTheme } from '../../constants/theme'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
+const styles = StyleSheet.create({
 	scrollView: {
 		alignItems: 'stretch',
 		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
+		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT
 	},
 	headerImage: {
 		width: scaleWidth(72),
@@ -32,10 +32,10 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	inputInfo: {
 		marginTop: scaleHeight(6),
-		color: colors.gray
+		color: colorsTheme.gray
 	},
 	countryCode: {
-		color: colors.gray
+		color: colorsTheme.gray
 	},
 	phonePrefixArrow: {
 		marginStart: scaleWidth(2)
@@ -70,7 +70,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	successInfo: {
 		marginTop: scaleHeight(8),
-		color: colors.gray,
+		color: colorsTheme.gray,
 		textAlign: 'center',
 	},
 	successAction: {
@@ -78,4 +78,4 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	}
 })
 
-export default createStyle
+export default styles

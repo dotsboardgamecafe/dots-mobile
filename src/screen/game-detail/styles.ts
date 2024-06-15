@@ -69,7 +69,8 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	gameImage: {
 		borderRadius: scaleWidth(120),
 		width: '100%',
-		aspectRatio: 1,
+		height: '100%',
+		// aspectRatio: 1,
 		backgroundColor: colors.background,
 		borderWidth: scaleWidth(3),
 		borderColor: colors.background
@@ -87,7 +88,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		borderColor: colors.background,
 		borderWidth: scaleWidth(1.5),
 		width: scaleWidth(22),
-		aspectRatio: 1
+		height: scaleWidth(22),
 	},
 	avatarNotFirst: {
 		marginStart: -8
@@ -138,7 +139,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	gameMaster: {
 		width: scaleWidth(64),
-		aspectRatio: 1,
+		height: scaleWidth(64),
 		borderRadius: 32,
 	},
 	room: {

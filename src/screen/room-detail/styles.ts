@@ -64,6 +64,12 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		alignSelf: 'center',
 		marginVertical: scaleVertical(24)
 	},
+	prizesImg: {
+		width: '90%',
+		height: scaleHeight(210),
+		alignSelf: 'center',
+		borderRadius: 12
+	},
 	firstPrizeShadow1: {
 		alignSelf: 'center',
 		borderRadius: 10,
@@ -99,12 +105,12 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	firstPriceBadgeMain: {
 		width: scaleWidth(124),
-		aspectRatio: 1,
+		height: scaleWidth(124),
 		marginStart: scaleHorizontal(16),
 	},
 	firstPriceBadge: {
 		width: scaleWidth(72),
-		aspectRatio: 1,
+		height: scaleWidth(72),
 		borderRadius: scaleWidth(36)
 	},
 	mt8: {
@@ -134,7 +140,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	otherPrizeBadge: {
 		width: scaleWidth(24),
-		aspectRatio: 1,
+		height: scaleWidth(24),
 		borderRadius: scaleWidth(16),
 	},
 	playerContainer: {
@@ -144,7 +150,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	player: {
 		width: scaleWidth(52),
-		aspectRatio: 1,
+		height: scaleWidth(52),
 		borderRadius: 32,
 	},
 	playerShadow: {
@@ -180,7 +186,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	bookingImage: {
 		width: scaleWidth(84),
-		aspectRatio: 1,
+		height: scaleWidth(84),
 		borderRadius: 8,
 		marginVertical: scaleVertical(16)
 	},

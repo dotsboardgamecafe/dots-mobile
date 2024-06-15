@@ -1,5 +1,5 @@
 import { FlatList, Image, ScrollView, View } from 'react-native'
-import React from 'react'
+import React, { useCallback } from 'react'
 import Container from '../../components/container'
 import styles from './styles'
 import withCommon from '../../hoc/with-common'
@@ -8,24 +8,23 @@ import { type NavigationProps } from '../../models/navigation'
 import { paymentSuccessIllu } from '../../assets/images'
 import ActionButton from '../../components/action-button'
 import CardGame from '../../components/card-game'
+import { useGetDetailGameQuery } from '../../store/game'
+import { type Games } from '../../models/games'
 
 type Props = NavigationProps<'paymentSuccess'>
 
-const games: any[] = Array.from({ length: 30 }, (_, i) => ({
-	game_code: `CODE-${i + 1}`,
-	game_type: 'War Game',
-	cafe_id: 1,
-	name: `Rising Game ${i + 1}`,
-	image_url: 'https://picsum.photos/200',
-	description: '',
-	collection_url: '',
-	status: 'ok',
-	created_date: '01-01-2024',
-	is_popular: i < 4
-}))
-
-const PaymentSuccess = ({ t }: Props): React.ReactNode => {
+const PaymentSuccess = ({ t, route, navigation }: Props): React.ReactNode => {
+	const { game_code } = route.params
+	const { data: game } = useGetDetailGameQuery(game_code ?? '')
 	
+	const navigateToDetail = useCallback((game: Games) => {
+		navigation.replace('gameDetail', game)
+	}, [])
+	
+	const navigateToTransaction = useCallback(() => {
+		navigation.replace('transactions')
+	}, [])
+
 	return (
 		<Container containerStyle={ styles.container }>
 			<ScrollView showsVerticalScrollIndicator={ false } bounces={ false }>
@@ -36,15 +35,16 @@ const PaymentSuccess = ({ t }: Props): React.ReactNode => {
 					<ActionButton
 						label={ t('payment-success.button-history') }
 						style={ styles.buttonHistory }
+						onPress={ navigateToTransaction }
 					/>
 				</View>
 				<View style={ styles.relatedGameWrapperStyle }>
-					<Text variant='bodyExtraLargeHeavy' style={ styles.relatedGameTitleStyle }>{ t('payment-success.related-games') }</Text>
+					{ game?.game_related && <Text variant='bodyExtraLargeHeavy' style={ styles.relatedGameTitleStyle }>{ t('payment-success.related-games') }</Text> }
 					<FlatList
 						scrollEnabled={ false }
-						data={ games }
+						data={ game?.game_related }
 						keyExtractor={ item => item.game_code }
-						renderItem={ ({ item }) => <CardGame { ...item } /> }
+						renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
 						ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 						style={ styles.listStyle }
 						columnWrapperStyle={ styles.columnWrapper }

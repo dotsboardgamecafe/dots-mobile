@@ -5,6 +5,7 @@ import { MMKV } from 'react-native-mmkv'
 import instance from './instance'
 import { BASE_URL } from '@env'
 import { EnumLogin } from '../hooks/useStorage'
+import { type User } from '../models/profile'
 
 interface BaseQueryType {
   baseUrl: string
@@ -16,7 +17,7 @@ const baseQuery = ({ baseUrl }: BaseQueryType = { baseUrl: BASE_URL }):
 BaseQueryFn<
   {
     url: string
-    method?: 'get' | 'post' | 'delete' | 'patch'
+    method?: 'get' | 'post' | 'delete' | 'patch' | 'put'
     data?: AxiosRequestConfig['data']
     params?: AxiosRequestConfig['params']
     headers?: AxiosRequestConfig['headers'],
@@ -35,23 +36,27 @@ BaseQueryFn<
 				params,
 				headers
 			}
-			if (isPrivate && isLoggedIn) {
+			if (isPrivate || isLoggedIn) {
+				const user: User = JSON.parse(storage.getString('user') ?? '')
 				config.headers = {
 					...headers,
-					Authorization: storage.getString('token')
+					Authorization: user.token
 				}
 			}
 			const result = await instance(config)
 			return { data: result.data }
 		} catch (axiosError) {
-			const err = axiosError as AxiosError
-			const msg = (err.response?.data as {stat_msg: string}).stat_msg
-			return {
-				error: {
-					status: err.response?.status,
-					data: msg || err.message,
-				},
+			const error = {
+				status: 500,
+				data: 'Internal Server Error',
 			}
+			const err = axiosError as AxiosError
+			if (typeof axiosError !== 'string') {
+				const msg = (err.response?.data as {stat_msg: string}).stat_msg
+				if (err.response?.status) error.status = err.response?.status
+				error.data = msg || err.message
+			}
+			return { error }
 		}
 	}
 

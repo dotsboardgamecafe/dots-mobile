@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native'
 import { scaleWidth, scaleHeight } from '../../utils/pixel.ratio'
-import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
+import { SCREEN_HEIGHT, WINDOW_HEIGHT } from '@gorhom/bottom-sheet'
 
 const styles = StyleSheet.create({
 	scrollView: {
 		alignItems: 'center',
 		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
+		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT
 	},
 	headerImage: {
 		width: scaleWidth(72),
@@ -21,7 +22,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-start'
 	},
 	input: {
-		marginTop: scaleHeight(8)
+		marginTop: scaleHeight(8),
+		alignSelf: 'stretch'
 	},
 	passwordLabel: {
 		marginTop: scaleHeight(24),
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		marginTop: scaleHeight(24),
-		marginBottom: scaleHeight(24),
+		// marginBottom: scaleHeight(24),
 	},
 	registerContainer: {
 		flexDirection: 'row',

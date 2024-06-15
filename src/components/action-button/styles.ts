@@ -1,34 +1,24 @@
 import { StyleSheet } from 'react-native'
 import { scaleHeight } from '../../utils/pixel.ratio'
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 
 const styles = StyleSheet.create({
 	container: {
-		height: scaleHeight(42),
+		height: scaleHeight(46),
 		alignSelf: 'stretch',
-		backgroundColor: 'black',
-		borderRadius: 16,
-		paddingBottom: scaleHeight(6),
-	},
-	rectangle1: {
-		flex: 1,
-		overflow: 'hidden',
-		backgroundColor: '#434343',
-		borderRadius: 16,
 		justifyContent: 'center',
 		alignItems: 'center',
+		overflow: 'hidden',
+		// paddingBottom: scaleHeight(6),
 	},
-	rectangle2: {
-		width: SCREEN_WIDTH,
-		height: SCREEN_WIDTH / 2,
-		backgroundColor: '#232526',
+	bg: {
 		position: 'absolute',
-		top: '-400%',
-		start: '20%',
-		transform: [{ rotate: '25deg' }]
+		top: 0,
+		left: 0,
+		height: scaleHeight(46),
 	},
 	label: {
-		color: 'white'
+		color: 'white',
+		marginBottom: scaleHeight(6)
 	},
 })
 

@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { View, TextInput as TextInputNative } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import { type StyleProps } from 'react-native-reanimated'
 
 import { type TextInputType } from './type'
-import createStyle from './styles'
-import { type ThemeType } from '../../models/theme'
-import { type StyleProps } from 'react-native-reanimated'
+import styles from './styles'
+import Text from '../text'
 
 const TextInput = ({
 	containerStyle,
@@ -13,10 +12,12 @@ const TextInput = ({
 	borderFocusColor,
 	prefix,
 	suffix,
-	inputProps
+	inputProps,
+	errors
 }: TextInputType): React.ReactNode => {
 
-	const styles = createStyle(useTheme<ThemeType>())
+	const [isFocused, setFocused] = useState(false)
+
 	const is = useMemo(() => {
 		let res = { ...styles.input, ...(inputStyle as StyleProps) }
 
@@ -26,32 +27,35 @@ const TextInput = ({
 		return res
 	}, [prefix, suffix])
 
-	const [isFocused, setFocused] = useState(false)
-
 	return (
-		<View style={ [
-			styles.container,
-			borderFocusColor && isFocused && [{ borderColor: borderFocusColor } as any],
-			containerStyle
-		] }>
-			{ prefix }
+		<View style={ containerStyle }>
+			<View
+				style={ [
+					styles.container,
+					borderFocusColor && isFocused && { borderColor: borderFocusColor } as any,
+					errors && styles.error,
+				] }
+			>
+				{ prefix }
 
-			<TextInputNative
-				style={ is }
-				onFocus={ e => {
-					setFocused(true)
-					if (typeof inputProps?.onFocus === 'function')
-						inputProps.onFocus(e)
-				} }
-				onBlur={ e => {
-					setFocused(false)
-					if (typeof inputProps?.onBlur === 'function')
-						inputProps.onBlur(e)
-				} }
-				{ ...inputProps }
-			/>
+				<TextInputNative
+					style={ is }
+					onFocus={ e => {
+						setFocused(true)
+						if (typeof inputProps?.onFocus === 'function')
+							inputProps.onFocus(e)
+					} }
+					onBlur={ e => {
+						setFocused(false)
+						if (typeof inputProps?.onBlur === 'function')
+							inputProps.onBlur(e)
+					} }
+					{ ...inputProps }
+				/>
 
-			{ suffix }
+				{ suffix }
+			</View>
+			{ errors?.message && <Text variant='bodyMiddleRegular' style={ styles.textError }>{ errors.message }</Text> }
 		</View>
 	)
 }

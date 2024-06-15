@@ -1,14 +1,21 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 
 import styles from './styles'
 import { type ActionButtonProps } from './type'
 import Text from '../text'
+import ButtonBg from '../../assets/svg/ButtonBg.svg'
+import { ActivityIndicator } from 'react-native-paper'
+import { scaleHeight } from '../../utils/pixel.ratio'
 
-const ActionButton = ({ style, onPress, label, suffix }: ActionButtonProps): React.ReactNode => {
+const ActionButton = ({ style, onPress, label, suffix, loading, labelStyle }: ActionButtonProps): React.ReactNode => {
 
 	const content = useMemo(() => {
-		const text = <Text variant='bodyMiddleBold' style={ styles.label }>{ label }</Text>
+		if (loading) {
+			return <ActivityIndicator color='white' size={ scaleHeight(20) } />
+		}
+
+		const text = <Text variant='bodyMiddleBold' style={ [styles.label, labelStyle] }>{ label }</Text>
 
 		if (suffix) {
 			return (
@@ -23,18 +30,24 @@ const ActionButton = ({ style, onPress, label, suffix }: ActionButtonProps): Rea
 		}
 
 		return text
-	}, [])
+	}, [loading, label, labelStyle, suffix])
+
+	const handleClick = useCallback(() => {
+		!loading && onPress && onPress()
+	}, [loading])
 
 	return (
 		<TouchableOpacity
 			style={ [styles.container, style] }
-			onPress={ onPress }
+			onPress={ handleClick }
 			activeOpacity={ 1 }
 		>
-			<View style={ styles.rectangle1 }>
-				<View style={ styles.rectangle2 } />
-				{ content }
-			</View>
+			<ButtonBg
+				width={ '100%' }
+				height={ scaleHeight(46) }
+				style={ styles.bg }
+			/>
+			{ content }
 		</TouchableOpacity>
 	)
 }
