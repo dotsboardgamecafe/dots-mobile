@@ -24,7 +24,7 @@ import VP from '../../assets/svg/VP.svg'
 import ActionButton from '../../components/action-button'
 import ShareBottomSheet from '../../components/share-bottom-sheet'
 import Modal from '../../components/modal'
-import { useGetRoomDetailQuery, useGetTourneyDetailQuery } from '../../store/room'
+import { useGetRoomDetailQuery, useGetTourneyDetailQuery, usePostJoinRoomMutation, usePostJoinTourneyMutation } from '../../store/room'
 import { type Users } from '../../models/users'
 import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
@@ -42,11 +42,24 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	const [isRoom, setIsRoom] = useState(false)
 	const [isTourney, setIsTourney] = useState(false)
 	const [data, setData] = useState<Rooms>()
+	const [gameCode, setGameCode] = useState('')
 	const [isLoading, setLoading] = useState(false)
-	const { data: room, isLoading: roomLoading } = useGetRoomDetailQuery(params.room_code ?? '', { skip: !isRoom })
-	const { data: tourney, isLoading: tourneyLoading } = useGetTourneyDetailQuery(params.tournament_code ?? '', { skip: !isTourney })
+	const { data: room, isLoading: roomLoading, refetch: roomRefetch } = useGetRoomDetailQuery(params.room_code ?? '', { skip: !isRoom })
+	const { data: tourney, isLoading: tourneyLoading, refetch: tourneyRefetch } = useGetTourneyDetailQuery(params.tournament_code ?? '', { skip: !isTourney })
+	const [postJoinRoom, {
+		data: joinRoomData,
+		isLoading: joinRoomLoading,
+		error: joinRoomError
+	}] = usePostJoinRoomMutation()
+	const [postJoinTourney, {
+		data: joinTourneyData,
+		isLoading: joinTourneyLoading,
+		error: joinTourneyError
+	}] = usePostJoinTourneyMutation()
 
 	const quotePrize = useMemo(() => {
+		setGameCode(data?.game_code ?? '')
+
 		if (data?.room_type === 'normal' || data?.room_type === 'special_event') {
 			return (
 				<View style={ styles.ph }>
@@ -58,7 +71,16 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		}
 
 		if (isTourney) {
-			return (<View />)
+			return (
+				<View style={ [styles.ph] }>
+					<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
+					<Image
+						source={ { uri: data?.prizes_img_url } }
+						style={ styles.prizesImg }
+						keepRatio
+					/>
+				</View>
+			)
 		}
 
 		return (
@@ -193,17 +215,29 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<ActionButton2
 					label='Game Info'
 					style={ styles.gameInfoAction }
-					onPress={ () => { navigation.navigate('gameDetail', { game_code: data?.game_code }) } }
+					onPress={ () => {
+						navigation.navigate('gameDetail', { game_code: data?.game_code })
+					} }
 				/>
 			)
 	}, [data])
 
 	const joinAction = useMemo(() => {
-		let vp
+		let vp, room
 		if (isTourney) {
 			vp = ` - Get ${data?.participant_vp}`
+			room = 'room'
 		} else if (isRoom) {
 			vp = ` - Get ${data?.reward_point}`
+			room = 'tournament'
+		}
+
+		if (data?.have_joined) {
+			return (
+				<Text variant='bodyMiddleBold' style={ [styles.mh12, styles.mv32, { textAlign: 'center' }] }>
+					{ t('room-detail.joined', { room }) }
+				</Text>
+			)
 		}
 
 		return (
@@ -243,7 +277,14 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		)
 	}, [playerColors, data])
 
-	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
+	const hideRegModal = useCallback(() => {
+		if (isRoom) {
+			postJoinRoom(params.room_code ?? '')
+		} else if (isTourney) {
+			postJoinTourney(params.tournament_code ?? '')
+		}
+		setRegModalVisible(false)
+	}, [isRoom, isTourney])
 
 	useEffect(() => {
 		if (!params.room_code && !params.tournament_code) {
@@ -258,6 +299,44 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			setLoading(tourneyLoading)
 		}
 	}, [params, room, tourney])
+
+	useEffect(() => {
+		const focusSubscribe = navigation.addListener('focus', () => {
+			if (!data) return
+
+			if (isRoom) {
+				roomRefetch()
+				setLoading(roomLoading)
+			} else {
+				tourneyRefetch()
+				setLoading(tourneyLoading)
+			}
+		})
+
+		return focusSubscribe
+	}, [isRoom, data])
+
+	useEffect(() => {
+		if (joinRoomData) {
+			navigation.push('webview', {
+				link: joinRoomData.invoice_url,
+				game_code: gameCode
+			})
+		} else if (joinRoomError) {
+			console.error(joinRoomError)
+		}
+	}, [joinRoomData, joinRoomError, gameCode])
+
+	useEffect(() => {
+		if (joinTourneyData) {
+			navigation.push('webview', {
+				link: joinTourneyData.invoice_url,
+				game_code: gameCode
+			})
+		} else if (joinTourneyError) {
+			console.error(joinTourneyError)
+		}
+	}, [joinTourneyData, joinTourneyError, gameCode])
 
 	return (
 		<Container>
@@ -307,7 +386,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 							}
 							<FlatList
 								scrollEnabled={ false }
-								data={ data?.room_participants }
+								data={ data?.room_participants ?? data?.tournament_participants }
 								renderItem={ players }
 								ItemSeparatorComponent={ () => <View style={ styles.h8 } /> }
 								contentContainerStyle={ [styles.wrapList] }
@@ -337,7 +416,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				/>
 				<Text variant='bodyExtraLargeHeavy' style={ styles.mt16 }>{ t('room-detail.booking') }</Text>
 				<Image
-					source={ { uri: 'https://picsum.photos/84' } }
+					source={ { uri: data?.game_img_url } }
 					style={ styles.bookingImage }
 				/>
 				<Text variant='bodyLargeBold' style={ styles.bookingTitle }>{ data?.game_name }</Text>
@@ -356,6 +435,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<ActionButton
 					label={ t('room-detail.pay') }
 					style={ styles.mt16 }
+					loading={ isRoom ? joinRoomLoading : joinTourneyLoading }
 					onPress={ hideRegModal }
 				/>
 			</Modal>
