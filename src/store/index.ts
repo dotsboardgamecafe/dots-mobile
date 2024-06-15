@@ -18,6 +18,7 @@ import { championApi } from './champion'
 import { notificationsApi } from './notifications'
 import { settingApi } from './setting'
 import { baseApi } from '../utils/base.api'
+import { uploadApi } from './upload'
 
 const middlewares = [
 	baseApi.middleware,
@@ -34,6 +35,7 @@ const middlewares = [
 	championApi.middleware,
 	notificationsApi.middleware,
 	settingApi.middleware,
+	uploadApi.middleware,
 	rtkQueryErrorLogger
 ]
 
@@ -53,7 +55,7 @@ export const store = configureStore({
 		[gameApi.reducerPath]: gameApi.reducer,
 		[championApi.reducerPath]: championApi.reducer,
 		[miscSlice.name]: miscSlice.reducer,
-		[settingApi.reducerPath]: settingApi.reducer
+		[settingApi.reducerPath]: settingApi.reducer,
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().concat(middlewares),

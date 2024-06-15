@@ -17,7 +17,9 @@ const styles = StyleSheet.create({
 		marginTop: scaleHeight(8)
 	},
 	passwordLabel: {
-		alignSelf: 'flex-start'
+		alignSelf: 'flex-start',
+		textAlign: 'left',
+		width: '100%'
 	},
 	actionButton: {
 		marginTop: scaleHeight(32)

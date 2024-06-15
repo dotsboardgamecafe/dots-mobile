@@ -24,3 +24,13 @@ export interface PaginationNotificationType {
   sort: string;
   status: string;
 }
+
+export interface DescriptionNotification {
+  level: string;
+  end_time: string;
+  cafe_name: string;
+  game_name: string;
+  start_date: string;
+  start_time: string;
+  cafe_address: string;
+}

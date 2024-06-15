@@ -5,6 +5,7 @@ import {
 import React, {
 	useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
+import isEmpty from 'lodash/isEmpty'
 import Container from '../../components/container'
 import Header from '../../components/header'
 import styles from './styles'
@@ -18,7 +19,7 @@ import { BlurView } from '@react-native-community/blur'
 import CloseIcon from '../../assets/svg/close.svg'
 import RoundedBorder from '../../components/rounded-border'
 import {  notificationsApi, useLazyGetNotificationsQuery, useUpdateSeenNotificationMutation } from '../../store/notifications'
-import { type Notification } from '../../models/notification'
+import { type DescriptionNotification, type Notification } from '../../models/notification'
 import Image from '../../components/image'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
@@ -81,40 +82,51 @@ const Notifications = (): React.ReactNode => {
 
 	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<Notification>): React.ReactElement => {
 		const { title, color } = _generateNotifTitle(item.type)
-		return (
-			<Pressable style={ {
-				...styles.rowStyle,
-				...styles.itemWrapperStyle,
-				backgroundColor: !item.status_read ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
-			} }
-			onPress={ () => { _onPressNotif(item) } }
-			>
-				<View style={ {
-					...styles.dotStyle,
-					backgroundColor: !item.status_read ? colorsTheme.black : colorsTheme.gray300,
-				} } />
-				<Pressable
-					// onPress={ () => { Alert.alert('image') } }
+		const parseDescription = JSON.parse(item.description ?? '{}')
+		
+		if (!isEmpty(parseDescription)) {
+			const startDate = moment(parseDescription.start_date as string).format('MMM, Do YYYY')
+			const startTime = moment(`${parseDescription.start_date} ${parseDescription.start_time}`).format('hh:mm')
+			const endTime = moment(`${parseDescription.start_date} ${parseDescription.end_time}`).format('hh:mm')
+			const fullLocation = `${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
+			const description = `${startDate} at ${startTime} - ${endTime} at ${fullLocation}`
+			return (
+				<Pressable style={ {
+					...styles.rowStyle,
+					...styles.itemWrapperStyle,
+					backgroundColor: !item.status_read ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
+				} }
+				onPress={ () => { _onPressNotif(item) } }
 				>
-					<Image
-						source={ { uri: item.image_url } }
-						style={ styles.imageGameStyle }
-					/>
-				</Pressable>
-				<View style={ styles.growStyle }>
-					<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
-						<Text variant='bodyMiddleBold' style={ { color, letterSpacing: -1 } }>{ title }</Text>
-						<Text variant='bodySmallMedium'>{ moment(item.created_date).fromNow() }</Text>
-					</View>
-					<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
-						<View>
-							<Text variant='bodyMiddleDemi' style={ styles.titleStyle }>{ item.title }</Text>
-							<Text variant='bodySmallRegular' >{ item.created_date }</Text>
+					<View style={ {
+						...styles.dotStyle,
+						backgroundColor: !item.status_read ? colorsTheme.black : colorsTheme.gray300,
+					} } />
+					<Pressable
+						// onPress={ () => { Alert.alert('image') } }
+					>
+						<Image
+							source={ { uri: item.image_url } }
+							style={ styles.imageGameStyle }
+						/>
+					</Pressable>
+					<View style={ styles.growStyle }>
+						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
+							<Text variant='bodyMiddleBold' style={ { color, letterSpacing: -1 } }>{ title }</Text>
+							<Text variant='bodySmallMedium'>{ moment(item.created_date).fromNow() }</Text>
+						</View>
+						<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
+							<View>
+								<Text style={ [styles.titleStyle, styles.resultLocationStyle] } variant='bodyMiddleDemi'>{ item.title }</Text>
+								<Text style={ styles.resultLocationStyle } variant='bodySmallRegular' >{ description }</Text>
+							</View>
 						</View>
 					</View>
-				</View>
-			</Pressable>
-		)
+				</Pressable>
+			)
+		}
+
+		return <React.Fragment/>
 	}, [])
 
 	const _renderContent = useMemo(() => {
@@ -175,26 +187,32 @@ const Notifications = (): React.ReactNode => {
 	}, [selectedNotif])
 
 	const _renderBottomSheetBottomContent = useMemo(() => {
-		const separateSchedule = selectedNotif?.description.split('at')
-		const schedule = separateSchedule ? separateSchedule[0] : ''
-		const locations = separateSchedule ? separateSchedule[1] : ''
+		const description: DescriptionNotification = JSON.parse(selectedNotif?.description ?? '{}')
 
-		return (
-			<View style={ styles.bottomsheetBottomContentStyle }>
-				<View style={ styles.rowStyle }>
-					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Schedule</Text>
-					<Text variant='bodyMiddleMedium'>{ schedule  }</Text>
+		if (!isEmpty(description)) {
+			const startDate = moment(description.start_date).format('MMM, Do')
+			const startTime = moment(`${description.start_date} ${description.start_time}`).format('hh:mm')
+			const endTime = moment(`${description.start_date} ${description.end_time}`).format('hh:mm')
+			const fullLocation = `${description.cafe_name}, ${description.cafe_address}`
+			return (
+				<View style={ styles.bottomsheetBottomContentStyle }>
+					<View style={ styles.rowStyle }>
+						<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Schedule</Text>
+						<Text variant='bodyMiddleMedium'>{ startDate } at { startTime } - { endTime }</Text>
+					</View>
+					<View style={ styles.rowStyle }>
+						<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Location</Text>
+						<Text variant='bodyMiddleMedium' style={ styles.resultLocationStyle }>{ fullLocation }</Text>
+					</View>
+					<View style={ styles.rowStyle }>
+						<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Level</Text>
+						<Text variant='bodyMiddleMedium'>{ description.level }</Text>
+					</View>
 				</View>
-				<View style={ styles.rowStyle }>
-					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Location</Text>
-					<Text variant='bodyMiddleMedium'>{ locations }</Text>
-				</View>
-				<View style={ styles.rowStyle }>
-					<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Level</Text>
-					<Text variant='bodyMiddleMedium'>unknown todo</Text>
-				</View>
-			</View>
-		)
+			)
+		}
+
+		return null
 	}, [selectedNotif])
 
 	const _bottomSheetContent = useMemo(() => {

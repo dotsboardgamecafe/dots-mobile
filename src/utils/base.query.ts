@@ -21,15 +21,16 @@ BaseQueryFn<
     data?: AxiosRequestConfig['data']
     params?: AxiosRequestConfig['params']
     headers?: AxiosRequestConfig['headers'],
-    isPrivate?: boolean
+    isPrivate?: boolean,
+		transformRequest?: (data: any) => any
   },
   unknown,
   unknown
 > =>
-	async({ url, method = 'get', data, params, headers, isPrivate = true }) => {
+	async({ url, method = 'get', data, params, headers, isPrivate = true, transformRequest }) => {
 		const isLoggedIn = storage.getNumber('loginType') === EnumLogin.IS_LOGGED_IN
 		try {
-			const config = {
+			const config: AxiosRequestConfig = {
 				url: baseUrl + url,
 				method,
 				data,
@@ -42,19 +43,22 @@ BaseQueryFn<
 					...headers,
 					Authorization: user.token
 				}
+				if (transformRequest) {
+					config.transformRequest = transformRequest
+				}
 			}
 			const result = await instance(config)
 			return { data: result.data }
-		} catch (axiosError) {
+		} catch (axiosError:any) {
 			const error = {
 				status: 500,
 				data: 'Internal Server Error',
 			}
 			const err = axiosError as AxiosError
 			if (typeof axiosError !== 'string') {
-				const msg = (err.response?.data as {stat_msg: string}).stat_msg
+				const msg = (err.response?.data as {stat_msg?: string})?.stat_msg
 				if (err.response?.status) error.status = err.response?.status
-				error.data = msg || err.message
+				error.data = msg ?? err.message
 			}
 			return { error }
 		}

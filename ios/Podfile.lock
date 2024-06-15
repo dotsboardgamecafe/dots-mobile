@@ -957,10 +957,6 @@ PODS:
     - React-Core
   - react-native-flipper (0.212.0):
     - React-Core
-  - react-native-image-picker (7.1.2):
-    - glog
-    - RCT-Folly (= 2022.05.16.00)
-    - React-Core
   - react-native-mmkv (2.11.0):
     - MMKV (>= 1.2.13)
     - React-Core
@@ -1153,6 +1149,15 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - RNImageCropPicker (0.41.1):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.41.1)
+    - TOCropViewController (~> 2.7.4)
+  - RNImageCropPicker/QBImagePickerController (0.41.1):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController (~> 2.7.4)
   - RNPermissions (4.1.5):
     - React-Core
   - RNReanimated (3.7.2):
@@ -1167,6 +1172,7 @@ PODS:
   - RNSVG (15.0.0):
     - React-Core
   - SocketRocket (0.6.1)
+  - TOCropViewController (2.7.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1226,7 +1232,6 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-color-matrix-image-filters (from `../node_modules/react-native-color-matrix-image-filters`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
-  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -1256,6 +1261,7 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1279,6 +1285,7 @@ SPEC REPOS:
     - MMKVCore
     - OpenSSL-Universal
     - SocketRocket
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   boost:
@@ -1344,8 +1351,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-color-matrix-image-filters"
   react-native-flipper:
     :path: "../node_modules/react-native-flipper"
-  react-native-image-picker:
-    :path: "../node_modules/react-native-image-picker"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-netinfo:
@@ -1404,6 +1409,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@shopify/flash-list"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1461,7 +1468,6 @@ SPEC CHECKSUMS:
   react-native-blur: 27113acc008facbc8accae5fb3a78b8424f64cfd
   react-native-color-matrix-image-filters: e2df0971b44f1aba49f4740463fdda857d467adf
   react-native-flipper: 9c1957af24b76493ba74f46d000a5c1d485e7731
-  react-native-image-picker: 994a97b28e7f2c2197e21801569bb19f6e494e38
   react-native-mmkv: e97c0c79403fb94577e5d902ab1ebd42b0715b43
   react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
   react-native-pager-view: ffde7887fb8dbf2d5b7a5df6d558f9e9a32942c5
@@ -1491,13 +1497,15 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
   RNFlashList: 4b4b6b093afc0df60ae08f9cbf6ccd4c836c667a
   RNGestureHandler: deda62b8339496ba721a45e0f3e2d7a319932cee
+  RNImageCropPicker: 601604515fd6fbba318147b0a56aed0be9379415
   RNPermissions: 804379cdb8fa76ad0ab6617240057fb66b0eb0dd
   RNReanimated: 3850671fd0c67051ea8e1e648e8c3e86bf3a28eb
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNSVG: 3f65a03e0c61a8495dee92bf82545ed9041cbf3b
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
 
 PODFILE CHECKSUM: aeb75017b81a47378ee861358031cf4dc32c6589
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.15.2

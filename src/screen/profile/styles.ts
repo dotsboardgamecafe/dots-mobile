@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 		margin: scaleHorizontal(16 / 3),
 	},
 	mainContentStyle: {
-		paddingBottom: scaleHeight(36)
+		paddingBottom: scaleHeight(42)
 	},
 	boardGameItemSeparatorStyle: {
 		width: scaleWidth(320),

@@ -2,10 +2,10 @@ import React, {
 	Suspense, lazy, useCallback, useMemo, useRef, useState
 } from 'react'
 import Container from '../../components/container'
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import ImagePicker, { type ImageOrVideo, type Options } from 'react-native-image-crop-picker'
 import styles from './styles'
 import {
-	ImageBackground, TouchableOpacity, View, FlatList, ScrollView
+	ImageBackground, TouchableOpacity, View, FlatList, ScrollView,
 } from 'react-native'
 import Text from '../../components/text'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
@@ -32,7 +32,7 @@ import {
 } from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
 import useStorage from '../../hooks/useStorage'
-import { useGetUserProfileQuery } from '../../store/user'
+import { useGetUserProfileQuery, useUpdateProfileMutation } from '../../store/user'
 import ReloadView from '../../components/reload-view'
 import Loading from '../../components/loading'
 import { useGetGameBoardCollectionQuery } from '../../store/game-board-collection'
@@ -48,6 +48,9 @@ import FilterIcon from '../../components/filter-icon'
 import { useDispatch } from 'react-redux'
 import Toast from 'react-native-toast-message'
 import { baseApi } from '../../utils/base.api'
+import { useUploadMutation } from '../../store/upload'
+import { type UploadType } from '../../models/upload'
+import { type UserProfile } from '../../models/user'
 
 type Props = NavigationProps<'profile'>
 
@@ -79,11 +82,13 @@ const changeAvatar: SettingsType[] = [
 	{ name: 'selectImage', title: 'profile-page.settings.select-library-title', icon: Gallery },
 ]
 
+const initialModalVisibleState = false
+
 const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	const dispatch = useDispatch()
-	const [selectedImage, setSelectedImage] = useState('')
+	const [selectedImage, setSelectedImage] = useState<UploadType>()
 	const [selectedBottomSheet, setSelectedBottomSheet] = useState<BottomSheetType | null>(null)
-	const [modalVisible, setModalVisible] = useState(false)
+	const [modalVisible, setModalVisible] = useState(initialModalVisibleState)
 	const { user } = useStorage()
 	const {
 		data: userProfileData,
@@ -113,36 +118,36 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		refetch: refetchGameFavourite,
 		isError: isErrorGameFavourite
 	} = useGetGameFavouriteQuery(user?.user_code)
+	const [
+		uploadFile,
+		{
+			isLoading: isLoadingUploadFile,
+		}
+	] = useUploadMutation()
+	const [
+		updateProfile,
+		{
+			isLoading: isLoadingUpdateProfile,
+		}
+	] = useUpdateProfileMutation()
 	const [scrollY, setScrollY] = useState(0)
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const { onSetLogout } = useStorage()
 
-	const onPressArrow = useCallback(
-		(destination?: Destionation) => () => {
-			if (destination) navigation.navigate(destination)
-		},
-		[],
-	)
+	const onPressArrow = useCallback((destination?: Destionation) => () => {
+		if (destination) navigation.navigate(destination)
+	}, [])
 
-	const _toggleModal = useCallback(() => {
-		setModalVisible(!modalVisible)
-	}, [modalVisible])
+	const _toggleModal = useCallback((visible: boolean) => {
+		setModalVisible(visible)
+	}, [])
 
-	const _handleResponseImage = useCallback((response: any) => {
-		 if (response.errorCode) {
-			Toast.show({
-				type: 'error',
-				text1: 'Camera Error: ' + response.errorCode
-			})
-		} else {
-			const imageUri: string = response.assets ? response.assets[0].uri : ''
-
-			_toggleModal()
-			setSelectedImage(imageUri)
-		}
+	const _handleResponseImage = useCallback((responseImage: UploadType) => {
+		setSelectedImage(responseImage)
+		_toggleModal(!initialModalVisibleState)
 	}, [_toggleModal])
 
-	const _onPressSettingItem = useCallback((name: SettingName) => () => {
+	const _onPressSettingItem = useCallback((name: SettingName) => async() => {
 		bottomSheetRef.current?.close()
 		if (name === 'logout') {
 			dispatch(baseApi.util.resetApiState())
@@ -150,14 +155,26 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 			return
 		}
 		if (name === 'takePhoto' || name === 'selectImage') {
-			if (name === 'takePhoto')  {
-				launchCamera({ mediaType: 'photo' }, _handleResponseImage)
-			} else {
-				launchImageLibrary({
+			try {
+				const imagePickerConfig: Options = {
 					mediaType: 'photo',
-					maxWidth: 5000,
-					maxHeight: 5000
-				}, _handleResponseImage)
+					width: 300,
+					height: 300,
+					cropping: true,
+					cropperCircleOverlay: true
+				}
+				const resultImage:ImageOrVideo = name === 'takePhoto' ?
+					await ImagePicker.openCamera(imagePickerConfig) :
+					await ImagePicker.openPicker(imagePickerConfig)
+				const fileName = resultImage.path.split('/')
+
+				_handleResponseImage({
+					uri: resultImage.path,
+					type: resultImage.mime,
+					fileName: fileName[fileName.length - 1]
+				})
+			} catch (error: any) {
+				if (error.message !== 'User cancelled image selection') Toast.show({ type: 'error', text1: 'Something went wrong' })
 			}
 
 			return
@@ -181,6 +198,23 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		setSelectedBottomSheet(bottomSheetType)
 		bottomSheetRef.current?.present()
 	}, [])
+
+	const _handleUploadImage = useCallback((file:UploadType, userProfile:UserProfile) => async() => {
+		try {
+			const responseUpload = await uploadFile(file).unwrap()
+			await updateProfile({
+				...userProfile,
+				image_url: responseUpload.data
+			}).unwrap()
+			Toast.show({ type: 'success', text1: 'Update picture successfully' })
+			_toggleModal(initialModalVisibleState)
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Something went wrong'
+			})
+		}
+	}, [selectedImage, userProfileData])
 
 	const _isLoading = useMemo(() => {
 		const isLoading = isLoadingUser || isLoadingBadges || isLoadingGameFavourite || isLoadingGameBoardCollection
@@ -206,28 +240,36 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	}, [])
 
 	const _renderModalContent = useMemo(() => {
-		return (
-			<React.Fragment>
-				<View style={ styles.rowEndStyle }>
-					<TouchableOpacity onPress={ _toggleModal }>
-						<CloseIcon />
-					</TouchableOpacity>
-				</View>
-				<View style={ styles.rowCenterStyle }>
-					<Avatar.Image size={ scaleWidth(120) } source={ { uri: selectedImage } }/>
-					<Text style={ styles.changePictureDescriptionStyle } variant='bodyLargeRegular'>
+		if (selectedImage && userProfileData)
+			return (
+				<React.Fragment>
+					<View style={ styles.rowEndStyle }>
+						<TouchableOpacity onPress={ () => { _toggleModal(initialModalVisibleState) } }>
+							<CloseIcon />
+						</TouchableOpacity>
+					</View>
+					<View style={ styles.rowCenterStyle }>
+						<Avatar.Image size={ scaleWidth(120) } source={ { uri: selectedImage?.uri } }/>
+						<Text style={ styles.changePictureDescriptionStyle } variant='bodyLargeRegular'>
 						Are you sure want to change this picture ?
-					</Text>
-					<ActionButton
-						label={ 'Change Picture' }
-						onPress={ _toggleModal }
-					/>
-				</View>
-			</React.Fragment>
-		)
+						</Text>
+						<ActionButton
+							label={ 'Change Picture' }
+							onPress={ _handleUploadImage(selectedImage, userProfileData) }
+							loading={ isLoadingUploadFile || isLoadingUpdateProfile }
+						/>
+					</View>
+				</React.Fragment>
+			)
+
+		return null
 	}, [
+		_handleUploadImage,
+		selectedImage,
 		_toggleModal,
-		selectedImage
+		isLoadingUploadFile,
+		isLoadingUpdateProfile,
+		userProfileData
 	])
 
 	const _renderTitle = useCallback((title: string, destination?: Destionation, withIcon = true) => {
@@ -465,7 +507,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				viewProps={ { style: styles.bottomSheetView } }>
 				{ _renderBottomSheetContent }
 			</BottomSheet>
-			<Modal borderRadius={ 12 } visible={ modalVisible } onDismiss={ _toggleModal }>
+			<Modal borderRadius={ 12 } visible={ modalVisible } onDismiss={ () => { _toggleModal(initialModalVisibleState) } } dismissable={ false }>
 				{ _renderModalContent }
 			</Modal>
 			<Loading isLoading={ _isLoading } />

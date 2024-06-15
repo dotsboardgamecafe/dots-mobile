@@ -7,10 +7,38 @@ export const userProfileApi = baseApi.injectEndpoints({
 			query: () => ({ url: '/v1/users/profile' }),
 			transformResponse: result => (result as {data: UserProfile}).data,
 		}),
+		updateProfile: builder.mutation<void, Partial<UserProfile>>({
+			query: profile => ({
+				url: '/v1/users/profile',
+				method: 'put',
+				data: {
+					fullname: profile.fullname,
+					phone_number: profile.phone_number,
+					image_url: profile.image_url
+				},
+			}),
+			async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+				const patchResult = dispatch(
+					userProfileApi.util.updateQueryData('getUserProfile', undefined, draft => {
+						draft.fullname = patch.fullname ?? ''
+						draft.phone_number = patch.phone_number ?? ''
+						draft.image_url = patch.image_url ?? ''
+						
+						return draft
+					})
+				)
+				try {
+					await queryFulfilled
+				} catch {
+					patchResult.undo()
+				}
+			},
+		}),
 	}),
 	overrideExisting: false
 })
 
 export const {
 	useGetUserProfileQuery,
+	useUpdateProfileMutation
 } = userProfileApi
