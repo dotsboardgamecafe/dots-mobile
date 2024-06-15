@@ -26,9 +26,12 @@ export type RootStackParamList =  {
   },
   gameDetail: Partial<Games>,
   roomDetail: Partial<Rooms>,
-  paymentSuccess: undefined,
+  paymentSuccess: {
+    game_code?: string
+  },
   webview: {
-    link: string
+    link: string,
+    game_code?: string,
   },
   home: undefined,
   discover: undefined,

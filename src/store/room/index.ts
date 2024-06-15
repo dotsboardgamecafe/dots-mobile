@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import baseQuery from '../../utils/base.query'
-import { type RoomListParam, type Rooms } from '../../models/rooms'
+import { type BookResult, type RoomListParam, type Rooms } from '../../models/rooms'
 
 export const roomApi = createApi({
 	reducerPath: 'roomApi',
@@ -23,6 +23,20 @@ export const roomApi = createApi({
 			query: id => ({ url: `/v1/tournaments/${id}` }),
 			transformResponse: result => (result as {data: Rooms}).data
 		}),
+		postJoinRoom: builder.mutation<BookResult, string>({
+			query: id => ({
+				method: 'post',
+				url: `/v1/rooms/${id}/book`,
+			}),
+			transformResponse: (result: {data: BookResult}) => result.data,
+		}),
+		postJoinTourney: builder.mutation<BookResult, string>({
+			query: id => ({
+				method: 'post',
+				url: `/v1/tournaments/${id}/book`,
+			}),
+			transformResponse: (result: {data: BookResult}) => result.data
+		}),
 	})
 })
 
@@ -31,4 +45,6 @@ export const {
 	useGetRoomDetailQuery,
 	useGetListTourneyQuery,
 	useGetTourneyDetailQuery,
+	usePostJoinRoomMutation,
+	usePostJoinTourneyMutation,
 } = roomApi
