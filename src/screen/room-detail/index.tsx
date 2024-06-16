@@ -373,7 +373,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 							keepRatio
 						/>
 						<View style={ styles.imageInfo }>
-							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.currency') }{ data?.booking_price ?? 0 }</Text>
+							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.currency') }{ (data?.booking_price ?? 0).toLocaleString('id-ID', { maximumFractionDigits: 0 }) }</Text>
 							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.slot') } { data?.current_used_slot }/{ isTourney ? data?.player_slot : data?.maximum_participant }</Text>
 						</View>
 						{ quotePrize }
