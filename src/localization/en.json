@@ -94,7 +94,8 @@
       "players": "Joined Players",
       "join": "Join Room {{vp}}",
       "booking": "Booking Confirmation",
-      "pay": "Pay with Xendit"
+      "pay": "Pay with Xendit",
+      "joined": "You have joined this {{room}}, please present at the specified schedule and location on time."
     },
     "champion-page": {
       "mvp": "Most VP",

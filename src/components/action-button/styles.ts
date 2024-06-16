@@ -8,15 +8,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		overflow: 'hidden',
-		paddingBottom: scaleHeight(6),
+		// paddingBottom: scaleHeight(6),
 	},
 	bg: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
+		height: scaleHeight(46),
 	},
 	label: {
-		color: 'white'
+		color: 'white',
+		marginBottom: scaleHeight(6)
 	},
 })
 

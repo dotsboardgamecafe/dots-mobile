@@ -24,6 +24,7 @@ export interface Rooms {
   reward_point: number,
   current_used_slot: number,
   room_participants?: Users[]
+  tournament_participants?: Users[]
   tournament_code?: string,
   prizes_img_url?: string,
   image_url?: string,
@@ -33,6 +34,7 @@ export interface Rooms {
   player_slot?: number,
   participant_vp?: number,
   status?: string,
+  have_joined?: boolean,
 }
 
 export interface RoomListParam {
@@ -40,4 +42,8 @@ export interface RoomListParam {
   tournament_date?: string
   location?: string
   status: string
+}
+
+export interface BookResult {
+  invoice_url: string
 }

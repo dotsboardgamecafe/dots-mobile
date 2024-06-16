@@ -64,6 +64,12 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		alignSelf: 'center',
 		marginVertical: scaleVertical(24)
 	},
+	prizesImg: {
+		width: '90%',
+		height: scaleHeight(210),
+		alignSelf: 'center',
+		borderRadius: 12
+	},
 	firstPrizeShadow1: {
 		alignSelf: 'center',
 		borderRadius: 10,

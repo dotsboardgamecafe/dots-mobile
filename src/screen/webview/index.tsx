@@ -18,8 +18,8 @@ const runFirst = `
 		setTimeout(() => {
 			const redBar = document.getElementById('simulation-bar-portal');
 			const blueBar = document.getElementsByTagName('header')
-			redBar.style.display = 'none';
-			blueBar[0].style.display = 'none';
+			// redBar.style.display = 'none';
+			// blueBar[0].style.display = 'none';
 			clearInterval(timer)
 		}, 2000)
 	}
@@ -32,7 +32,11 @@ const runFirst = `
 	true;
 `
 
+const REDIRECT_SUCCESS_URL = 'https://dots-api.vereintech.com/v1/payment/success-callback'
+const REDIRECT_FAILED_URL = 'https://dots-api.vereintech.com/v1/payment/failure-callback'
+
 const WebView = ({ route, navigation }: Props): React.ReactNode => {
+	const { link, game_code } = route.params
 	const [loading, setLoading] = useState(false)
 
 	const webViewRef = useRef(null)
@@ -54,10 +58,10 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 							name: navigationConstant.screenName.bottomNav,
 							state: {
 								routes: [
-									{ name: 'Discover' }
+									{ name: 'Play' }
 								]
 							}
-						 },
+						},
 						{ name: navigationConstant.screenName.paymentSuccess }
 					]
 				})
@@ -68,12 +72,11 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 	}, [navigation])
 
 	useEffect(() => {
+		// const subsribe = navigation.addListener('beforeRemove', () => {
+		// 	backAction()
+		// })
 
-		const subsribe = navigation.addListener('beforeRemove', () => {
-			backAction()
-		})
-
-		return subsribe
+		// return subsribe
 	}, [])
 
 	return (
@@ -90,12 +93,22 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 			}
 			<ReactNativeWebView
 				ref={ webViewRef }
-				source={ { uri: route.params.link } }
+				source={ { uri: link } }
 				originWhitelist={ ['*'] }
 				startInLoadingState
 				injectedJavaScript={ runFirst }
 				onMessage={ (event: any) => {} }
-				onLoadStart={ () => { setLoading(true) } }
+				onLoadStart={ ({ nativeEvent }: any) => {
+					const { url } = nativeEvent
+					console.log('url', url)
+					if (url?.toString() === REDIRECT_SUCCESS_URL) {
+						navigation.replace('paymentSuccess', { game_code })
+					} else if (url?.toString() === REDIRECT_FAILED_URL) {
+						navigation.goBack()
+					} else {
+						setLoading(true)
+					}
+				} }
 				onLoadEnd={ () => {
 					setTimeout(() => {
 						setLoading(false)
@@ -107,7 +120,7 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 				javaScriptEnabledAndroid
 				onNavigationStateChange={ (navState: any) => {
 					// Keep track of going back navigation within component
-					console.log(navState.canGoBack)
+					// console.log(navState.canGoBack)
 				} }
 			/>
 		</SafeAreaView>

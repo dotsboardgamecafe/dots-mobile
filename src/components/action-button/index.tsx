@@ -44,6 +44,7 @@ const ActionButton = ({ style, onPress, label, suffix, loading, labelStyle }: Ac
 		>
 			<ButtonBg
 				width={ '100%' }
+				height={ scaleHeight(46) }
 				style={ styles.bg }
 			/>
 			{ content }
