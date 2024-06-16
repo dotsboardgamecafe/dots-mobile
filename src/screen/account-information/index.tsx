@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Linking, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
@@ -23,6 +23,12 @@ import MailSent from '../../assets/svg/MailSent.svg'
 import useStorage from '../../hooks/useStorage'
 import Modal from '../../components/modal'
 import { List } from 'react-native-paper'
+import { usePostVerifyPasswordMutation } from '../../store/access'
+import Toast from 'react-native-toast-message'
+import { useDeleteAccountMutation, useUpdateEmailMutation } from '../../store/user'
+import { Controller, useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import { baseApi } from '../../utils/base.api'
 
 type Props = NavigationProps<'accountInformation'>
 
@@ -32,36 +38,113 @@ const initialState = {
 }
 
 const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => {
-	const { user } = useStorage()
+	const dispatch = useDispatch()
+	const { user, onSetUser, onSetLogout } = useStorage()
+	const { control, setValue, handleSubmit, formState, reset } = useForm({
+		defaultValues: {
+			email: ''
+		},
+		mode: 'all',
+		reValidateMode: 'onChange'
+	})
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [visiblePassword, setVisiblePassword] = useState(initialState.visiblePassword)
 	const [isChangeEmail, setIsChangeEmail] = useState(initialState.isChangeEmail)
 	const [actionType, setActionType] = useState<string | undefined>('')
+	const [password, setPassword] = useState<string>('')
 	const [visibleDeleteAccount, setVisibleDeleteAccount] = useState(false)
+	const [isBottomSheetAnimate, setIsBottomSheetAnimate] = useState(false)
+	const [
+		verifyPassword,
+		{
+			isLoading: isLoadingVerifyPassword,
+		}
+	] = usePostVerifyPasswordMutation()
+	const [
+		updateEmail,
+		{
+			isLoading: isLoadingUpdateEmail,
+		}
+	] = useUpdateEmailMutation()
+	const [
+		deleteAccount,
+		{
+			isLoading: isLoadingDeleteAccount,
+		}
+	] = useDeleteAccountMutation()
 
 	const _onOpenBottomSheet = useCallback((type?: string) => () => {
 		bottomSheetRef.current?.present()
 		setActionType(type)
 	}, [bottomSheetRef])
 
-	const _onPressSubmit = useCallback(() => {
-		if (actionType === 'edit') {
-			if (!isChangeEmail) {
+	const _onPressSubmitEmail = useCallback(async(data: {email: string}) => {
+		const onOpenBottomSheet = _onOpenBottomSheet()
+		try {
+			await updateEmail(data.email).unwrap()
+			onSetUser({
+				...user,
+				email: data.email
+			})
+			onOpenBottomSheet()
+		} catch (error: any) {
+			Toast.show({
+				type: error?.data ?? 'error',
+				text1: 'Something went wrong'
+			})
+		}
+	}, [_onOpenBottomSheet])
+
+	const _onPressDeleteAccount = useCallback(async() => {
+		try {
+			if (!isLoadingDeleteAccount) {
+				await deleteAccount(user?.user_code ?? '').unwrap()
+				setVisibleDeleteAccount(false)
+				onSetLogout()
+				dispatch(baseApi.util.resetApiState())
+			}
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Something went wrong'
+			})
+		}
+	}, [isLoadingDeleteAccount])
+
+	const _onPressSubmit = useCallback(async() => {
+		try {
+			await verifyPassword(password).unwrap()
+			setPassword('')
+			if (actionType === 'edit') {
+				if (!isChangeEmail) {
+					bottomSheetRef.current?.close()
+				}
+				setValue('email', user?.email ?? '')
+				setIsChangeEmail(!isChangeEmail)
+			}
+			if (actionType === 'delete') {
+				setVisibleDeleteAccount(!visibleDeleteAccount)
 				bottomSheetRef.current?.close()
 			}
-			setIsChangeEmail(!isChangeEmail)
+		} catch (error: any) {
+			Toast.show({
+				type: 'error',
+				text1: error?.data ?? 'Something went wrong'
+			})
 		}
-		if (actionType === 'delete') {
-			setVisibleDeleteAccount(!visibleDeleteAccount)
-			bottomSheetRef.current?.close()
-		}
-	}, [isChangeEmail, actionType])
+	}, [isChangeEmail, actionType, password, user])
+
+	const _onPressLogoutAndOpenEmail = useCallback(() => {
+		onSetLogout()
+		Linking.openURL(`mailto:${user?.email}`)
+	}, [user])
 
 	const _onPressBack = useCallback(() => {
 		if (!isChangeEmail) {
 			navigation.goBack()
 		} else {
 			setIsChangeEmail(initialState.isChangeEmail)
+			reset()
 		}
 	}, [navigation, isChangeEmail])
 
@@ -75,7 +158,15 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		return t(`account-info-page.${title}`)
 	}, [isChangeEmail])
 
-	const _renderPrimaryContent = useCallback(() => {
+	const _onPressVisiblePassword = useCallback(() => {
+		setVisiblePassword(!visiblePassword)
+	}, [visiblePassword, _onOpenBottomSheet])
+
+	const _onAnimateBottomSheet = useCallback((fromIndex: number, toIndex: number) => {
+		setIsBottomSheetAnimate(fromIndex > toIndex)
+	}, [])
+
+	const _renderPrimaryContent = useMemo(() => {
 		return (
 			<React.Fragment>
 				<View>
@@ -132,47 +223,67 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		)
 	}, [user])
 
-	const _renderSecondaryContent = useCallback(() => {
+	const _renderSecondaryContent = useMemo(() => {
 		return (
 			<React.Fragment>
 				<Text style={ styles.infoLabelStyle } variant='bodyMiddleRegular'>{ t('account-info-page.header-subtitle-2') }</Text>
 				<View>
 					<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('account-info-page.email-label-2') }</Text>
-					<TextInput
-						containerStyle={ styles.input }
-						borderFocusColor={ theme.colors.blueAccent }
-						prefix={ <Sms
-							variant='Bold'
-							size={ scaleWidth(16) }
-							color={ theme.colors.gray }
-						/> }
-						inputProps={ {
-							placeholder: t('account-info-page.email-placeholder'),
-							placeholderTextColor: theme.colors.gray,
-							keyboardType: 'email-address'
+					<Controller
+						name='email'
+						rules={ {
+							required: 'Email required',
+							pattern: {
+								value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+								message: 'Invalid email address'
+							},
+							validate: (text:string) => {
+								return text === user?.email ? 'The email must be different from the current email' : undefined
+							}
 						} }
+						control={ control }
+						render={ ({ field: { onChange, value } }) => (
+							<TextInput
+								containerStyle={ styles.input }
+								borderFocusColor={ theme.colors.blueAccent }
+								prefix={ <Sms
+									variant='Bold'
+									size={ scaleWidth(16) }
+									color={ theme.colors.gray }
+								/> }
+								inputProps={ {
+									placeholder: t('account-info-page.email-placeholder'),
+									placeholderTextColor: theme.colors.gray,
+									keyboardType: 'email-address',
+									value,
+									onChangeText: onChange,
+								} }
+								errors={ formState?.errors.email }
+							/>
+						) }
 					/>
 				</View>
 				<View style={ styles.changeEmailBtnWrapper }>
 					<ActionButton
 						style={ styles.actionButton }
 						label={ t('account-info-page.btn-change-email') }
-						onPress={ _onOpenBottomSheet() }
+						onPress={ handleSubmit(_onPressSubmitEmail) }
+						loading={ isLoadingUpdateEmail }
 					/>
 				</View>
 			</React.Fragment>
 		)
-	}, [])
+	}, [isLoadingUpdateEmail, user, formState])
 
-	const _renderContent = useCallback(() => {
+	const _renderContent = useMemo(() => {
 		return (
 			<View style={ styles.contentStyle }>
-				{ isChangeEmail ? _renderSecondaryContent() : _renderPrimaryContent() }
+				{ isChangeEmail ? _renderSecondaryContent : _renderPrimaryContent }
 			</View>
 		)
-	}, [isChangeEmail])
+	}, [isChangeEmail, _renderSecondaryContent])
 
-	const _getVisibleSuffix = useCallback(() => {
+	const _getVisibleSuffix = useMemo(() => {
 		const props: IconProps = {
 			variant: 'Bold',
 			size: scaleWidth(16),
@@ -184,11 +295,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		return <EyeSlash { ...props } />
 	}, [visiblePassword])
 
-	const _onPressVisiblePassword = useCallback(() => {
-		setVisiblePassword(!visiblePassword)
-	}, [visiblePassword, _onOpenBottomSheet])
-
-	const _renderPasswordFields = useCallback(() => {
+	const _renderPasswordFields = useMemo(() => {
 		return (
 			<View style={ styles.fieldWrapperStyle }>
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('account-info-page.bottomsheet-password.password-label') }</Text>
@@ -206,21 +313,29 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 					}
 					suffix={
 						<TouchableOpacity onPress={ _onPressVisiblePassword }>
-							{ _getVisibleSuffix() }
+							{ _getVisibleSuffix }
 						</TouchableOpacity>
 					}
 					inputProps={ {
 						placeholder: t('account-info-page.bottomsheet-password.password-label'),
 						placeholderTextColor: theme.colors.gray,
 						keyboardType: 'default',
-						secureTextEntry: !visiblePassword
+						secureTextEntry: !visiblePassword,
+						value: password,
+						onChangeText: setPassword
 					} }
+				/>
+				<ActionButton
+					style={ styles.actionButton }
+					onPress={ _onPressSubmit }
+					label={ t('account-info-page.bottomsheet-password.btn-submit') }
+					loading={ isLoadingVerifyPassword }
 				/>
 			</View>
 		)
-	}, [visiblePassword, _onPressVisiblePassword])
+	}, [visiblePassword, _onPressVisiblePassword, _onPressSubmit, password, isLoadingVerifyPassword])
 
-	const _renderBottomSheetTopContent = useCallback(() => {
+	const _renderBottomSheetTopContent = useMemo(() => {
 		return (
 			<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
 				<Text style={ styles.bottomSheetTitleStyle } variant='bodyExtraLargeHeavy'>{ t('account-info-page.bottomsheet-password.header-title') }</Text>
@@ -231,24 +346,19 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 		)
 	}, [bottomSheetRef])
 
-	const _renderPrimaryBottomSheetContent = useCallback(() => {
+	const _renderPrimaryBottomSheetContent = useMemo(() => {
 		return (
 			<React.Fragment>
-				{ _renderBottomSheetTopContent() }
+				{ _renderBottomSheetTopContent }
 				<Text variant='bodyMiddleRegular' style={ styles.infoLabelStyle }>
 					{ t('account-info-page.bottomsheet-password.header-title') }
 				</Text>
-				{ _renderPasswordFields() }
-				<ActionButton
-					style={ styles.actionButton }
-					onPress={ _onPressSubmit }
-					label={ t('account-info-page.bottomsheet-password.btn-submit') }
-				/>
+				{ _renderPasswordFields }
 			</React.Fragment>
 		)
-	}, [_renderBottomSheetTopContent, _renderPasswordFields, _onPressSubmit])
+	}, [_renderBottomSheetTopContent, _renderPasswordFields])
 
-	const _renderSecondaryBottomSheetContent = useCallback(() => {
+	const _renderSecondaryBottomSheetContent = useMemo(() => {
 		return (
 			<View style={ styles.rowCenterStyle }>
 				<MailSent width={ scaleWidth(140) } height={ scaleHeight(108) } />
@@ -266,25 +376,28 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 				</Text>
 				<ActionButton
 					style={ styles.actionButton }
-					onPress={ _onPressSubmit }
+					onPress={ _onPressLogoutAndOpenEmail }
 					label={ t('account-info-page.bottomsheet-verification.btn-verification') }
 				/>
 			</View>
 		)
-	}, [_onPressSubmit])
+	}, [_onPressLogoutAndOpenEmail])
 
-	const _renderBottomSheetContent = useCallback(() => {
+	const _renderBottomSheetContent = useMemo(() => {
 
-		if (isChangeEmail) return _renderSecondaryBottomSheetContent()
+		if (isBottomSheetAnimate) return null
+
+		if (isChangeEmail) return _renderSecondaryBottomSheetContent
 		
-		return _renderPrimaryBottomSheetContent()
+		return _renderPrimaryBottomSheetContent
 	}, [
+		isBottomSheetAnimate,
 		isChangeEmail,
 		_renderSecondaryBottomSheetContent,
 		_renderPrimaryBottomSheetContent
 	])
 
-	const _renderModalDeleteAccount = useCallback(() => {
+	const _renderModalDeleteAccount = useMemo(() => {
 		return (
 			<View>
 				<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
@@ -305,22 +418,30 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 						<Text variant='bodyMiddleRegular' style={ [styles.deleteDescriptionStyle, styles.shrinkTextStyle] }>We cannot recover your account or data once it is deleted.</Text>
 					</View>
 				</View>
-				<TouchableOpacity style={ [styles.deleteButtonStyle, styles.actionButton] } onPress={ _onOpenBottomSheet('delete') }>
-					<Text style={ styles.deleteLabelStyle } variant='bodyMiddleBold'>Yes, Sure</Text>
+				<TouchableOpacity style={ [styles.deleteButtonStyle, styles.actionButton] } onPress={ _onPressDeleteAccount }>
+					{
+						isLoadingDeleteAccount ? <ActivityIndicator color='white' size={ scaleHeight(20) } /> :
+							<Text style={ styles.deleteLabelStyle } variant='bodyMiddleBold'>Yes, Sure</Text>
+					}
 				</TouchableOpacity>
 			</View>
 		)
-	}, [])
+	}, [_onPressDeleteAccount, isLoadingDeleteAccount])
 
 	return (
 		<Container>
 			<Header title={ _getHeaderTitle } onPressBack={ _onPressBack } />
-			{ _renderContent() }
-			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
-				{ _renderBottomSheetContent() }
+			{ _renderContent }
+			<BottomSheet
+				bsProps={ { onAnimate: _onAnimateBottomSheet } }
+				bsRef={ bottomSheetRef }
+				viewProps={ { style: styles.bottomSheetView } }
+				pressBehavior={ isChangeEmail ? 'close' : 'none' }
+			>
+				{ _renderBottomSheetContent }
 			</BottomSheet>
 			<Modal visible={ visibleDeleteAccount } dismissable={ false } borderRadius={ 8 }>
-				{ _renderModalDeleteAccount() }
+				{ _renderModalDeleteAccount }
 			</Modal>
 		</Container>
 	)

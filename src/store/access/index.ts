@@ -65,7 +65,26 @@ export const accessApi = createApi({
 				isPrivate: true,
 				data
 			})
-		})
+		}),
+		postVerifyPassword: builder.mutation<void, string>({
+			query: data => ({
+				method: 'post',
+				url: '/v1/auths/verify-password',
+				isPrivate: true,
+				data: {
+					password: data
+				}
+			})
+		}),
+		postVerifyEmail: builder.mutation<User, {token: string, usercode: string}>({
+			query: ({ token, usercode }) => ({
+				method: 'post',
+				url: '/v1/auths/verify-token-email',
+				params: { type: 'update_email', token, usercode },
+				isPrivate: false,
+				transformResponse: (result: {data: User}) => result.data
+			}),
+		}),
 	})
 })
 
@@ -76,5 +95,7 @@ export const {
 	usePostResendVerifyMutation,
 	usePostForgotPassMutation,
 	usePostVerifyForgotPassMutation,
-	usePutUpdatePassMutation
+	usePutUpdatePassMutation,
+	usePostVerifyPasswordMutation,
+	usePostVerifyEmailMutation
 } = accessApi

@@ -3251,6 +3251,11 @@ cjs-module-lexer@^1.0.0:
   resolved "https://registry.yarnpkg.com/cjs-module-lexer/-/cjs-module-lexer-1.2.3.tgz#6c370ab19f8a3394e318fe682686ec0ac684d107"
   integrity sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==
 
+clamp@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/clamp/-/clamp-1.0.1.tgz#66a0e64011816e37196828fdc8c8c147312c8634"
+  integrity sha512-kgMuFyE78OC6Dyu3Dy7vcx4uy97EIbVxJB/B0eJ3bUNAkwdNcxYzgKltnyADiYwsR7SEqkkUPsEUT//OVS6XMA==
+
 cli-cursor@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/cli-cursor/-/cli-cursor-3.1.0.tgz#264305a7ae490d1d03bf0c9ba7c925d1753af307"
@@ -3415,6 +3420,13 @@ compression@^1.7.1:
     safe-buffer "5.1.2"
     vary "~1.1.2"
 
+concat-color-matrices@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/concat-color-matrices/-/concat-color-matrices-1.0.0.tgz#7d77baa4148264806d4318d9a2378e7dec4bc413"
+  integrity sha512-K0IMtl4m9LcHg4vVFb40Txmie/GwCJBkquGSn6wtA9yIcszzFZgGc6co4sSnjFdqeJAv+q2LrCHMUSb2GHAChA==
+  dependencies:
+    invariant "^2.2.4"
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -3541,10 +3553,20 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
   integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
+cycle@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/cycle/-/cycle-1.0.3.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
+  integrity sha512-TVF6svNzeQCOpjCqsy0/CSy8VgObG3wXusJ73xW2GbG5rGx7lC8zxDSURicsXI2UsGdi2L0QNRCi745/wUDvsA==
+
 dayjs@^1.8.15:
   version "1.11.10"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
+
+dayjs@^1.8.29:
+  version "1.11.11"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.11.tgz#dfe0e9d54c5f8b68ccf8ca5f72ac603e7e5ed59e"
+  integrity sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
@@ -6800,6 +6822,15 @@ react-native-bootsplash@^5.4.1:
     ts-dedent "^2.2.0"
     xml-formatter "^3.6.0"
 
+react-native-color-matrix-image-filters@^6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-color-matrix-image-filters/-/react-native-color-matrix-image-filters-6.0.9.tgz#36c68c9328d8563e0e81b6a05b77bf905f4101ed"
+  integrity sha512-XI/XNGRKWMDoVHRYspr9bepX7mH+0OJKmQ0zbaPTRkVQaS9AiKlb9o0nopwMkB+QPg4kiYqSs16BwKmLo8qhlg==
+  dependencies:
+    concat-color-matrices "^1.0.0"
+    rn-color-matrices "^4.1.0"
+    ts-tiny-invariant "^2.0.5"
+
 react-native-device-info@^10.13.1:
   version "10.13.1"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.13.1.tgz#f87f44ba7b67933248be10ca302a4f2f6dbbdd4f"
@@ -6822,6 +6853,11 @@ react-native-flipper@^0.164.0:
   resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.164.0.tgz#64f6269a86a13a72e30f53ba9f5281d2073a7697"
   integrity sha512-iJhIe3rqx6okuzBp4AJsTa2b8VRAOGzoLRFx/4HGbaGvu8AurZjz8TTQkhJsRma8dsHN2b6KKZPvGGW3wdWzvA==
 
+react-native-flipper@^0.212.0:
+  version "0.212.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.212.0.tgz#b3fdd47676ecd09a25edd77a1466acace6276762"
+  integrity sha512-bDRfIgE3v/jjEEdnvGP0T6maDD+bXhDAQ/SZUYTKd/CQ6YIU1c0EF+e0urU62LNMv6XEFQKz226McdddyVhYZA==
+
 react-native-gesture-handler@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.15.0.tgz#f8e6c0451a7bdf065edb7b9be605480db402baa0"
@@ -6832,6 +6868,11 @@ react-native-gesture-handler@^2.15.0:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-image-crop-picker@^0.41.1:
+  version "0.41.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.41.1.tgz#f016355680a084856cfc911b6bcc223af8e99dcd"
+  integrity sha512-2O2+DeQcZABlhhyMTYUIGCJwpyUnkJwutJbQwETSQ5uwtKsmsmhM1X91bwf6XG1+c1U3kVrtTxHMakc62HPBXQ==
 
 react-native-iphone-x-helper@^1.0.3:
   version "1.3.1"
@@ -6874,6 +6915,11 @@ react-native-paper@^5.12.3:
     "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
     use-latest-callback "^0.1.5"
+
+react-native-permissions@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-4.1.5.tgz#db4d1ddbf076570043f4fd4168f54bb6020aec92"
+  integrity sha512-r6VMRacASmtRHS+GZ+5HQCp9p9kiE+UU9magHOZCXZLTJitdTuVHWZRrb4v4oqZGU+zAp3mZhTQftuMMv+WLUg==
 
 react-native-reanimated-carousel@^3.5.1:
   version "3.5.1"
@@ -6941,6 +6987,11 @@ react-native-tab-view@^3.5.2:
   integrity sha512-nE5WqjbeEPsWQx4mtz81QGVvgHRhujTNIIZiMCx3Bj6CBFDafbk7XZp9ocmtzXUQaZ4bhtVS43R4FIiR4LboJw==
   dependencies:
     use-latest-callback "^0.1.5"
+
+react-native-toast-message@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-toast-message/-/react-native-toast-message-2.2.0.tgz#c53a4746b15616858a7d61c4386b92cbe9fbf911"
+  integrity sha512-AFti8VzUk6JvyGAlLm9/BknTNDXrrhqnUk7ak/pM7uCTxDPveAu2ekszU0on6vnUPFnG04H/QfYE2IlETqeaWw==
 
 react-native-webview@^13.8.4:
   version "13.8.4"
@@ -7103,6 +7154,14 @@ recyclerlistview@4.2.0:
     lodash.debounce "4.0.8"
     prop-types "15.8.1"
     ts-object-utils "0.0.5"
+
+redux-flipper@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/redux-flipper/-/redux-flipper-2.0.3.tgz#5373af20bd0efd91b5a1f9efa92c3338780f5732"
+  integrity sha512-JpNEZnBnBE9kGiZZrmzi23cFD9gjRUFoJE6nX0MPfmMVeIqfvkJWMATnbqRsTn8xwBXvWtOk+7Qbs8u4RZZcVw==
+  dependencies:
+    cycle "^1.0.3"
+    dayjs "^1.8.29"
 
 redux-thunk@^3.1.0:
   version "3.1.0"
@@ -7275,6 +7334,13 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rn-color-matrices@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/rn-color-matrices/-/rn-color-matrices-4.1.0.tgz#9ac5ce3d7daaf33d336b877508649469cb39f8a5"
+  integrity sha512-a8++z3Zi4GhA0oWwKS3etdrVuVQ2q/ByTMh6lMxo+vaSv3SRSSg5SzpZk65GS0NCAqMhFT8WSvgSgNhO/F+xag==
+  dependencies:
+    clamp "^1.0.1"
 
 run-parallel@^1.1.9:
   version "1.2.0"
@@ -7925,6 +7991,11 @@ ts-object-utils@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/ts-object-utils/-/ts-object-utils-0.0.5.tgz#95361cdecd7e52167cfc5e634c76345e90a26077"
   integrity sha512-iV0GvHqOmilbIKJsfyfJY9/dNHCs969z3so90dQWsO1eMMozvTpnB1MEaUbb3FYtZTGjv5sIy/xmslEz0Rg2TA==
+
+ts-tiny-invariant@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/ts-tiny-invariant/-/ts-tiny-invariant-2.0.5.tgz#20888046ede981edcddb77615a5f6e3c1ffb0901"
+  integrity sha512-NGQzWRLGLMjOUTpsxMSRj63fuFBC8HV8L4NUxzDVgU4MFeOt3qFI2534M5L+ch22x53oDEwPaRBPXgAfRjcXHA==
 
 tsconfig-paths@^3.15.0:
   version "3.15.0"

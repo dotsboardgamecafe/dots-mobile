@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import {
 	isIphoneXorAbove, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
 } from '../../utils/pixel.ratio'
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
 	},
 	imageBgStyle: {
 		width: '100%',
-		height: scaleHeight(isIphoneXorAbove() ? 50 : 20),
+		height: scaleHeight(isIphoneXorAbove() ? 50 : Platform.OS === 'android' ? 20 : 48),
 		position: 'absolute',
 		top: 0,
 		zIndex: 999,

@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
 	rowStyle: {
 		flexDirection: 'row'
 	},
+	rowEndStyle: {
+		alignItems: 'flex-end'
+	},
 	justifyBetweenStyle: {
 		justifyContent: 'space-between',
 	},
@@ -51,11 +54,14 @@ const styles = StyleSheet.create({
 		borderRadius: 7,
 		margin: scaleHorizontal(16 / 3),
 	},
+	mainContentStyle: {
+		paddingBottom: scaleHeight(42)
+	},
 	boardGameItemSeparatorStyle: {
 		width: scaleWidth(320),
 		height: scaleWidth(20),
 		marginTop: -10,
-		zIndex: -1,
+		zIndex: -99,
 	},
 	cardAwardItemStyle: {
 		borderRadius: 100,
@@ -82,6 +88,11 @@ const styles = StyleSheet.create({
 	cardAwardContentStyle: {
 		paddingVertical: 0,
 		paddingHorizontal: 0
+	},
+	cardAwardUnClaimStyle: {
+		width: scaleWidth(80),
+		height: scaleWidth(80),
+		borderRadius: 100,
 	},
 	awardWrapperStyle: {
 		marginBottom: scaleVertical(36),
@@ -130,6 +141,12 @@ const styles = StyleSheet.create({
 	},
 	scrollContentStyle: {
 		paddingRight: 20
+	},
+	buttonWrapperStyle: {
+		marginBottom: scaleHeight(16),
+	},
+	changePictureDescriptionStyle: {
+		marginVertical: scaleHeight(16)
 	}
 })
 

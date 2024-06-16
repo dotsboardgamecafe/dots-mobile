@@ -76,6 +76,7 @@ android {
 
     namespace "com.dots"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.dots"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -89,6 +90,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('your.keystore')
+            storePassword '******'
+            keyAlias 'your_key_alias'
+            keyPassword '******'
+        }
     }
     buildTypes {
         debug {
@@ -97,7 +104,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

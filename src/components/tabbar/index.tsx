@@ -16,6 +16,16 @@ import Cup from '../../assets/svg/Cup.svg'
 import CupActive from '../../assets/svg/CupActive.svg'
 import Profile from '../../assets/svg/Profile.svg'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import navigationConstant from '../../constants/navigation'
+
+const {
+	screenName: {
+		home,
+		discover,
+		play,
+		champion,
+	}
+} = navigationConstant
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.ReactNode => {
 	const isKeyboardShown = useKeyboardShown()
@@ -32,25 +42,25 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.Re
 		}
 
 		switch (label) {
-			case t('main-page.home'): {
+			case home: {
 				return {
 					icon: <Home { ...props } />,
 					iconActive: <HomeActive { ...propsActive } />
 				}
 			}
-			case t('main-page.discover'): {
+			case discover: {
 				return {
 					icon: <Discover { ...props } />,
 					iconActive: <DiscoverActive { ...propsActive } />
 				}
 			}
-			case t('main-page.play'): {
+			case play: {
 				return {
 					icon: <Game { ...props } />,
 					iconActive: <GameActive { ...propsActive } />
 				}
 			}
-			case t('main-page.champion'): {
+			case champion: {
 				return {
 					icon: <Cup { ...props } />,
 					iconActive: <CupActive { ...propsActive } />
@@ -90,7 +100,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps): React.Re
 					return (
 						<TabbarItem
 							key={ label as string }
-							label={ label as string }
+							label={ t(`main-page.${label as string }`) }
 							isFocused={ isFocused }
 							onPress={ onPress }
 							{ ...getIcon(label as string) }

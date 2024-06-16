@@ -31,6 +31,7 @@ import EditPassword from '../screen/edit-password'
 import TncPrivacyPolicy from '../screen/tnc-privacy-policy'
 import Notifications from '../screen/notifications'
 import Transactions from '../screen/transactions'
+import EditProfile from '../screen/edit-profile'
 
 const { screenName, } = navigationConstant
 
@@ -138,6 +139,10 @@ const privateNavigations = (): ReactNode => {
 			<Stack.Screen
 				name={ screenName.transactions }
 				component={ Transactions }
+			/>
+			<Stack.Screen
+				name={ screenName.editProfile }
+				component={ EditProfile }
 			/>
 		</Stack.Group>
 	)
