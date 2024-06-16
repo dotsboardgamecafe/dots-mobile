@@ -15,6 +15,7 @@ export type RootStackParamList =  {
     verify_token?:string,
     token?: string,
     type?: string
+    usercode?: string
   },
   forgotPassword: undefined,
   updatePassword: {

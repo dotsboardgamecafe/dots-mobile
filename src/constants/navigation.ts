@@ -3,6 +3,10 @@ import { type LinkingOptions } from '@react-navigation/native'
 const navigationConstant = {
 	screenName: {
 		main: 'main',
+		home: 'home',
+		discover: 'discover',
+		play: 'play',
+		champion: 'champion',
 		profile: 'profile',
 		login: 'login',
 		forgotPassword: 'forgotPassword',
@@ -32,17 +36,23 @@ const navigationConstant = {
 export const linking: LinkingOptions<any> = {
 	config: {
 		screens: {
-			// [navigationConstant.screenName.login]: {
-			// 	path: 'login/:email/:verify_token?',
-			// },
+			[navigationConstant.screenName.login]: {
+				path: '/verify/auths/verify-token-email',
+			},
 			[navigationConstant.screenName.register]: {
 				path: '/verify-token',
 			},
 			[navigationConstant.screenName.register]: {
 				path: '/verify/verify-token',
 			},
+			[navigationConstant.screenName.register]: {
+				path: '/verify/auths/verify-token',
+			},
 			[navigationConstant.screenName.updatePassword]: {
 				path: '/verify/forgot-password',
+			},
+			[navigationConstant.screenName.updatePassword]: {
+				path: '/verify/auths/forgot-password',
 			},
 			[navigationConstant.screenName.gameDetail]: {
 				path: 'game-detail/:id?'

@@ -34,11 +34,46 @@ export const userProfileApi = baseApi.injectEndpoints({
 				}
 			},
 		}),
+		updatePassword: builder.mutation<unknown, {currentPassword: string, newPassword: string, confirmPassword: string}>({
+			query: data => {
+				const payload = {
+					old_password: data.currentPassword,
+					new_password: data.newPassword,
+					confirm_password: data.confirmPassword
+				}
+				return {
+					method: 'put',
+					url: '/v1/users/update-password',
+					isPrivate: true,
+					data: payload
+				}
+			}
+		}),
+		updateEmail: builder.mutation<void, string>({
+			query: email => ({
+				method: 'post',
+				url: '/v1/users/profile/new-email',
+				isPrivate: true,
+				data: {
+					email,
+					type: 'update_email'
+				}
+			})
+		}),
+		deleteAccount: builder.mutation<void, string | undefined>({
+			query: code => ({
+				url: `/v1/users/${code}`,
+				method: 'delete',
+			}),
+		}),
 	}),
 	overrideExisting: false
 })
 
 export const {
 	useGetUserProfileQuery,
-	useUpdateProfileMutation
+	useUpdateProfileMutation,
+	useUpdatePasswordMutation,
+	useUpdateEmailMutation,
+	useDeleteAccountMutation
 } = userProfileApi

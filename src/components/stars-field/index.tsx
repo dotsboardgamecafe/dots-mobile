@@ -145,6 +145,26 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 		}
 	}, [starCount])
 
+	const _renderStarsField = useMemo(() => {
+		if (!__DEV__)
+			return (
+				<FlatList
+					style={ StyleSheet.absoluteFill }
+					scrollEnabled={ false }
+					initialNumToRender={ starCount }
+					data={ getStars(starCount) }
+					renderItem={ _renderStars }
+					keyExtractor={ (_, index) => index.toString() }
+					getItemLayout={ (_, index) => (
+						{ length: 3, offset: 3 * index, index }
+					) }
+					contentContainerStyle={ styles.starWrapperStyle }
+				/>
+			)
+
+		return null
+	}, [starCount, _renderStars])
+
 	return (
 		<LinearGradient
 			colors={ _generateGradientColor }
@@ -153,18 +173,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage }
-			<FlatList
-				style={ StyleSheet.absoluteFill }
-				scrollEnabled={ false }
-				initialNumToRender={ starCount }
-				data={ getStars(starCount) }
-				renderItem={ _renderStars }
-				keyExtractor={ (_, index) => index.toString() }
-				getItemLayout={ (_, index) => (
-					{ length: 3, offset: 3 * index, index }
-				) }
-				contentContainerStyle={ styles.starWrapperStyle }
-			/>
+			{ _renderStarsField }
 			{ children }
 		</LinearGradient>
 	)

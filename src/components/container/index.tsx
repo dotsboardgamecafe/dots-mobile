@@ -46,6 +46,7 @@ const Container = ({
 			source={ BG }
 			resizeMode='cover'
 			style={ styles.bg }
+			
 		>
 			{ renderContent }
 		</ImageBackground>

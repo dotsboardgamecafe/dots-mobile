@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import Container from '../../components/container'
@@ -12,10 +12,41 @@ import { View } from 'react-native'
 import Header from '../../components/header'
 import { Controller, useForm } from 'react-hook-form'
 import { useGetUserProfileQuery, useUpdateProfileMutation } from '../../store/user'
+import { ArrowDown2 } from 'iconsax-react-native'
+import { scaleWidth } from '../../utils/pixel.ratio'
 
 type Props = NavigationProps<'login'>
 
 type FieldType = 'fullName' | 'phoneNumber'
+
+const fieldFactory = {
+	fullName: {
+		label: 'Fullname',
+		rules: {
+			required: {
+				value: true,
+				message: 'Fullname required'
+			}
+		},
+	},
+	phoneNumber: {
+		label: 'Phone Number',
+		rules: {
+			required: {
+				value: true,
+				message: 'Phone number required'
+			},
+			minLength: {
+				value: 9,
+				message: 'Minimum 9 digit'
+			},
+			maxLength: {
+				value: 13,
+				message: 'Maximum 13 digit'
+			}
+		}
+	},
+}
 
 const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const {
@@ -38,34 +69,7 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 	})
 
 	const _fieldFactory = useCallback((contentType: FieldType) => {
-		const content = {
-			fullName: {
-				label: 'Fullname',
-				rules: {
-					required: {
-						value: true,
-						message: 'This field required'
-					}
-				}
-			},
-			phoneNumber: {
-				label: 'Phone Number',
-				rules: {
-					required: {
-						value: true,
-						message: 'This field required'
-					},
-					minLength: {
-						value: 9,
-						message: 'Minimum 9 digit'
-					},
-					maxLength: {
-						value: 13,
-						message: 'Maximum 13 digit'
-					}
-				}
-			},
-		}
+		const content = fieldFactory
 
 		return content[contentType]
 	}, [])
@@ -85,6 +89,19 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 		}
 	}, [isSuccessGetUserProfile, userProfileData])
 
+	const phonePrefix = useMemo(() => {
+		return (
+			<View style={ { flexDirection: 'row', alignItems: 'center' } }>
+				<Text variant='bodyMiddleRegular' style={ styles.countryCode }>+62</Text>
+				<ArrowDown2
+					color={ theme.colors.gray }
+					size={ scaleWidth(0) }
+					style={ styles.phonePrefixArrow }
+				/>
+			</View>
+		)
+	}, [])
+
 	const _renderFields = useCallback((contentName: FieldType) => {
 		const content = _fieldFactory(contentName)
 		return (
@@ -99,6 +116,7 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 							<TextInput
 								containerStyle={ styles.input }
 								borderFocusColor={ theme.colors.blueAccent }
+								prefix={ contentName === 'phoneNumber' ? phonePrefix : null }
 								inputProps={ {
 									placeholder: content.label,
 									placeholderTextColor: theme.colors.gray,
@@ -108,18 +126,11 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 									},
 									keyboardType: contentName === 'phoneNumber' ? 'number-pad' : undefined
 								} }
+								errors={ formState.errors[contentName] }
 							/>
 						)
 					} }
 				/>
-				{
-					formState.errors[contentName] ?
-						<Text variant='bodyMiddleRegular'
-							style={ [styles.passwordLabel, styles.hintTextStyle, styles.errorStyle] }>
-							{ formState.errors[contentName]?.message }
-						</Text> :
-						null
-				}
 			</View>
 		)
 	}, [formState])

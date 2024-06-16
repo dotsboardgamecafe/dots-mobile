@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
 	fieldWrapperStyle: {
 		width: '100%',
 		marginTop: scaleHeight(16),
-		marginBottom: scaleHeight(8)
+		height: scaleHeight(80),
 	},
 	scrollView: {
 		alignItems: 'center',
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 	},
 	hintTextStyle: {
 		color: colorsTheme.gray500,
-		marginTop: scaleHeight(8)
+		marginTop: scaleHeight(4)
 	}
 })
 

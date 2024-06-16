@@ -163,7 +163,7 @@
       "bottomsheet-verification": {
         "header-title": "Verification Link Sent",
         "header-subtitle": "We have sent a link recovery for your password to your email address {{email}}",
-        "btn-verification": "Open Email"
+        "btn-verification": "Logout and open email"
       }
     },
     "transaction-page": {

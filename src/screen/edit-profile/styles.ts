@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
 	fieldWrapperStyle: {
 		width: '100%',
 		marginTop: scaleHeight(18),
-		marginBottom: scaleHeight(8)
+		height: scaleHeight(82)
 	},
 	scrollView: {
 		alignItems: 'center',
@@ -35,7 +35,13 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		bottom: -20,
 		right: 0
-	}
+	},
+	countryCode: {
+		color: colorsTheme.gray
+	},
+	phonePrefixArrow: {
+		marginStart: scaleWidth(2)
+	},
 })
 
 export default styles
