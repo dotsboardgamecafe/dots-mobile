@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
 	},
 	selectedfilterCardRedeemItemBackgroundStyle: {
 		backgroundColor: 'white',
+		paddingHorizontal: scaleHorizontal(11),
 	},
 	filterCardRedeemItemStyle: {
 		backgroundColor: colorsTheme.gray100,
@@ -66,6 +67,11 @@ const styles = StyleSheet.create({
 		height: scaleWidth(75),
 		borderRadius: 100,
 	},
+	cardAwardUnClaimStyle: {
+		width: scaleWidth(90),
+		height: scaleWidth(90),
+		borderRadius: 100,
+	},
 	bottomSheetView: {
 		marginHorizontal: scaleWidth(16),
 		paddingBottom: scaleHeight(16),
@@ -107,6 +113,9 @@ const styles = StyleSheet.create({
 	},
 	claimedDescriptionStyle: {
 		marginBottom: scaleVertical(16)
+	},
+	grayScaleStyle: {
+		opacity: 0.5,
 	}
 })
 

@@ -3,6 +3,7 @@ import {
 	TouchableOpacity
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
+import { Grayscale } from 'react-native-color-matrix-image-filters'
 
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
@@ -32,6 +33,7 @@ import Image from '../../components/image'
 type Props = NavigationProps<'awards'>
 
 const Awards = ({ t }: Props): React.ReactNode => {
+	const [selectedFilter, setSelectedFilter] = useState(0)
 	const { user } = useStorage()
 	const {
 		data: badgesData,
@@ -76,6 +78,22 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		refetchBadges()
 	}, [])
 
+	const _onSelectedFilter = useCallback((index: number) => () => {
+		setSelectedFilter(index)
+	}, [])
+
+	const _factoryAwards = useMemo(() => {
+		if (badgesData?.length) {
+			const resultBadges = badgesData
+			if (selectedFilter) {
+				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_badge_owned : !item.is_claim)
+			}
+			return resultBadges
+		}
+
+		return []
+	}, [badgesData, selectedFilter])
+
 	const _renderFilterCardRedeem = useCallback(() => {
 		const listFilter = [
 			'All', 'Owned', 'Unclaim'
@@ -94,7 +112,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				>
 					{
 						listFilter.map((item, index) => {
-							if (index === 1) {
+							if (selectedFilter === index) {
 								return (
 									<RoundedBorder
 										style={ styles.selectedfilterCardRedeemItemStyle }
@@ -108,7 +126,10 @@ const Awards = ({ t }: Props): React.ReactNode => {
 								)
 							}
 							return (
-								<Pressable style={ styles.filterCardRedeemItemStyle } key={ item }>
+								<Pressable
+									key={ item }
+									onPress={ _onSelectedFilter(index) }
+									style={ styles.filterCardRedeemItemStyle }>
 									<Text variant='bodyMiddleRegular'>{ item }</Text>
 								</Pressable>
 							)
@@ -117,10 +138,23 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				</ScrollView>
 			</View>
 		)
+	}, [_onSelectedFilter, selectedFilter])
+
+	const _greyScaledImage = useCallback((image: string, shouldGrayScale: boolean) => {
+		const imageStyle = shouldGrayScale ? styles.cardAwardUnClaimStyle :  styles.cardAwardItemImageStyle
+		if (shouldGrayScale) {
+			return (
+				<Grayscale style={ [styles.rowCenterStyle, styles.justifyCenterStyle] }>
+					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
+				</Grayscale>
+			)
+		}
+
+		return <Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
 	}, [])
 
-	const _renderListGame = useCallback(() => {
-		const { numColumns, resultData } = formatGridData<Badges>(badgesData ?? [])
+	const _renderListBadge = useCallback(() => {
+		const { numColumns, resultData } = formatGridData<Badges>(_factoryAwards ?? [])
 
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
@@ -131,8 +165,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				renderItem={ ({ item }) => {
 					if (item) return (
 						<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
-							<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  />
-							<Image style={ [styles.cardAwardItemImageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: item.badge_image_url  } }  />
+							{
+								item?.is_badge_owned ?
+									<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
+							}
+							{ _greyScaledImage(item?.badge_image_url, !item?.is_badge_owned) }
 						</TouchableOpacity>
 					)
 
@@ -146,7 +183,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				removeClippedSubviews
 			/>
 		)
-	}, [_onPressAward, _isError, badgesData])
+	}, [_onPressAward, _isError, _factoryAwards])
   
 	const _renderBottomSheetTopContent = useCallback(() => {
 		return (
@@ -265,7 +302,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		<Container>
 			<Header title={ t('awards-page.header-title') } />
 			{ _renderFilterCardRedeem() }
-			{ _renderListGame() }
+			{ _renderListBadge() }
 			<BottomSheet
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }

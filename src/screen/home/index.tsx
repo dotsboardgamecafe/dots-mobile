@@ -4,7 +4,8 @@ import {
 } from 'react-native'
 import React, {
 	Suspense, useCallback, lazy, useRef, useState,
-	useMemo
+	useMemo,
+	useEffect
 } from 'react'
 import Carousel, { type ICarouselInstance } from 'react-native-reanimated-carousel'
 
@@ -31,6 +32,8 @@ import { useGetActivitiesHiglightQuery } from '../../store/activity'
 import useStorage from '../../hooks/useStorage'
 import moment from 'moment'
 import Image from '../../components/image'
+import { requestPermission } from '../../utils/persmissions'
+import { useGetBadgeCountNotificationQuery } from '../../store/notifications'
 
 type Props = NavigationProps<'home'>
 
@@ -71,31 +74,38 @@ const getGreetingMessage = (): string => {
 }
 
 const Home = ({ navigation, t }:Props): React.ReactNode => {
+	const [isRefresh, setIsRefresh] = useState(false)
 	const { user } = useStorage()
 	const [carouselIndex, setCarouselIndex] = useState(0)
 	const carouselRef = useRef<ICarouselInstance>(null)
 	const {
 		data: userProfileData,
-		isLoading: isLoadingUser,
+		isFetching: isLoadingUser,
 		refetch: refetchUser,
 		isError: isErrorUser,
 	} = useGetUserProfileQuery()
 	const {
 		data: bannerPublishedData,
-		isLoading: isLoadingBannerPublished,
+		isFetching: isLoadingBannerPublished,
 		refetch: refetchBannerPublished,
 		isError: isErrorBannerPublished
 	} = useGetBannerPublishedQuery()
 	const {
 		data: activitiesHighlightData,
-		isLoading: isLoadingActivitiesHighlight,
+		isFetching: isLoadingActivitiesHighlight,
 		refetch: refetchActivitiesHighlight,
 		isError: isErrorActivitiesHighlight
 	} = useGetActivitiesHiglightQuery(user?.user_code)
+	const {
+		data: notificationData,
+		isFetching: isLoadingNotificationData,
+		refetch: refetchNotificationData,
+		isError: isErrorNotificationData
+	} = useGetBadgeCountNotificationQuery()
 
 	const _isLoading = useMemo(() => {
-		const loading = isLoadingUser || isLoadingBannerPublished || isLoadingActivitiesHighlight
-		const isEmptyData = isEmpty(userProfileData) || isEmpty(bannerPublishedData) || isEmpty(activitiesHighlightData)
+		const loading = isLoadingUser || isLoadingBannerPublished || isLoadingActivitiesHighlight || isLoadingNotificationData
+		const isEmptyData = isEmpty(userProfileData) || isEmpty(bannerPublishedData) || isEmpty(activitiesHighlightData) ||  isEmpty(notificationData)
 		return loading && isEmptyData
 	}, [
 		isLoadingUser,
@@ -103,12 +113,14 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		userProfileData,
 		bannerPublishedData,
 		activitiesHighlightData,
-		isLoadingActivitiesHighlight
+		isLoadingActivitiesHighlight,
+		isLoadingNotificationData,
+		notificationData
 	])
 
 	const _isError = useMemo(() => {
-		return isErrorUser || isErrorBannerPublished || isErrorActivitiesHighlight
-	}, [isErrorUser, isErrorBannerPublished, isErrorActivitiesHighlight])
+		return isErrorUser || isErrorBannerPublished || isErrorActivitiesHighlight || isErrorNotificationData
+	}, [isErrorUser, isErrorBannerPublished, isErrorActivitiesHighlight, isErrorNotificationData])
 
 	const _navigateToProfile = useCallback(() => {
 		const jumpAction = TabActions.jumpTo('Profil')
@@ -128,12 +140,22 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 	}, [])
 
 	const _onRefresh = useCallback(() => {
+		setIsRefresh(true)
 		refetchUser()
 		refetchBannerPublished()
 		refetchActivitiesHighlight()
-	}, [refetchUser, refetchBannerPublished, refetchActivitiesHighlight])
+		refetchNotificationData()
+	}, [refetchUser, refetchBannerPublished, refetchActivitiesHighlight, refetchNotificationData])
 
-	const _renderHeader = useCallback(() => {
+	useEffect(() => {
+		requestPermission()
+	}, [])
+
+	useEffect(() => {
+		if (!_isLoading && isRefresh) setIsRefresh(false)
+	}, [_isLoading, isRefresh])
+
+	const _renderHeader = useMemo(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
 				<View style={ styles.avatarWrapperStyle }>
@@ -153,16 +175,21 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					</TouchableOpacity>
 					<TouchableOpacity style={ styles.iconWrapperStyle } onPress={ _navigateToNotifications }>
 						<IconNotification/>
-						<View style={ styles.badgeStyle }>
-							<Text style={ styles.badgeTextStyle } variant='bodyDoubleExtraSmallRegular'>12</Text>
-						</View>
+						{
+							notificationData?.count_unread ?
+								<View style={ styles.badgeStyle }>
+									<Text style={ styles.badgeTextStyle } variant='bodyDoubleExtraSmallRegular'>{ notificationData?.count_unread }</Text>
+								</View>
+								:
+								null
+						}
 					</TouchableOpacity>
 				</View>
 			</View>
 		)
-	}, [userProfileData])
+	}, [userProfileData, notificationData])
 	
-	const _renderTier = useCallback(() => {
+	const _renderTier = useMemo(() => {
 		return (
 			<Pressable
 				onPress={ _navigateToTier }
@@ -178,7 +205,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		)
 	}, [navigation, userProfileData])
 
-	const _renderBanner = useCallback(() => {
+	const _renderBanner = useMemo(() => {
 		return (
 			<View>
 				<Carousel
@@ -190,7 +217,9 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					width={ fullWidth }
 					height={ scaleHeight(220) }
 					data={ bannerPublishedData ?? [] }
-					onProgressChange={ (_, absoluteProgress: number) => { setCarouselIndex(Math.round(absoluteProgress)) } }
+					onProgressChange={ (_, absoluteProgress: number) => {
+						if (absoluteProgress) setCarouselIndex(Math.round(absoluteProgress))
+					 } }
 					renderItem={ ({ item }) => {
 						return (
 							<Pressable onPress={ () => { Alert.alert(item.banner_code) } }>
@@ -213,7 +242,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		)
 	}, [carouselIndex, bannerPublishedData])
 
-	const _renderListGame = useCallback(() => {
+	const _renderListGame = useMemo(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
 				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
@@ -254,26 +283,26 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		)
 	}, [activitiesHighlightData])
 
-	const _renderContent = useCallback(() => {
+	const _renderContent = useMemo(() => {
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
 		return (
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.scrollContentStyle }
-				refreshControl={ <RefreshControl refreshing={ _isLoading } onRefresh={ _onRefresh }/> }
+				refreshControl={ <RefreshControl refreshing={ isRefresh } onRefresh={ _onRefresh }/> }
 			>
-				{ _renderHeader() }
-				{ _renderTier() }
-				{ _renderBanner() }
-				{ _renderListGame() }
+				{ _renderHeader }
+				{ _renderTier }
+				{ _renderBanner }
+				{ _renderListGame }
 			</ScrollView>
 		)
-	}, [_isError, _onRefresh, _isLoading, _renderBanner, _renderHeader, _renderListGame, _renderTier])
+	}, [_isError, _onRefresh, _isLoading, _renderBanner, _renderHeader, _renderListGame, _renderTier, isRefresh])
 
 	return (
 		<Container contentStyle={ styles.contentStyle } barStyle='dark-content'>
-			{ _renderContent() }
+			{ _renderContent }
 			<Loading isLoading={ _isLoading } />
 		</Container>
 	)

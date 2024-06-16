@@ -66,6 +66,9 @@ const styles = StyleSheet.create({
 		marginRight: scaleWidth(24),
 		marginBottom: scaleHeight(8)
 	},
+	resultLocationStyle: {
+		width: scaleWidth(240)
+	},
 	bottomsheetBottomContentStyle: {
 		paddingBottom: 16
 	},

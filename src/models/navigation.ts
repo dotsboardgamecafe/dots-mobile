@@ -15,6 +15,7 @@ export type RootStackParamList =  {
     verify_token?:string,
     token?: string,
     type?: string
+    usercode?: string
   },
   forgotPassword: undefined,
   updatePassword: {
@@ -51,7 +52,8 @@ export type RootStackParamList =  {
   tnc: undefined
   privacyPolicy: undefined,
   notifications: undefined,
-  transactions: undefined
+  transactions: undefined,
+  editProfile: undefined
 }
 
 export interface WithCommonProps {

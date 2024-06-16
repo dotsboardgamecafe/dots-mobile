@@ -6,6 +6,7 @@ import {
 	Eye, EyeSlash, type IconProps, Lock, Sms
 } from 'iconsax-react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import get from 'lodash/get'
 
 import { scaleWidth } from '../../utils/pixel.ratio'
 import Container from '../../components/container'
@@ -18,10 +19,11 @@ import navigationConstant from '../../constants/navigation'
 import Text from '../../components/text'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
-import { usePostLoginMutation } from '../../store/access'
+import { usePostLoginMutation, usePostVerifyEmailMutation } from '../../store/access'
 import { useForm, Controller, type FieldValues } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
+import Toast from 'react-native-toast-message'
 
 type Props = NavigationProps<'login'>
 
@@ -43,6 +45,13 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			error
 		}
 	] = usePostLoginMutation()
+	const [
+		verifyEmail,
+		{
+			isSuccess: isSuccessVerifyEmail,
+			error: errorVerifyEmail
+		}
+	] = usePostVerifyEmailMutation()
 
 	const passSuffix = useMemo(() => {
 		const props: IconProps = {
@@ -79,6 +88,30 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 			errModalRef.current?.present()
 		}
 	}, [data, error, isError, isSuccess])
+
+	useEffect(() => {
+		if (route.params?.type && route.params.type === 'update_email') {
+			verifyEmail({ token: route.params?.token ?? '', usercode: route.params?.usercode ?? '' })
+		}
+	}, [route.params])
+
+	useEffect(() => {
+		if (errorVerifyEmail) {
+			Toast.show({
+				type: 'error',
+				text1: get(errorVerifyEmail, 'data', 'Something went wrong')
+			})
+		}
+	}, [errorVerifyEmail])
+
+	useEffect(() => {
+		if (isSuccessVerifyEmail) {
+			Toast.show({
+				type: 'success',
+				text1: 'Email verified successfully'
+			})
+		}
+	}, [isSuccessVerifyEmail])
 
 	return (
 		<Container>

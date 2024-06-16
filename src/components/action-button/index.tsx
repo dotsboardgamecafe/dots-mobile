@@ -34,7 +34,7 @@ const ActionButton = ({ style, onPress, label, suffix, loading, labelStyle }: Ac
 
 	const handleClick = useCallback(() => {
 		!loading && onPress && onPress()
-	}, [loading])
+	}, [loading, onPress])
 
 	return (
 		<TouchableOpacity

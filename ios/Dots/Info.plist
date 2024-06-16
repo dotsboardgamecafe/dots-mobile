@@ -88,5 +88,11 @@
 			<string>protonmail</string>
 			<string>szn-email</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access to the photo library for selecting images</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow access to take picture from your camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow access to take audio from your microphone</string>
 </dict>
 </plist>

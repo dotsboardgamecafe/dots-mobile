@@ -5,7 +5,7 @@ import {
 import { type AppBottomSheetProps } from './type'
 import { BackHandler } from 'react-native'
 
-const BottomSheet = ({ bsRef: ref, bsProps, viewProps, children }: AppBottomSheetProps): React.ReactNode => {
+const BottomSheet = ({ bsRef: ref, bsProps, viewProps, children, pressBehavior }: AppBottomSheetProps): React.ReactNode => {
 	const { dismiss } = useBottomSheetModal()
 	const bottomSheetBackdrop = useCallback(
 		(props: BottomSheetBackdropProps) => (
@@ -14,6 +14,7 @@ const BottomSheet = ({ bsRef: ref, bsProps, viewProps, children }: AppBottomShee
 				opacity={ .5 }
 				disappearsOnIndex={ -1 }
 				appearsOnIndex={ 0 }
+				pressBehavior={ pressBehavior }
 			/>
 		),
 		[]

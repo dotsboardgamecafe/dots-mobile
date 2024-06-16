@@ -1,5 +1,5 @@
 import React, {
-	Suspense, lazy, useCallback, useMemo, useRef, useState
+	Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
 import {
 	FlatList, ImageBackground, RefreshControl, TouchableOpacity, View,
@@ -67,6 +67,7 @@ const EarnPointActivityTab = (): React.ReactNode => {
 
 const Tier = ({ t }: Props): React.ReactNode => {
 	const { user } = useStorage()
+	const [isRefresh, setIsRefresh] = useState(false)
 	const {
 		data: userProfileData,
 		isLoading: isLoadingUser,
@@ -92,6 +93,7 @@ const Tier = ({ t }: Props): React.ReactNode => {
 	}, [scrollY])
 
 	const _onRefresh = useCallback(() => {
+		setIsRefresh(true)
 		refetchUser()
 		pointActivityRefetch()
 	}, [])
@@ -106,7 +108,11 @@ const Tier = ({ t }: Props): React.ReactNode => {
 		return error
 	}, [isErrorUser, isErrorPointActivity])
 
-	const _renderTopContent = useCallback(() => {
+	useEffect(() => {
+		if (!_isLoading && isRefresh) setIsRefresh(false)
+	}, [_isLoading, isRefresh])
+
+	const _renderTopContent = useMemo(() => {
 		return (
 			<Suspense fallback={
 				<View style={ styles.starsFieldContentStyle }/>
@@ -120,7 +126,7 @@ const Tier = ({ t }: Props): React.ReactNode => {
 		)
 	}, [userProfileData])
 
-	const _renderCardBenefits = useCallback(() => {
+	const _renderCardBenefits = useMemo(() => {
 		return (
 			<View style={ [styles.filterCardRedeemWrapperStyle, styles.midContentHorizontalStyle] }>
 				<ScrollView
@@ -161,7 +167,7 @@ const Tier = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onPressRedeemItem, userProfileData])
 
-	const _renderTabActivity = useCallback(() => {
+	const _renderTabActivity = useMemo(() => {
 		
 		return (
 			<View style={ styles.tabActivityWrapperStyle }>
@@ -175,17 +181,17 @@ const Tier = ({ t }: Props): React.ReactNode => {
 		)
 	}, [pointActivityData])
 
-	const _renderMidContent = useCallback(() => {
+	const _renderMidContent = useMemo(() => {
 		return (
 			<View style={ styles.midContentStyle }>
 				<Text style={ styles.midContentHorizontalStyle } variant='bodyExtraLargeBold'>{ t('tier-page.rewards-title') }</Text>
-				{ _renderCardBenefits() }
-				{ _renderTabActivity() }
+				{ _renderCardBenefits }
+				{ _renderTabActivity }
 			</View>
 		)
 	}, [_renderTabActivity, _renderCardBenefits])
 
-	const _renderMainContent = useCallback(() => {
+	const _renderMainContent = useMemo(() => {
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
 		return (
@@ -194,13 +200,13 @@ const Tier = ({ t }: Props): React.ReactNode => {
 				removeClippedSubviews
 				onScroll={ e => { setScrollY(e.nativeEvent.contentOffset.y) } }
 				scrollEventThrottle={ 16 }
-				refreshControl={ <RefreshControl refreshing={ _isLoading } onRefresh={ _onRefresh }/> }
+				refreshControl={ <RefreshControl refreshing={ isRefresh } onRefresh={ _onRefresh }/> }
 			>
-				{ _renderTopContent() }
-				{ _renderMidContent() }
+				{ _renderTopContent }
+				{ _renderMidContent }
 			</ScrollView>
 		)
-	}, [_renderTopContent, _renderMidContent, _isError, _isLoading])
+	}, [_renderTopContent, _renderMidContent, _isError, _isLoading, isRefresh])
 
 	return (
 		<Container
@@ -211,7 +217,7 @@ const Tier = ({ t }: Props): React.ReactNode => {
 				_getScrollY || _isError ?
 					<ImageBackground style={ styles.imageBgStyle } source={ BG } /> : null
 			}
-			{ _renderMainContent() }
+			{ _renderMainContent }
 			<BottomSheet bsRef={ bottomSheetRef } viewProps={ { style: styles.bottomSheetView } }>
 				<Text variant='headingLarge'>TODO </Text>
 			</BottomSheet>

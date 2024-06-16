@@ -124,21 +124,24 @@
     },
     "profile-page": {
       "game-collection-title": "Board Game Collection",
-      "awards-title": "Awards",
+      "awards-title": "Badges",
       "favorite-game-title": "Favorite Game Mechanics",
       "settings": {
         "account-information-title":"Account Information",
+        "edit-profile-title":"Edit Profile",
         "edit-password-title":"Edit Password",
         "tnc-title":"Terms and Condition",
         "privacy-policy-title":"Privacy Policy",
-        "logout-title":"Logout"
+        "logout-title":"Logout",
+        "take-photo-title": "Take photo",
+        "select-library-title": "Select from library"
       }
     },
     "game-collection-page": {
       "header-title": "Game Collection"
     },
     "awards-page": {
-      "header-title": "Awards"
+      "header-title": "Badges"
     },
     "account-info-page": {
       "header-title": "Account Information",
@@ -161,7 +164,7 @@
       "bottomsheet-verification": {
         "header-title": "Verification Link Sent",
         "header-subtitle": "We have sent a link recovery for your password to your email address {{email}}",
-        "btn-verification": "Open Email"
+        "btn-verification": "Logout and open email"
       }
     },
     "transaction-page": {

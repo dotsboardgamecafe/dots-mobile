@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type Badges, type BadgesQuery } from '../../models/badges'
+import { baseApi } from '../../utils/base.api'
 
-export const badgesApi = createApi({
-	reducerPath: 'badgesApi',
-	tagTypes: ['BadgesApi'],
-	baseQuery: baseQuery(),
+export const badgesApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getBadges: builder.query<Badges[], BadgesQuery | undefined>({
 			query: (params: BadgesQuery) => {
@@ -14,7 +10,8 @@ export const badgesApi = createApi({
 			},
 			transformResponse: result => (result as {data: Badges[]}).data,
 		}),
-	})
+	}),
+	overrideExisting: false
 })
 
 export const {
