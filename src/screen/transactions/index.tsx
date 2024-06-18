@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { FlatList, type ListRenderItemInfo, View, TouchableOpacity } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
-import TabView from '../../components/tab-view'
+
+import isEmpty from 'lodash/isEmpty'
+
+// todo next phase
+// import TabView from '../../components/tab-view'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import styles from './styles'
@@ -15,26 +21,22 @@ import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import TickSuccessIcon from '../../assets/svg/tick-success.svg'
 import TextInput from '../../components/text-input'
 import { colorsTheme } from '../../constants/theme'
-import { scaleWidth } from '../../utils/pixel.ratio'
-import { Receipt2 } from 'iconsax-react-native'
+import { scaleFont, scaleWidth } from '../../utils/pixel.ratio'
+import { Clock, CloseCircle, Receipt2 } from 'iconsax-react-native'
 import Modal from '../../components/modal'
 
 import CloseIcon from '../../assets/svg/close.svg'
 import { redeemSuccessIllu } from '../../assets/images'
 import ActionButton from '../../components/action-button'
+import { useGetTransactionQuery } from '../../store/transactions'
+import useStorage from '../../hooks/useStorage'
+import { type StatusTransactionType, type Transaction } from '../../models/transaction'
+import Loading from '../../components/loading'
+import ReloadView from '../../components/reload-view'
+import { RefreshControl } from 'react-native-gesture-handler'
+import moment from 'moment'
 
 type Props = NavigationProps<'transactions'>
-
-interface HistoryType {
-  title: string
-  image: string
-  description: string
-  price: number,
-  discount: number,
-  created_date: string
-  code: string
-  point: number
-}
 
 interface RedeemType {
   invoice_code: string
@@ -43,29 +45,6 @@ interface RedeemType {
   point: number,
   is_new: boolean
 }
-
-const listTransaction:HistoryType[] = [
-	{
-		title: 'Rising Sun Board Game',
-		image: 'https://cf.geekdo-images.com/iwevA6XmiNLHn1QnGUucqw__itemrep/img/QC2OAbicZssRpGJkUmp0Zbto-cs=/fit-in/246x300/filters:strip_icc()/pic3880340.jpg',
-		description: 'Play game Dungeon of Dragon 3 times and get',
-		price: 300000,
-		discount: 0,
-		created_date: 'Nov, 25th 2024 - 09:30',
-		code: '1',
-		point: 10
-	},
-	{
-		title: 'Apiary Board Game',
-		image: 'https://cf.geekdo-images.com/Nnzu4eqkUoGybbziFGPI6g__itemrep/img/iGanwQiMDaXz5AiNdf2ynDFHVXA=/fit-in/246x300/filters:strip_icc()/pic5212377.png',
-		description: 'Congratulations! You’re successfully played Dungeon of Dragon board game for 3 times.',
-		price: 350000,
-		discount: 10,
-		created_date: 'Nov, 25th 2024 - 09:30',
-		code: '2',
-		point: 10
-	},
-]
 
 const listRedeem: RedeemType[] = [
 	{
@@ -85,37 +64,40 @@ const listRedeem: RedeemType[] = [
 ]
 
 interface HistoryTabProps {
-  onPressHistoryItem: (item: HistoryType) => void
+  onPressHistoryItem: (item: Transaction) => void,
+	listTransactionData?: Transaction[],
+	isRefresh?: boolean,
+	onRefresh?: () => void
 }
 
 interface RedeemTabProps {
   onPressRedeem: () => void
 }
 
-const HistoryTab = ({ onPressHistoryItem }: HistoryTabProps): React.ReactNode => {
-	const _renderItem = useCallback(({ item }:ListRenderItemInfo<HistoryType>): React.ReactElement => {
+const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh }: HistoryTabProps): React.ReactNode => {
+	const _renderItem = useCallback(({ item }:ListRenderItemInfo<Transaction>): React.ReactElement => {
 		return (
 			<TouchableOpacity style={ styles.historyWrapperStyle } onPress={ () => { onPressHistoryItem(item) } }>
 				<View style={ [
 					styles.rowStyle, styles.historyContentStyle,
 				] }>
 					<Image style={ styles.historyImageStyle }
-						source={ { uri: item.image } }
+						source={ { uri: item.game_img_url } }
 					/>
 					<View style={ styles.growStyle }>
-						<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ item.created_date }</Text>
-						<Text style={ styles.historyTextSpaceStyle } variant='bodyMiddleDemi'>{ item.title }</Text>
+						<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ moment(item.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
+						<Text style={ styles.historyTextSpaceStyle } variant='bodyMiddleDemi'>{ item.game_name }</Text>
 						<View style={ [styles.rowStyle, styles.spaceBetweenStyle, styles.historyTextSpaceStyle] }>
-							<Text variant='bodySmallMedium'>{ currencyFormatter(item.price) }</Text>
-							{
+							<Text variant='bodySmallMedium'>{ currencyFormatter(item.final_price_amount) }</Text>
+							{ /* {
 								item.discount ?
 									<Text variant='bodySmallMedium'>Discount Reward { item.discount }%</Text> : null
-							}
+							} */ }
 						</View>
 						<View style={ styles.totalPriceSeparatorStyle }/>
 						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
 							<Text variant='bodyMiddleRegular'>Total Payment:</Text>
-							<Text variant='bodyMiddleDemi'>{ currencyFormatter(item.price) }</Text>
+							<Text variant='bodyMiddleDemi'>{ currencyFormatter(item.final_price_amount) }</Text>
 						</View>
 					</View>
 				</View>
@@ -126,14 +108,16 @@ const HistoryTab = ({ onPressHistoryItem }: HistoryTabProps): React.ReactNode =>
 	return (
 		<FlatList
 			bounces={ false }
-			data={ listTransaction }
+			data={ listTransactionData }
 			renderItem={ _renderItem }
-			keyExtractor={ item => item.code }
+			keyExtractor={ item => item.transaction_code }
 			ItemSeparatorComponent={ () => <View style={ styles.itemSeparatorStyle }/> }
+			refreshControl={ <RefreshControl refreshing={ Boolean(isRefresh) } onRefresh={ onRefresh }/> }
 		/>
 	)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RedeemTab = ({ onPressRedeem }: RedeemTabProps): React.ReactNode => {
 	const _renderItem = useCallback(({ item }:ListRenderItemInfo<RedeemType>): React.ReactElement => {
 		return (
@@ -202,11 +186,19 @@ const RedeemTab = ({ onPressRedeem }: RedeemTabProps): React.ReactNode => {
 }
 
 const Transactions = ({ t }: Props): React.ReactNode => {
-	const [selectedHistory, setSelectedHistory] = useState<HistoryType>()
+	const { user } = useStorage()
+	const [selectedHistory, setSelectedHistory] = useState<Transaction>()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [visibleRedeem, setVisibleRedeem] = useState(false)
+	const [isRefresh, setIsRefresh] = useState(false)
+	const {
+		data: listTransactionData,
+		isFetching: isLoadingTransaction,
+		refetch: refetchTransaction,
+		isError: isErrorTransaction,
+	} = useGetTransactionQuery(user?.user_code)
 
-	const _onPressHistoryItem = useCallback((item: HistoryType) => {
+	const _onPressHistoryItem = useCallback((item: Transaction) => {
 		setSelectedHistory(item)
 		bottomSheetRef.current?.present()
 	}, [])
@@ -215,69 +207,138 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 		setVisibleRedeem(!visibleRedeem)
 	}, [visibleRedeem])
 
-	const _renderBottomSheetContent = useCallback(() => {
+	const _onRefresh = useCallback(() => {
+		setIsRefresh(true)
+		refetchTransaction()
+	}, [])
+
+	const _isLoading = useMemo(() => {
+		const loading = isLoadingTransaction
+		const isEmptyData = isEmpty(isErrorTransaction)
+		return loading && isEmptyData
+	}, [isLoadingTransaction, isErrorTransaction])
+
+	useEffect(() => {
+		if (!_isLoading && isRefresh) setIsRefresh(false)
+	}, [_isLoading, isRefresh])
+
+	const _renderStatusTransaction = useCallback((status?: StatusTransactionType) => {
+		const content = {
+			parentBackground: styles.tickSuccessBlurStyle,
+			childBackground: styles.tickSuccessCircleStyle,
+			textColor: styles.successTextStyle,
+			message: 'Success',
+			icon: <TickSuccessIcon/>,
+		}
+
+		switch (status) {
+			case 'PENDING':
+				content.parentBackground = styles.tickPendingBlurStyle
+				content.childBackground = styles.tickPendingCircleStyle
+				content.textColor = styles.pendingTextStyle
+				content.message = 'Pending'
+				content.icon = <Clock size={ scaleFont(14) } color={ styles.pendingTextStyle.color }/>
+				break
+			
+			case 'EXPIRED':
+				content.parentBackground = styles.tickExpiredBlurStyle
+				content.childBackground = styles.tickExpiredCircleStyle
+				content.textColor = styles.expiredTextStyle
+				content.message = 'Expired'
+				content.icon = <CloseCircle size={ scaleFont(14) } color={ styles.expiredTextStyle.color }/>
+				break
+		}
+
+		return (
+			<View style={ [styles.alignCenterStyle, styles.rowStyle, styles.justifyCenterStyle] }>
+				<View style={ [styles.tickBlurStyle, styles.justifyCenterStyle, styles.alignCenterStyle, content.parentBackground] }>
+					<View style={ [styles.tickCircleStyle, styles.justifyCenterStyle, styles.alignCenterStyle, content.parentBackground] }>
+						{ content.icon }
+					</View>
+				</View>
+				<Text style={ content.textColor } variant='bodyLargeHeavy'>{ content.message }</Text>
+			</View>
+		)
+	}, [])
+
+	const _renderBottomSheetContent = useMemo(() => {
+		if (isErrorTransaction) return <ReloadView onRefetch={ _onRefresh } />
+		let message = `Congratulations! You are earned ${selectedHistory?.awarded_user_point} points`
+
+		if (selectedHistory?.status === 'EXPIRED') {
+			message = 'Your transaction has expired'
+		}
+		if (selectedHistory?.status === 'PENDING') {
+			message = 'Your transaction is currently being processed'
+		}
+
 		return (
 			<View style={ { paddingBottom: 34 } }>
-				<View style={ [styles.alignCenterStyle, styles.rowStyle, styles.justifyCenterStyle] }>
-					<View style={ [styles.tickBlurStyle, styles.justifyCenterStyle, styles.alignCenterStyle] }>
-						<View style={ [styles.tickCircleStyle, styles.justifyCenterStyle, styles.alignCenterStyle] }>
-							<TickSuccessIcon/>
-						</View>
-					</View>
-					<Text style={ styles.successTextStyle } variant='bodyLargeHeavy'>Success</Text>
-				</View>
-				<Text variant='bodySmallDemi' style={ [styles.textCenterStyle, styles.historyDateStyle] }>{ selectedHistory?.created_date }</Text>
+				{ _renderStatusTransaction(selectedHistory?.status) }
+				<Text variant='bodySmallDemi' style={ [styles.textCenterStyle, styles.historyDateStyle] }>{ moment(selectedHistory?.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
 				<View style={ [styles.rowStyle, styles.justifyBetweenStyle, styles.bookingWrapperStyle, styles.bottomSheetPaddingStyle] }>
 					<Text variant='bodyMiddleRegular'>Booking ID</Text>
-					<Text variant='bodyMiddleRegular'>#{ selectedHistory?.code }</Text>
+					<Text variant='bodyMiddleRegular'>#{ selectedHistory?.transaction_code }</Text>
 				</View>
 				<View style={ [styles.bottomSheetPaddingStyle, styles.orderSummaryStyle] }>
 					<Text variant='bodyLargeDemi'>Order Summary</Text>
 					<View style={ [styles.rowStyle, styles.justifyBetweenStyle, styles.baseLineStyle] }>
 						<View style={ [styles.rowStyle, styles.orderSummaryDetailStyle] }>
 							<Text variant='bodyMiddleDemi'>1x</Text>
-							<Text style={ styles.orderSummaryTitleStyle } variant='bodyMiddleRegular'>{ selectedHistory?.title }</Text>
+							<Text style={ styles.orderSummaryTitleStyle } variant='bodyMiddleRegular'>{ selectedHistory?.game_name }</Text>
 						</View>
 						<View style={ styles.flexEndStyle }>
-							<Text variant='bodyMiddleRegular'>{ currencyFormatter(selectedHistory?.price ?? 0) }</Text>
-							{
+							<Text variant='bodyMiddleRegular'>{ currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
+							{ /* {
 								selectedHistory?.discount ?
 									<Text variant='bodyMiddleRegular'>Discount Reward { selectedHistory?.discount }%</Text> : null
-							}
+							} */ }
 						</View>
 					</View>
 				</View>
 				<View style={ styles.bottomSheetDetailSeparatorStyle }/>
 				<View style={ [styles.rowStyle, styles.justifyBetweenStyle, styles.bottomSheetPaddingStyle, styles.alignCenterStyle] }>
 					<Text variant='bodyMiddleRegular'>Total Payment</Text>
-					<Text variant='bodyMiddleDemi'>{ currencyFormatter(selectedHistory?.price ?? 0) }</Text>
+					<Text variant='bodyMiddleDemi'>{ currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
 				</View>
 				<View style={ styles.bottomSheetDetailSeparatorStyle }/>
-				<Text variant='bodyMiddleDemi' style={ styles.bottomSheetPaddingStyle }>Congratulations! You are earned 10 points</Text>
+				<Text variant='bodyMiddleDemi' style={ styles.bottomSheetPaddingStyle }>{ message }</Text>
 			</View>
 		)
-	}, [selectedHistory])
+	}, [selectedHistory, isErrorTransaction])
 
-	const _renderContent = useCallback(() => {
+	const _renderContent = useMemo(() => {
+		// todo next phase
+		// return (
+		// 	<TabView
+		// 		tabs={ [
+		// 			{
+		// 				key: 'pointActivity',
+		// 				title: t('transaction-page.tab-history'),
+		// 				component: () => <HistoryTab onPressHistoryItem={ _onPressHistoryItem } />
+		// 			},
+		// 			{
+		// 				key: 'earnActivity',
+		// 				title: t('transaction-page.tab-redeem'),
+		// 				component: () => <RedeemTab onPressRedeem={ _onPressRedeem } />
+		// 			}
+		// 		] }
+		// 	 />
+		// )
+
 		return (
-			<TabView
-				tabs={ [
-					{
-						key: 'pointActivity',
-						title: t('transaction-page.tab-history'),
-						component: () => <HistoryTab onPressHistoryItem={ _onPressHistoryItem } />
-					},
-					{
-						key: 'earnActivity',
-						title: t('transaction-page.tab-redeem'),
-						component: () => <RedeemTab onPressRedeem={ _onPressRedeem } />
-					}
-				] }
-			 />
+			<HistoryTab
+				isRefresh={ isRefresh }
+				onRefresh={ _onRefresh }
+				listTransactionData={ listTransactionData }
+				onPressHistoryItem={ _onPressHistoryItem }
+			/>
 		)
-	}, [_onPressRedeem])
+	}, [_onPressRedeem, listTransactionData, isRefresh])
 
-	const _renderModalContent = useCallback(() => {
+	console.log(_isLoading)
+
+	const _renderModalContent = useMemo(() => {
 		return (
 			<View>
 				<View style={ styles.alignEndStyle }>
@@ -302,13 +363,14 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 	return (
 		<Container>
 			<Header title='Transactions' />
-			{ _renderContent() }
+			{ _renderContent }
 			<BottomSheet bsRef={ bottomSheetRef }>
-				{ _renderBottomSheetContent() }
+				{ _renderBottomSheetContent }
 			</BottomSheet>
 			<Modal visible={ visibleRedeem } borderRadius={ 16 } dismissable={ false }>
-				{ _renderModalContent() }
+				{ _renderModalContent }
 			</Modal>
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }

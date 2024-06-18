@@ -19,6 +19,7 @@ import { notificationsApi } from './notifications'
 import { settingApi } from './setting'
 import { baseApi } from '../utils/base.api'
 import { uploadApi } from './upload'
+import { transactionApi } from './transactions'
 
 const middlewares = [
 	baseApi.middleware,
@@ -36,6 +37,7 @@ const middlewares = [
 	notificationsApi.middleware,
 	settingApi.middleware,
 	uploadApi.middleware,
+	transactionApi.middleware,
 	rtkQueryErrorLogger
 ]
 
