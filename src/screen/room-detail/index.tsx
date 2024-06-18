@@ -223,23 +223,22 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data])
 
 	const joinAction = useMemo(() => {
-		let vp, room
-		if (isTourney) {
-			vp = ` - Get ${data?.participant_vp}`
-			room = 'room'
-		} else if (isRoom) {
-			vp = ` - Get ${data?.reward_point}`
-			room = 'tournament'
+		const totalSlot = (isTourney ? data?.player_slot : data?.maximum_participant) ?? 0
+		const usedSlot = data?.current_used_slot ?? 0
+		if (usedSlot >= totalSlot) {
+			return null
 		}
 
+		const room = isTourney ? 'room' : 'tournament'
 		if (data?.have_joined) {
 			return (
-				<Text variant='bodyMiddleBold' style={ [styles.mh12, styles.mv32, { textAlign: 'center' }] }>
+				<Text variant='bodyMiddleBold' style={ styles.labelJoined }>
 					{ t('room-detail.joined', { room }) }
 				</Text>
 			)
 		}
 
+		const vp = ` - Get ${isTourney ? data?.participant_vp : data?.reward_point}`
 		return (
 			<View style={ styles.actionJoin }>
 				<ActionButton

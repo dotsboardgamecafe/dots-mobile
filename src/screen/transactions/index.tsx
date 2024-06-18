@@ -288,7 +288,7 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 							<Text style={ styles.orderSummaryTitleStyle } variant='bodyMiddleRegular'>{ selectedHistory?.game_name }</Text>
 						</View>
 						<View style={ styles.flexEndStyle }>
-							<Text variant='bodyMiddleRegular'>{ currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
+							<Text variant='bodyMiddleRegular'>{ selectedHistory && currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
 							{ /* {
 								selectedHistory?.discount ?
 									<Text variant='bodyMiddleRegular'>Discount Reward { selectedHistory?.discount }%</Text> : null
@@ -299,7 +299,7 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 				<View style={ styles.bottomSheetDetailSeparatorStyle }/>
 				<View style={ [styles.rowStyle, styles.justifyBetweenStyle, styles.bottomSheetPaddingStyle, styles.alignCenterStyle] }>
 					<Text variant='bodyMiddleRegular'>Total Payment</Text>
-					<Text variant='bodyMiddleDemi'>{ currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
+					<Text variant='bodyMiddleDemi'>{ selectedHistory && currencyFormatter(selectedHistory?.final_price_amount ?? 0) }</Text>
 				</View>
 				<View style={ styles.bottomSheetDetailSeparatorStyle }/>
 				<Text variant='bodyMiddleDemi' style={ styles.bottomSheetPaddingStyle }>{ message }</Text>
