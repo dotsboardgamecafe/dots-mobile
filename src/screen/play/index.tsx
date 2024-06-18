@@ -50,7 +50,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const setLoc = useCallback((label: string) => {
 		setLocations(locations.map(loc => ({ ...loc, selected: label === loc.name })))
 		setLocation(label)
-		setParam({ ...param, location: label })
+		setParam({ ...param, location: label === 'All Location' ? '' : label })
 		filterLocRef.current?.dismiss()
 	}, [locations, param])
 

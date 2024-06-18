@@ -169,11 +169,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					{ data?.name }
 				</Text>
-				<ExportCurve
+				{ /* <ExportCurve
 					variant='Linear'
 					color={ theme.colors.onBackground }
 					size={ scaleWidth(24) }
-				/>
+				/> */ }
 			</View>
 
 			<ScrollView
