@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react'
-import { View, TextInput as TextInputNative } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import { View, TextInput as TextInputNative, type NativeSyntheticEvent, type TextInputFocusEventData } from 'react-native'
 import { type StyleProps } from 'react-native-reanimated'
 
 import { type TextInputType } from './type'
 import styles from './styles'
 import Text from '../text'
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet'
 
 const TextInput = ({
 	containerStyle,
@@ -13,7 +14,8 @@ const TextInput = ({
 	prefix,
 	suffix,
 	inputProps,
-	errors
+	errors,
+	isBottomSheet
 }: TextInputType): React.ReactNode => {
 
 	const [isFocused, setFocused] = useState(false)
@@ -27,6 +29,38 @@ const TextInput = ({
 		return res
 	}, [prefix, suffix])
 
+	const _handleFocus = useCallback((event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+		setFocused(true)
+		if (typeof inputProps?.onFocus === 'function') inputProps.onFocus(event)
+	}, [inputProps])
+
+	const _handleBlur = useCallback((event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+		setFocused(false)
+		if (typeof inputProps?.onBlur === 'function') inputProps.onBlur(event)
+	}, [inputProps])
+
+	const _renderTextInput = useMemo(() => {
+		if (isBottomSheet) {
+			return (
+				<BottomSheetTextInput
+					style={ is }
+					onFocus={ _handleFocus }
+					onBlur={ _handleBlur }
+					{ ...inputProps }
+				/>
+			)
+		}
+
+		return (
+			<TextInputNative
+				style={ is }
+				onFocus={ _handleFocus }
+				onBlur={ _handleBlur }
+				{ ...inputProps }
+			/>
+		)
+	}, [_handleFocus, _handleBlur, isBottomSheet])
+
 	return (
 		<View style={ containerStyle }>
 			<View
@@ -37,22 +71,7 @@ const TextInput = ({
 				] }
 			>
 				{ prefix }
-
-				<TextInputNative
-					style={ is }
-					onFocus={ e => {
-						setFocused(true)
-						if (typeof inputProps?.onFocus === 'function')
-							inputProps.onFocus(e)
-					} }
-					onBlur={ e => {
-						setFocused(false)
-						if (typeof inputProps?.onBlur === 'function')
-							inputProps.onBlur(e)
-					} }
-					{ ...inputProps }
-				/>
-
+				{ _renderTextInput }
 				{ suffix }
 			</View>
 			{ errors?.message && <Text variant='bodyMiddleRegular' style={ styles.textError }>{ errors.message }</Text> }

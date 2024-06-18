@@ -336,8 +336,6 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onPressRedeem, listTransactionData, isRefresh])
 
-	console.log(_isLoading)
-
 	const _renderModalContent = useMemo(() => {
 		return (
 			<View>
