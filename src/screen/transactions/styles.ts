@@ -65,17 +65,39 @@ const styles = StyleSheet.create({
 		width: scaleWidth(24),
 		height: scaleWidth(24),
 		borderRadius: 100,
-		backgroundColor: 'rgba(236, 253, 243, 1)',
 		marginRight: scaleWidth(8),
+	},
+	tickSuccessBlurStyle: {
+		backgroundColor: 'rgba(236, 253, 243, 1)',
+	},
+	tickPendingBlurStyle: {
+		backgroundColor: '#fdfdec'
+	},
+	tickExpiredBlurStyle: {
+		backgroundColor: '#fdecec'
 	},
 	tickCircleStyle: {
 		width: scaleWidth(18),
 		height: scaleWidth(18),
 		borderRadius: 100,
-		backgroundColor: 'rgba(209, 250, 223, 1)',
+	},
+	tickSuccessCircleStyle: {
+		backgroundColor: 'rgba(209, 250, 223, 1)'
+	},
+	tickPendingCircleStyle: {
+		backgroundColor: '#faf9d1'
+	},
+	tickExpiredCircleStyle: {
+		backgroundColor: '#fad1d1'
 	},
 	successTextStyle: {
 		color: colorsTheme.success500,
+	},
+	pendingTextStyle: {
+		color: '#d0bd2d',
+	},
+	expiredTextStyle: {
+		color: '#b71212',
 	},
 	historyDateStyle: {
 		marginTop: scaleHeight(8),
