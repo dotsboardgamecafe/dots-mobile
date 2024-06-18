@@ -78,7 +78,7 @@ const EditPassword = ({ theme }: Props): React.ReactNode => {
 						return undefined
 					}
 				},
-				hintText: 'Test 1'
+				hintText: ''
 			},
 			newPassword: {
 				name: 'newPassword',
@@ -89,7 +89,7 @@ const EditPassword = ({ theme }: Props): React.ReactNode => {
 						if (text === getValues('currentPassword')) return 'The new password must not match the current password'
 					}
 				},
-				hintText: 'Test 2'
+				hintText: 'Password must be at least 8 characters long'
 			},
 			confirmPassword: {
 				name: 'confirmPassword',
@@ -100,7 +100,7 @@ const EditPassword = ({ theme }: Props): React.ReactNode => {
 						if (text !== getValues('newPassword')) return 'The confirm password not match'
 					}
 				},
-				hintText: 'Test 3'
+				hintText: 'Make sure your password matches the password above'
 			},
 		}
 

@@ -34,6 +34,7 @@ import moment from 'moment'
 import Image from '../../components/image'
 import { requestPermission } from '../../utils/persmissions'
 import { useGetBadgeCountNotificationQuery } from '../../store/notifications'
+import navigationConstant from '../../constants/navigation'
 
 type Props = NavigationProps<'home'>
 
@@ -123,7 +124,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 	}, [isErrorUser, isErrorBannerPublished, isErrorActivitiesHighlight, isErrorNotificationData])
 
 	const _navigateToProfile = useCallback(() => {
-		const jumpAction = TabActions.jumpTo('Profil')
+		const jumpAction = TabActions.jumpTo(navigationConstant.screenName.profile)
 		navigation.dispatch(jumpAction)
 	}, [])
 	
