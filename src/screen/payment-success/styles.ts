@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
 		marginBottom: scaleVertical(16)
 	},
 	listStyle: {
-		marginHorizontal: scaleWidth(10),
-		marginTop: scaleHeight(10)
+		// marginHorizontal: scaleWidth(10),
+		// marginTop: scaleHeight(10)
 	},
 	columnWrapper: {
 		gap: scaleWidth(10)

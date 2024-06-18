@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { type ThemeType } from '../../models/theme'
 import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
+import { SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_HEIGHT } from '@gorhom/bottom-sheet'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
@@ -180,9 +180,16 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	},
 	actionJoin: {
 		marginHorizontal: scaleHorizontal(16),
-		marginVertical: scaleVertical(16),
+		marginTop: scaleVertical(16),
+		marginBottom: SCREEN_HEIGHT - WINDOW_HEIGHT - scaleHeight(24),
 		flex: 1,
 		justifyContent: 'flex-end'
+	},
+	labelJoined: {
+		marginHorizontal: scaleHorizontal(16),
+		marginTop: scaleVertical(16),
+		marginBottom: SCREEN_HEIGHT - WINDOW_HEIGHT - scaleHeight(16),
+		textAlign: 'center'
 	},
 	bookingImage: {
 		width: scaleWidth(84),

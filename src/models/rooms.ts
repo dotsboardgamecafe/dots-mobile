@@ -7,6 +7,7 @@ export interface Rooms {
   room_code: string,
   room_type: string,
   room_img_url: string,
+  room_image_url?: string,
   name: string,
   description: string,
   difficulty: string,
