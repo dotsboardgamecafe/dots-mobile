@@ -86,7 +86,7 @@
     },
     "room-detail": {
       "currency": "Rp",
-      "slot": "Slot",
+      "slot": "Players",
       "details": "Details",
       "schedule": "Schedule",
       "location": "Location",
