@@ -217,7 +217,13 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				<Controller
 					control={ control }
 					name='email'
-					rules={ { required: { value: true, message: 'Email is required' } } }
+					rules={ {
+						required: { value: true, message: 'Email is required' },
+						pattern: {
+							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+							message: 'Invalid email address'
+						}
+					} }
 					render={ ({ field: { onChange, onBlur, value } }) => (
 						<TextInput
 							containerStyle={ styles.mt8 }
@@ -240,7 +246,10 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				<Controller
 					control={ control }
 					name='phone_number'
-					rules={ { required: { value: true, message: 'Phone is required' } } }
+					rules={ {
+						required: { value: true, message: 'Phone is required' },
+						minLength: { value: 9, message: 'Minimum 9 digit' },
+					} }
 					render={ ({ field: { onChange, onBlur, value } }) => (
 						<TextInput
 							containerStyle={ styles.mt8 }
