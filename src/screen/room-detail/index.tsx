@@ -349,12 +349,12 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					{ data?.name ?? params.name }
 				</Text>
-				<ExportCurve
+				{ /* <ExportCurve
 					variant='Linear'
 					color={ theme.colors.onBackground }
 					size={ scaleWidth(24) }
 					onPress={ () => shareRef.current?.present() }
-				/>
+				/> */ }
 			</View>
 			{ isLoading && <View style={ {
 				flex: 1, justifyContent: 'center', alignItems: 'center'
