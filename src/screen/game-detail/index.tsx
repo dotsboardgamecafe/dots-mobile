@@ -235,7 +235,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.difficulty }</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.level }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Clock
