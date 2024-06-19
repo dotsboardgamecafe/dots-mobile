@@ -85,7 +85,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 					keyExtractor={ item => item.user_fullname + item.location }
 					renderItem={ ({ item }) => <CardHof { ...item } /> }
 					ItemSeparatorComponent={ () => <View style={ { height: 16 } } /> }
-					style={ { marginVertical: scaleVertical(32) } }
+					style={ { marginVertical: scaleVertical(16) } }
 					columnWrapperStyle={ { gap: scaleWidth(16) } }
 					numColumns={ 2 }
 					refreshing={ loadingHall }
