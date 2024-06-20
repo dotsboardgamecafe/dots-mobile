@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 		height: scaleHeight(38)
 	},
 	selectedfilterCardRedeemItemBackgroundStyle: {
-		backgroundColor: 'white',
+		backgroundColor: colorsTheme.background,
 		paddingHorizontal: scaleHorizontal(11),
 	},
 	filterCardRedeemItemStyle: {
@@ -116,6 +116,18 @@ const styles = StyleSheet.create({
 	},
 	grayScaleStyle: {
 		opacity: 0.5,
+	},
+	labelClaimedStyle: {
+		margin: scaleWidth(14),
+		backgroundColor: colorsTheme.blueSuccess,
+		width: scaleWidth(58),
+		height: scaleHeight(22),
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 16
+	},
+	labelClaimedTextStyle: {
+		color: colorsTheme.background
 	}
 })
 

@@ -10,4 +10,5 @@ export interface TextInputType {
   suffix?: ReactNode | undefined,
   inputProps?: Omit<TextInputProps, 'style'>,
   errors?: FieldError
+  isBottomSheet?: boolean
 }

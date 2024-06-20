@@ -7,7 +7,8 @@ const customColor = {
 	blue500: '#2E90FA',
 	grayMedium: 'rgba(255, 255, 255, 0.5)',
 	success500: 'rgba(18, 183, 106, 1)',
-	gray50: 'rgba(249, 250, 251, 1)'
+	gray50: 'rgba(249, 250, 251, 1)',
+	blueSuccess: 'rgba(47, 49, 144, 1)'
 }
 
 const lightTheme = {

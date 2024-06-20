@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: scaleWidth(16)
 	},
 	successStyle: {
-		backgroundColor: 'rgba(47, 49, 144, 1)'
+		backgroundColor: colors.darkTheme.blueSuccess
 	},
 	errorStyle: {
 		backgroundColor: 'rgba(183, 63, 64, 1)'

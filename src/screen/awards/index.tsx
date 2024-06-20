@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
+import get from 'lodash/get'
 
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Container from '../../components/container'
@@ -24,11 +25,12 @@ import Modal from '../../components/modal'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import useStorage from '../../hooks/useStorage'
-import { useGetBadgesQuery } from '../../store/badges'
+import { useGetBadgesQuery, useUpdateBadgeClaimedMutation } from '../../store/badges'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
 import { type Badges } from '../../models/badges'
 import Image from '../../components/image'
+import Toast from 'react-native-toast-message'
 
 type Props = NavigationProps<'awards'>
 
@@ -43,6 +45,12 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	} = useGetBadgesQuery({
 		code: user?.user_code,
 	})
+	const [
+		updateBadgeClaimed,
+		{
+			isLoading: isLoadingUpdateBadgeClaimed,
+		}
+	] = useUpdateBadgeClaimedMutation()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [selectedAward, setSelectedAward] = useState<Badges>()
 	const [modalVisible, setModalVisible] = useState(false)
@@ -86,7 +94,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		if (badgesData?.length) {
 			const resultBadges = badgesData
 			if (selectedFilter) {
-				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_badge_owned : !item.is_claim)
+				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_claim : !item.is_claim)
 			}
 			return resultBadges
 		}
@@ -94,7 +102,29 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		return []
 	}, [badgesData, selectedFilter])
 
-	const _renderFilterCardRedeem = useCallback(() => {
+	const _onPressUpdateClaimedBadge = useCallback((badge?: Badges) => async() => {
+		try {
+			await updateBadgeClaimed({ user_code: user?.user_code ?? '', badge_code: badge?.badge_code ?? '' }).unwrap()
+			_toggleModal()
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: get(error, 'data', 'Something went wrong')
+			})
+		}
+	}, [user, _toggleModal])
+
+	const _onPressSuccessClaim = useCallback(() => {
+		_toggleModal()
+		if (selectedAward) {
+			setSelectedAward({
+				...selectedAward,
+				is_claim: true
+			})
+		}
+	}, [_toggleModal, selectedAward])
+
+	const _renderFilterCardRedeem = useMemo(() => {
 		const listFilter = [
 			'All', 'Owned', 'Unclaim'
 		]
@@ -153,7 +183,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		return <Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
 	}, [])
 
-	const _renderListBadge = useCallback(() => {
+	const _renderListBadge = useMemo(() => {
 		const { numColumns, resultData } = formatGridData<Badges>(_factoryAwards ?? [])
 
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
@@ -166,10 +196,10 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					if (item) return (
 						<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
 							{
-								item?.is_badge_owned ?
+								item?.is_claim ?
 									<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 							}
-							{ _greyScaledImage(item?.badge_image_url, !item?.is_badge_owned) }
+							{ _greyScaledImage(item?.badge_image_url, !item?.is_claim) }
 						</TouchableOpacity>
 					)
 
@@ -185,7 +215,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onPressAward, _isError, _factoryAwards])
   
-	const _renderBottomSheetTopContent = useCallback(() => {
+	const _renderBottomSheetTopContent = useMemo(() => {
 		return (
 			<View style={ [styles.rowStyle, styles.justifyBetweenStyle] }>
 				<Text variant='bodyExtraLargeHeavy'>{ selectedAward?.badge_name }</Text>
@@ -196,7 +226,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onPressClose, selectedAward])
 
-	const _renderBottomSheetMidContent = useCallback(() => {
+	const _renderBottomSheetMidContent = useMemo(() => {
 		return (
 			<View style={ styles.blurViewWrapperStyle }>
 				<Image
@@ -211,11 +241,18 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					reducedTransparencyFallbackColor='white'
 				/>
 				<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedAward?.badge_image_url } } />
+				{
+					selectedAward?.is_claim ?
+						<View style={ [styles.absoluteStyle, styles.labelClaimedStyle] } >
+							<Text variant='bodySmallMedium' style={ styles.labelClaimedTextStyle }>Claimed</Text>
+						</View> :
+						null
+				}
 			</View>
 		)
 	}, [selectedAward])
 
-	const _renderButton =  useCallback(() => {
+	const _renderButton =  useMemo(() => {
 		if (selectedAward?.is_claim) {
 			return (
 				<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.descriptionPointWrapperStyle] }>
@@ -227,37 +264,35 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		return (
 			<ActionButton
 				style={ styles.buttonWrapperStyle }
-				label={ 'Play the Game' }
-				onPress={ _toggleModal }
+				label={ 'Claim' }
+				onPress={ _onPressUpdateClaimedBadge(selectedAward) }
+				loading={ isLoadingUpdateBadgeClaimed }
 			/>
 		)
-	}, [selectedAward, _toggleModal])
+	}, [selectedAward, _toggleModal, isLoadingUpdateBadgeClaimed, _onPressUpdateClaimedBadge])
 
-	const _renderBottomSheetBottomContent = useCallback(() => {
+	const _renderBottomSheetBottomContent = useMemo(() => {
 		return (
 			<React.Fragment>
 				<View style={ [styles.rowCenterStyle, styles.rowStyle, styles.descriptionPointWrapperStyle] }>
-					<Text variant='bodyMiddleRegular'>{ selectedAward?.badge_name }</Text>
-					{
-						selectedAward?.is_claim ? null :
-							<React.Fragment>
-								<Text variant='bodyMiddleMedium'>100</Text>
-								<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
-							</React.Fragment>
-					}
+					<Text variant='bodyMiddleRegular'>{ selectedAward?.description }</Text>
+					<React.Fragment>
+						<Text variant='bodyMiddleMedium'>{ selectedAward?.vp_point }</Text>
+						<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
+					</React.Fragment>
 				</View>
-				{ _renderButton() }
+				{ _renderButton }
 			</React.Fragment>
 		)
 	}, [selectedAward, _renderButton])
 
-	const _bottomSheetContent = useCallback(() => {
+	const _bottomSheetContent = useMemo(() => {
 		if (selectedAward) {
 			return (
 				<React.Fragment>
-					{ _renderBottomSheetTopContent() }
-					{ _renderBottomSheetMidContent() }
-					{ _renderBottomSheetBottomContent() }
+					{ _renderBottomSheetTopContent }
+					{ _renderBottomSheetMidContent }
+					{ _renderBottomSheetBottomContent }
 				</React.Fragment>
 			)
 		}
@@ -269,11 +304,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		_renderBottomSheetBottomContent
 	])
 
-	const _renderModalContent = useCallback(() => {
+	const _renderModalContent = useMemo(() => {
 		return (
 			<React.Fragment>
 				<View style={ styles.rowEndStyle }>
-					<TouchableOpacity onPress={ _toggleModal }>
+					<TouchableOpacity onPress={ _onPressSuccessClaim }>
 						<CloseIcon />
 					</TouchableOpacity>
 				</View>
@@ -282,35 +317,36 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					<Text style={ styles.congratsStyle } variant='bodyExtraLargeBold'>Congratulations!</Text>
 					<View style={ [styles.rowStyle] }>
 						<Text variant='bodyMiddleRegular'>You’re successfully earned</Text>
-						<Text variant='bodyMiddleMedium'>100</Text>
+						<Text variant='bodyMiddleMedium'>{ selectedAward?.vp_point }</Text>
 						<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
 					</View>
-					<Text style={ styles.claimedDescriptionStyle } variant='bodyMiddleRegular'>for claiming the badge “Comedy Smile”</Text>
+					<Text style={ styles.claimedDescriptionStyle } variant='bodyMiddleRegular'>for claiming the badge “{ selectedAward?.badge_name }”</Text>
 					<ActionButton
 						style={ styles.buttonWrapperStyle }
 						label={ 'OK' }
-						onPress={ _toggleModal }
+						onPress={ _onPressSuccessClaim }
 					/>
 				</View>
 			</React.Fragment>
 		)
 	}, [
-		_toggleModal
+		selectedAward,
+		_onPressSuccessClaim
 	])
 
 	return (
 		<Container>
 			<Header title={ t('awards-page.header-title') } />
-			{ _renderFilterCardRedeem() }
-			{ _renderListBadge() }
+			{ _renderFilterCardRedeem }
+			{ _renderListBadge }
 			<BottomSheet
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }
 			>
-				{ _bottomSheetContent() }
+				{ _bottomSheetContent }
 			</BottomSheet>
 			<Modal borderRadius={ 12 } visible={ modalVisible } onDismiss={ _toggleModal }>
-				{ _renderModalContent() }
+				{ _renderModalContent }
 			</Modal>
 			<Loading isLoading={ _isLoading } />
 		</Container>
