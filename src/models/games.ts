@@ -12,6 +12,7 @@ export interface Games {
   description: string,
   status: string,
   difficulty: number,
+  level?: number,
   duration: number,
   minimal_participant: number,
   maximum_participant: number,

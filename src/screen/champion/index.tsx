@@ -118,6 +118,10 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 				onProgressChange={ (_, absoluteProgress) =>
 					(progressValue.value = absoluteProgress)
 				}
+				panGestureHandlerProps={ {
+					activeOffsetX: [-10, 10],
+					failOffsetY: [-5, 5]
+				} }
 			/>
 
 			<PageIndicator length={ cards.length } animValue={ progressValue } />

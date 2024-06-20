@@ -44,19 +44,19 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		if (!data?.game_categories) return
 
 		const categories = data.game_categories.map(c => c.category_name)
-		const list = listGameMechanic?.filter(m => categories.includes(m.set_key))
+		const list = listGameMechanic?.filter(m => m.set_key && categories.includes(m.set_key))
 		if (list?.length) {
 			return (
 				<>
 					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
 					<FlatList
 						data={ list }
-						keyExtractor={ i => i.setting_code }
+						keyExtractor={ (i, idx) => `${idx}-${i.setting_code}` }
 						renderItem={ ({ item }) => <FilterTag
-							id={ item.set_order }
-							code={ item.setting_code }
+							id={ item.set_order ?? 0 }
+							code={ item.setting_code ?? '' }
 							icon={ <FilterIcon { ...item }/> }
-							label={ item.content_value }
+							label={ item.content_value ?? '' }
 						/> }
 						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
 						contentContainerStyle={ styles.wrapList }
@@ -113,9 +113,10 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const room = useCallback(({ item }: ListRenderItemInfo<Rooms>) => {
 		return (
 			<Image
-				source={ { uri: item.room_img_url } }
-				resizeMode='cover'
+				source={ { uri: item.room_image_url ?? '' } }
+				// resizeMode='cover'
 				style={ styles.room }
+				keepRatio
 			/>
 		)
 	}, [])
@@ -134,7 +135,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	}, [navigation])
 
 	const navigateToDetail = useCallback((game: Games) => {
-		navigation.navigate('gameDetail', game)
+		navigation.push('gameDetail', game)
 	}, [])
 
 	return (
@@ -168,11 +169,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					{ data?.name }
 				</Text>
-				<ExportCurve
+				{ /* <ExportCurve
 					variant='Linear'
 					color={ theme.colors.onBackground }
 					size={ scaleWidth(24) }
-				/>
+				/> */ }
 			</View>
 
 			<ScrollView
@@ -234,7 +235,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.difficulty }</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Level: { data?.level }</Text>
 					</View>
 					<View style={ [styles.row, styles.mt8] }>
 						<Clock
@@ -300,7 +301,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 				</View>
 
 				<View style={ styles.section }>
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Game Master</Text>
+					{ data?.game_masters?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Game Master</Text> }
 					<FlatList
 						scrollEnabled={ false }
 						data={ data?.game_masters }
@@ -309,7 +310,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						contentContainerStyle={ [styles.wrapList] }
 					/>
 
-					{ data?.game_rooms && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
+					{ data?.game_rooms?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
 					<FlatList
 						data={ data?.game_rooms }
 						renderItem={ room }
@@ -318,7 +319,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						contentContainerStyle={ styles.mt16 }
 					/>
 
-					{ data?.game_related && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
+					{ data?.game_related?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
 					<FlatList
 						data={ data?.game_related }
 						keyExtractor={ item => item.game_code }
