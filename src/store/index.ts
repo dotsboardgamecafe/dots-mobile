@@ -41,13 +41,6 @@ const middlewares = [
 	rtkQueryErrorLogger
 ]
 
-if (__DEV__) {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const createDebugger = require('redux-flipper').default
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-	middlewares.push(createDebugger())
-}
-
 export const store = configureStore({
 	reducer: {
 		[baseApi.reducerPath]: baseApi.reducer,

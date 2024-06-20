@@ -121,6 +121,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 				}
 				setValue('email', user?.email ?? '')
 				setIsChangeEmail(!isChangeEmail)
+				setVisiblePassword(false)
 			}
 			if (actionType === 'delete') {
 				setVisibleDeleteAccount(!visibleDeleteAccount)
@@ -300,6 +301,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 			<View style={ styles.fieldWrapperStyle }>
 				<Text variant='bodyMiddleRegular' style={ styles.passwordLabel }>{ t('account-info-page.bottomsheet-password.password-label') }</Text>
 				<TextInput
+					isBottomSheet
 					containerStyle={ styles.input }
 					borderFocusColor={ theme.colors.blueAccent }
 					prefix={
@@ -359,6 +361,8 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 	}, [_renderBottomSheetTopContent, _renderPasswordFields])
 
 	const _renderSecondaryBottomSheetContent = useMemo(() => {
+		if (isBottomSheetAnimate) return null
+		
 		return (
 			<View style={ styles.rowCenterStyle }>
 				<MailSent width={ scaleWidth(140) } height={ scaleHeight(108) } />
@@ -381,17 +385,14 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 				/>
 			</View>
 		)
-	}, [_onPressLogoutAndOpenEmail])
+	}, [_onPressLogoutAndOpenEmail, isBottomSheetAnimate])
 
 	const _renderBottomSheetContent = useMemo(() => {
-
-		if (isBottomSheetAnimate) return null
 
 		if (isChangeEmail) return _renderSecondaryBottomSheetContent
 		
 		return _renderPrimaryBottomSheetContent
 	}, [
-		isBottomSheetAnimate,
 		isChangeEmail,
 		_renderSecondaryBottomSheetContent,
 		_renderPrimaryBottomSheetContent
@@ -433,7 +434,7 @@ const AccountInformation = ({ theme, navigation, t }:Props): React.ReactNode => 
 			<Header title={ _getHeaderTitle } onPressBack={ _onPressBack } />
 			{ _renderContent }
 			<BottomSheet
-				bsProps={ { onAnimate: _onAnimateBottomSheet } }
+				bsProps={ { onAnimate: _onAnimateBottomSheet, keyboardBlurBehavior: 'restore' } }
 				bsRef={ bottomSheetRef }
 				viewProps={ { style: styles.bottomSheetView } }
 				pressBehavior={ isChangeEmail ? 'close' : 'none' }

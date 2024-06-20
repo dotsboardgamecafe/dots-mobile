@@ -84,8 +84,8 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 	useEffect(() => {
 		if (isSuccessGetUserProfile && userProfileData) {
-			setValue('fullName', userProfileData.fullname, { shouldValidate: true })
-			setValue('phoneNumber', userProfileData.phone_number, { shouldValidate: true })
+			setValue('fullName', userProfileData.fullname)
+			setValue('phoneNumber', userProfileData.phone_number)
 		}
 	}, [isSuccessGetUserProfile, userProfileData])
 
