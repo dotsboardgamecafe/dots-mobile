@@ -1,6 +1,5 @@
 import {
-	ActivityIndicator,
-	Alert, FlatList, Pressable, RefreshControl, ScrollView, TouchableOpacity, View
+	ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, TouchableOpacity, View
 } from 'react-native'
 import React, {
 	Suspense, useCallback, lazy, useRef, useState,
@@ -46,11 +45,7 @@ const textFormatter = (text:string, target:string): React.ReactNode => {
 
 	return newText.map((item, index) => {
 		if (item === target) {
-			return (
-				<Pressable key={ index } onPress={ () => { Alert.alert(target) } }>
-					<Text style={ styles.hightLightDescriptionStyle } key={ index } variant='bodyLargeDemi'>{ item }</Text>
-				</Pressable>
-			)
+			return <Text key={ index } style={ styles.hightLightDescriptionStyle } variant='bodyLargeDemi'>{ item }</Text>
 		}
 		
 		return <Text key={ index } variant='paragraphMiddleRegular'>{ item }</Text>
@@ -156,6 +151,10 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		if (!_isLoading && isRefresh) setIsRefresh(false)
 	}, [_isLoading, isRefresh])
 
+	const _onPressActivity = useCallback((game: any) => {
+		// todo
+	}, [])
+
 	const _renderHeader = useMemo(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
@@ -223,7 +222,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 					 } }
 					renderItem={ ({ item }) => {
 						return (
-							<Pressable onPress={ () => { Alert.alert(item.banner_code) } }>
+							<View>
 								<Image
 									width={ fullWidth }
 									height={ scaleHeight(220) }
@@ -232,7 +231,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 									style={ styles.bannerStyle }
 									keepRatio
 								/>
-							</Pressable>
+							</View>
 						)
 					} }
 				/>
@@ -261,20 +260,18 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 							.fromNow()
 						
 						return (
-							<View style={ styles.gameItemWrapperStyle }>
-								<Pressable onPress={ () => { Alert.alert('image') } }>
-									<Image
-										source={ { uri: item.game_image_url } }
-										style={ styles.imageGameStyle }
-									/>
-								</Pressable>
+							<TouchableOpacity style={ styles.gameItemWrapperStyle } onPress={ () => { _onPressActivity(item) } }>
+								<Image
+									source={ { uri: item.game_image_url } }
+									style={ styles.imageGameStyle }
+								/>
 								<View style={ styles.gameDescriptionWrapperStyle }>
 									<Text style={ styles.gameLatestUpdateLabelStyle } variant='bodySmallRegular'>{ resultData }</Text>
 									<View style={ [styles.gameDescriptionWrapperStyle, styles.gameDescriptionLabelStyle] }>
 										{ textFormatter(description, item.game_name) }
 									</View>
 								</View>
-							</View>
+							</TouchableOpacity>
 						)
 					} }
 					keyExtractor={ (_, index) => index.toString() }
