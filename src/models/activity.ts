@@ -6,6 +6,7 @@ export interface Activity {
   source_code: string;
   point: number;
   created_date: string;
+  game_code: string;
 }
 
 export interface PointActivity {

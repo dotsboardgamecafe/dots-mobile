@@ -34,6 +34,7 @@ import Image from '../../components/image'
 import { requestPermission } from '../../utils/persmissions'
 import { useGetBadgeCountNotificationQuery } from '../../store/notifications'
 import navigationConstant from '../../constants/navigation'
+import { type Games } from '../../models/games'
 
 type Props = NavigationProps<'home'>
 
@@ -151,8 +152,8 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 		if (!_isLoading && isRefresh) setIsRefresh(false)
 	}, [_isLoading, isRefresh])
 
-	const _onPressActivity = useCallback((game: any) => {
-		// todo
+	const _onPressActivity = useCallback((game: Partial<Games>) => () => {
+		navigation.navigate('gameDetail', game)
 	}, [])
 
 	const _renderHeader = useMemo(() => {
@@ -260,7 +261,9 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 							.fromNow()
 						
 						return (
-							<TouchableOpacity style={ styles.gameItemWrapperStyle } onPress={ () => { _onPressActivity(item) } }>
+							<TouchableOpacity
+								style={ styles.gameItemWrapperStyle }
+								onPress={ _onPressActivity({ game_code: item.game_code, image_url: item.game_image_url }) }>
 								<Image
 									source={ { uri: item.game_image_url } }
 									style={ styles.imageGameStyle }

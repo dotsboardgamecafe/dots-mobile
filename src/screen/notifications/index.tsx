@@ -33,18 +33,67 @@ interface TitleStyleType {
 
 const _generateNotifTitle = (type: string): TitleStyleType => {
 	const result = {
-		title: 'CANCELED ROOM',
-		color: colors.lightTheme.redAccent
+		title: '',
+		color: '',
 	}
-	if (type === 'tournament_reminder') {
-		result.title = 'UPCOMING REMINDER'
-		result.color = colors.lightTheme.blueAccent
+	switch (type) {
+		case 'tournament_reminder':
+		case 'level_up':
+		case 'got_reward':
+		case 'payment_success':
+			result.color = colors.lightTheme.blueAccent
+			break
+
+		case 'room_booking_confirmation':
+		case 'tournament_booking_confirmation':
+			result.color = colors.lightTheme.blue500
+			break
+
+		default:
+			result.color = colors.lightTheme.redAccent
+			break
 	}
-	if (type === 'confirmation') {
-		result.title = 'BOOKING CONFIRMATION'
-		result.color = colors.lightTheme.blue500
+
+	switch (type) {
+		case 'tournament_reminder':
+			result.title = 'UPCOMING REMINDER'
+			break
+
+		case 'room_booking_confirmation':
+		case 'tournament_booking_confirmation':
+			result.title = 'BOOKING CONFIRMATION'
+			break
+
+		default:
+			result.title = type.split('_').join(' ')
+				.toUpperCase()
+			break
 	}
+
 	return result
+}
+
+const _generateDescription = (type: string, description?: string): string => {
+	const parseDescription = JSON.parse(description ?? '{}')
+	let currentDescription = ''
+
+	switch (type) {
+		case 'tournament_reminder':
+		case 'room_booking_confirmation':
+		case 'tournament_booking_confirmation':
+			currentDescription = `${moment(parseDescription.start_date as string).local()
+				.format('MMM, Do YYYY')} at ${moment(`${parseDescription.start_date} ${parseDescription.start_time}`).local()
+				.format('hh:mm')} - ${moment(`${parseDescription.start_date} ${parseDescription.end_time}`).local()
+				.format('hh:mm')} at ${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
+			break
+	
+		default:
+			currentDescription = description ? description.substring(1, description.length - 1) : ''
+			break
+	}
+
+	return currentDescription
+	
 }
 
 const Notifications = (): React.ReactNode => {
@@ -82,51 +131,43 @@ const Notifications = (): React.ReactNode => {
 
 	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<Notification>): React.ReactElement => {
 		const { title, color } = _generateNotifTitle(item.type)
-		const parseDescription = JSON.parse(item.description ?? '{}')
+		const description = _generateDescription(item.type, item.description)
 		
-		if (!isEmpty(parseDescription)) {
-			const startDate = moment(parseDescription.start_date as string).format('MMM, Do YYYY')
-			const startTime = moment(`${parseDescription.start_date} ${parseDescription.start_time}`).format('hh:mm')
-			const endTime = moment(`${parseDescription.start_date} ${parseDescription.end_time}`).format('hh:mm')
-			const fullLocation = `${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
-			const description = `${startDate} at ${startTime} - ${endTime} at ${fullLocation}`
-			return (
-				<Pressable style={ {
-					...styles.rowStyle,
-					...styles.itemWrapperStyle,
-					backgroundColor: !item.status_read ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
-				} }
-				onPress={ () => { _onPressNotif(item) } }
-				>
-					<View style={ {
-						...styles.dotStyle,
-						backgroundColor: !item.status_read ? colorsTheme.black : colorsTheme.gray300,
-					} } />
-					<Pressable
-						// onPress={ () => { Alert.alert('image') } }
-					>
-						<Image
-							source={ { uri: item.image_url } }
-							style={ styles.imageGameStyle }
-						/>
-					</Pressable>
-					<View style={ styles.growStyle }>
-						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
-							<Text variant='bodyMiddleBold' style={ { color, letterSpacing: -1 } }>{ title }</Text>
-							<Text variant='bodySmallMedium'>{ moment(item.created_date).fromNow() }</Text>
-						</View>
-						<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
-							<View>
-								<Text style={ [styles.titleStyle, styles.resultLocationStyle] } variant='bodyMiddleDemi'>{ item.title }</Text>
-								<Text style={ styles.resultLocationStyle } variant='bodySmallRegular' >{ description }</Text>
-							</View>
+		return (
+			<Pressable style={ {
+				...styles.rowStyle,
+				...styles.itemWrapperStyle,
+				backgroundColor: !item.status_read ? colorsTheme.yellowTransparent : colorsTheme.grayMedium
+			} }
+			onPress={ () => { _onPressNotif(item) } }
+			>
+				<View style={ {
+					...styles.dotStyle,
+					backgroundColor: !item.status_read ? colorsTheme.black : colorsTheme.gray300,
+				} } />
+				<Pressable>
+					<Image
+						source={ { uri: item.image_url } }
+						style={ styles.imageGameStyle }
+					/>
+				</Pressable>
+				<View style={ styles.growStyle }>
+					<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
+						<Text variant='bodyMiddleBold' style={ { color, letterSpacing: -1 } }>{ title }</Text>
+						<Text variant='bodySmallMedium'>{
+							 moment(item.created_date).local()
+								.fromNow() }
+						</Text>
+					</View>
+					<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
+						<View>
+							<Text style={ [styles.titleStyle, styles.resultLocationStyle] } variant='bodyMiddleDemi'>{ item.title }</Text>
+							<Text style={ styles.resultLocationStyle } variant='bodySmallRegular' >{ description }</Text>
 						</View>
 					</View>
-				</Pressable>
-			)
-		}
-
-		return <React.Fragment/>
+				</View>
+			</Pressable>
+		)
 	}, [])
 
 	const _renderContent = useMemo(() => {
@@ -150,6 +191,7 @@ const Notifications = (): React.ReactNode => {
 	}, [notificationsData, isErrorNotifications])
 
 	const _renderBottomSheetTopContent = useMemo(() => {
+		
 		return (
 			<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
 				<Text variant='bodyExtraLargeHeavy'>{ selectedNotif?.title }</Text>
@@ -161,6 +203,7 @@ const Notifications = (): React.ReactNode => {
 	}, [_onPressClose, selectedNotif])
 
 	const _renderBottomSheetMidContent = useMemo(() => {
+
 		return (
 			<View style={ styles.blurViewWrapperStyle }>
 				<Image
@@ -187,12 +230,15 @@ const Notifications = (): React.ReactNode => {
 	}, [selectedNotif])
 
 	const _renderBottomSheetBottomContent = useMemo(() => {
-		const description: DescriptionNotification = JSON.parse(selectedNotif?.description ?? '{}')
+		const description: DescriptionNotification | string = JSON.parse(selectedNotif?.description ?? '{}')
 
-		if (!isEmpty(description)) {
-			const startDate = moment(description.start_date).format('MMM, Do')
-			const startTime = moment(`${description.start_date} ${description.start_time}`).format('hh:mm')
-			const endTime = moment(`${description.start_date} ${description.end_time}`).format('hh:mm')
+		if (!isEmpty(description) && typeof description === 'object') {
+			const startDate = moment(description.start_date).local()
+				.format('MMM, Do')
+			const startTime = moment(`${description.start_date} ${description.start_time}`).local()
+				.format('hh:mm')
+			const endTime = moment(`${description.start_date} ${description.end_time}`).local()
+				.format('hh:mm')
 			const fullLocation = `${description.cafe_name}, ${description.cafe_address}`
 			return (
 				<View style={ styles.bottomsheetBottomContentStyle }>
@@ -212,10 +258,15 @@ const Notifications = (): React.ReactNode => {
 			)
 		}
 
-		return null
+		return (
+			<View style={ styles.bottomsheetBottomContentStyle }>
+				<Text variant='bodyMiddleMedium'>{ (description as string) }</Text>
+			</View>
+		)
 	}, [selectedNotif])
 
 	const _bottomSheetContent = useMemo(() => {
+
 		return (
 			<React.Fragment>
 				{ _renderBottomSheetTopContent }
@@ -223,7 +274,6 @@ const Notifications = (): React.ReactNode => {
 				{ _renderBottomSheetBottomContent }
 			</React.Fragment>
 		)
-
 	}, [
 		_renderBottomSheetTopContent,
 		_renderBottomSheetMidContent,

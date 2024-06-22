@@ -6,7 +6,9 @@ import { BlurView } from '@react-native-community/blur'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
 import get from 'lodash/get'
 
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
 import RoundedBorder from '../../components/rounded-border'
@@ -25,26 +27,29 @@ import Modal from '../../components/modal'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import useStorage from '../../hooks/useStorage'
-import { useGetBadgesQuery, useUpdateBadgeClaimedMutation } from '../../store/badges'
+import { badgesApi, useLazyGetBadgesQuery, useUpdateBadgeClaimedMutation } from '../../store/badges'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
 import { type Badges } from '../../models/badges'
 import Image from '../../components/image'
 import Toast from 'react-native-toast-message'
+import { useDispatch } from 'react-redux'
 
 type Props = NavigationProps<'awards'>
 
 const Awards = ({ t }: Props): React.ReactNode => {
+	const dispatch = useDispatch()
+	const pageRef = useRef(1)
 	const [selectedFilter, setSelectedFilter] = useState(0)
 	const { user } = useStorage()
-	const {
-		data: badgesData,
-		isLoading: isLoadingBadges,
-		refetch: refetchBadges,
-		isError: isErrorBadges
-	} = useGetBadgesQuery({
-		code: user?.user_code,
-	})
+	const [
+		getBadges,
+		{
+			data: badgesData,
+			isLoading: isLoadingBadges,
+			isError: isErrorBadges
+		}
+	] = useLazyGetBadgesQuery()
 	const [
 		updateBadgeClaimed,
 		{
@@ -83,8 +88,13 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	}, [isErrorBadges])
 
 	const _onRefresh = useCallback(() => {
-		refetchBadges()
-	}, [])
+		dispatch(badgesApi.util.resetApiState())
+		pageRef.current = 1
+		getBadges({
+			code: user?.user_code,
+			page: pageRef.current,
+		})
+	}, [user])
 
 	const _onSelectedFilter = useCallback((index: number) => () => {
 		setSelectedFilter(index)
@@ -101,6 +111,22 @@ const Awards = ({ t }: Props): React.ReactNode => {
 
 		return []
 	}, [badgesData, selectedFilter])
+
+	const onFetchBagdes = useCallback(() => {
+		getBadges({
+			code: user?.user_code,
+			page: pageRef.current,
+		})
+		pageRef.current += 1
+	}, [getBadges])
+
+	useEffect(() => {
+		onFetchBagdes()
+		
+		return () => {
+			dispatch(badgesApi.util.resetApiState())
+		}
+	}, [])
 
 	const _onPressUpdateClaimedBadge = useCallback((badge?: Badges) => async() => {
 		try {
@@ -211,9 +237,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				contentContainerStyle={ [styles.justifyCenterStyle, styles.rowCenterStyle] }
 				columnWrapperStyle={ styles.justifyCenterStyle }
 				removeClippedSubviews
+				onEndReached={ onFetchBagdes }
+				onEndReachedThreshold={ 0.8 }
 			/>
 		)
-	}, [_onPressAward, _isError, _factoryAwards])
+	}, [_onPressAward, _isError, _factoryAwards, _onRefresh])
   
 	const _renderBottomSheetTopContent = useMemo(() => {
 		return (
@@ -316,7 +344,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 					<Image source={ getAwardIllu } style={ styles.getAwardImageStyle } />
 					<Text style={ styles.congratsStyle } variant='bodyExtraLargeBold'>Congratulations!</Text>
 					<View style={ [styles.rowStyle] }>
-						<Text variant='bodyMiddleRegular'>You’re successfully earned</Text>
+						<Text variant='bodyMiddleRegular'>You’re successfully earned </Text>
 						<Text variant='bodyMiddleMedium'>{ selectedAward?.vp_point }</Text>
 						<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
 					</View>
