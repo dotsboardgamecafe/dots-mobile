@@ -36,7 +36,7 @@ import { useGetUserProfileQuery, useUpdateProfileMutation } from '../../store/us
 import ReloadView from '../../components/reload-view'
 import Loading from '../../components/loading'
 import { useGetGameBoardCollectionQuery } from '../../store/game-board-collection'
-import { useGetBadgesQuery } from '../../store/badges'
+import { useGetBadgesWidgetQuery } from '../../store/badges'
 import { useGetGameFavouriteQuery } from '../../store/game-favourite'
 import Image from '../../components/image'
 import { type GameBoardCollection } from '../../models/game-board-collection'
@@ -107,7 +107,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		isFetching: isLoadingBadges,
 		refetch: refetchBadges,
 		isError: isErrorBadges
-	} = useGetBadgesQuery({
+	} = useGetBadgesWidgetQuery({
 		limit: 4,
 		page: 1,
 		code: user?.user_code,

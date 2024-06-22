@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
 	},
 	listGameWrapperStyle: {
 		marginTop: scaleVertical(16),
-		marginBottom: scaleVertical(42),
+		marginBottom: scaleVertical(21),
+		paddingBottom: scaleVertical(21),
 	},
 	boardGameItemStyle: {
 		width: scaleWidth(112),
