@@ -31,7 +31,7 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="dots.app" />
+            <data android:host="dots" android:scheme="dots.app" />
         </intent-filter>
         <!-- TODO: add auto verify through website digital asset https://developer.android.com/training/app-links/verify-android-applinks -->
         <intent-filter>
