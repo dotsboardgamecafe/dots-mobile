@@ -59,7 +59,7 @@ export const linking: LinkingOptions<any> = {
 			}
 		}
 	},
-	prefixes: ['dots.app://', 'https://dots.app', 'https://dots-cms.vercel.app']
+	prefixes: ['dots.app://', 'https://dots.app', 'https://dots-cms.vercel.app', 'https://dots-web-three.vercel.app']
 }
 
 export default navigationConstant

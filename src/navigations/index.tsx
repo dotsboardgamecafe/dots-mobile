@@ -178,7 +178,9 @@ const Navigations = (): React.ReactNode => {
 					<NavigationContainer
 						theme={ themeFactory.navigationTheme }
 						onReady={ BootSplash.hide }
-						linking={ linking }
+						linking={ {
+							...linking,
+						} }
 					>
 						<Stack.Navigator initialRouteName={ screenName.login }>
 							{ renderScreenContent }
