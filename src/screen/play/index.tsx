@@ -146,7 +146,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					data: locations,
 					ListHeaderComponent: filterHeader(
 						t('champion-page.filter-loc'),
-						() => { setLoc('') }
+						() => { setLoc('All Location') }
 					),
 					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ setLoc } />),
 					ItemSeparatorComponent: () => <View style={ styles.filterItemSeparator } />,

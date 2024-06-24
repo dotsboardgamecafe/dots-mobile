@@ -194,7 +194,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data, isTourney])
+	}, [data, isTourney, schedule])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.room_type === 'Tournament') {
