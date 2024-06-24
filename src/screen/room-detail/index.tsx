@@ -6,7 +6,7 @@ import {
 	FlatList, type ListRenderItemInfo, ScrollView, View,
 	ActivityIndicator,
 } from 'react-native'
-import { ArrowLeft, CloseCircle, ExportCurve } from 'iconsax-react-native'
+import { ArrowLeft, CloseCircle } from 'iconsax-react-native'
 import { type BottomSheetModal, SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import moment from 'moment'
 
@@ -194,7 +194,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data, isTourney])
+	}, [data, isTourney, schedule])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.room_type === 'Tournament') {
@@ -363,7 +363,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<>
 					<ScrollView showsVerticalScrollIndicator={ false }>
 						<Image
-							source={ { uri: params.room_img_url ?? data?.image_url } }
+							source={ { uri: params.room_img_url ?? data?.room_banner_url ?? data?.image_url } }
 							resizeMode='cover'
 							style={ {
 								width: SCREEN_WIDTH,

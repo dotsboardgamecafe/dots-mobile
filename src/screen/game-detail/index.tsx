@@ -4,7 +4,7 @@ import {
 	TouchableOpacity
 } from 'react-native'
 import {
-	ArrowLeft, Category, Clock, ExportCurve, Level, Location, Profile2User
+	ArrowLeft, Category, Clock, Level, Location, Profile2User
 } from 'iconsax-react-native'
 
 import Text from '../../components/text'
@@ -110,14 +110,22 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		)
 	}, [])
 
+	const _navigateToRoomDteail = useCallback((param: Partial<Rooms>) => {
+		navigation.navigate('roomDetail', param)
+	}, [])
+
 	const room = useCallback(({ item }: ListRenderItemInfo<Rooms>) => {
 		return (
-			<Image
-				source={ { uri: item.room_image_url ?? '' } }
-				// resizeMode='cover'
-				style={ styles.room }
-				keepRatio
-			/>
+			<TouchableOpacity
+				onPress={ () => { _navigateToRoomDteail(item) } }
+			>
+				<Image
+					source={ { uri: item.room_image_url ?? '' } }
+					// resizeMode='cover'
+					style={ styles.room }
+					keepRatio
+				/>
+			</TouchableOpacity>
 		)
 	}, [])
 
