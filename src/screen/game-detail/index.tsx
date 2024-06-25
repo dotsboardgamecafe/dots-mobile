@@ -279,7 +279,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 
 					{ _gameMechanic }
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Components</Text>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>How to Play</Text>
 				</View>
 				<View>
 					<FlatList

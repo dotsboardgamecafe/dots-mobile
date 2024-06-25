@@ -29,6 +29,7 @@ import { type Users } from '../../models/users'
 import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
 import ErrorModal from '../../components/error-modal'
+import { LOGO } from '../../assets/images'
 
 type Props = NavigationProps<'roomDetail'>
 
@@ -268,6 +269,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 						<Image
 							source={ { uri: item.user_image_url ?? '' } }
 							style={ styles.player }
+							fallbackImg={ LOGO }
 						/>
 					</Shadow>
 				</Shadow>

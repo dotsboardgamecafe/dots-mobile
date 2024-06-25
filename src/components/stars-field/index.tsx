@@ -179,6 +179,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 	)
 }
 
-export default React.memo(Starfield,   (prevProps, nextProps) => {
+export default React.memo(Starfield, (prevProps, nextProps) => {
 	return prevProps.starCount === nextProps.starCount
+		&& prevProps.children === nextProps.children
 })

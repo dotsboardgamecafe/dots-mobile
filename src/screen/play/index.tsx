@@ -39,7 +39,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	])
 
 	const _isLoading = useMemo(() => {
-		return isLoading && isLoadingTourney
+		return isLoading || isLoadingTourney
 	}, [isLoading, isLoadingTourney])
 
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
@@ -66,9 +66,9 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		return (
 			<View style={ styles.filterHeader }>
 				<Text variant='bodyExtraLargeMedium'>{ title }</Text>
-				<TouchableOpacity onPress={ onReset }>
+				{ /* <TouchableOpacity onPress={ onReset }>
 					<Text variant='bodyLargeBold' style={ styles.filterReset }>{ t('champion-page.filter-reset') }</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */ }
 			</View>
 		)
 	}, [])

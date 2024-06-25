@@ -54,6 +54,27 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		marginTop: scaleVertical(16),
 		color: colors.background
 	},
+	rank1Img: {
+		width: scaleWidth(82),
+		height: scaleWidth(82),
+		borderRadius: scaleWidth(82) * .5,
+		borderWidth: scaleWidth(3),
+		borderColor: '#FFBB0D'
+	},
+	rank2Img: {
+		width: scaleWidth(62),
+		height: scaleWidth(62),
+		borderRadius: scaleWidth(62) * .5,
+		borderWidth: scaleWidth(3),
+		borderColor: '#BCCCD2'
+	},
+	rank3Img: {
+		width: scaleWidth(42),
+		height: scaleWidth(42),
+		borderRadius: scaleWidth(42) * .5,
+		borderWidth: scaleWidth(3),
+		borderColor: '#DCA16A'
+	},
 	row: {
 		flexDirection: 'row',
 		alignItems: 'center',

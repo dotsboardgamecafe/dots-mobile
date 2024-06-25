@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type MostVP, type HallOfFame, type MostVPParam } from '../../models/champions'
+import { baseApi } from '../../utils/base.api'
 
-export const championApi = createApi({
-	reducerPath: 'championApi',
-	tagTypes: ['Champion'],
-	baseQuery: baseQuery(),
+export const championApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getMonthlyTopAchiever: builder.query<MostVP[], MostVPParam>({
 			query: params => ({

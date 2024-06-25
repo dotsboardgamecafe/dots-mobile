@@ -1,10 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type RegisterParam, type Profile, type User } from '../../models/profile'
+import { baseApi } from '../../utils/base.api'
 
-export const accessApi = createApi({
-	reducerPath: 'accessApi',
-	baseQuery: baseQuery(),
+export const accessApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		postLogin: builder.mutation<Profile, {email: string, password: string}>({
 			query: data => ({

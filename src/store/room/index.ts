@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type BookResult, type RoomListParam, type Rooms } from '../../models/rooms'
+import { baseApi } from '../../utils/base.api'
 
-export const roomApi = createApi({
-	reducerPath: 'roomApi',
-	tagTypes: ['Rooms'],
-	baseQuery: baseQuery(),
+export const roomApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getListRoom: builder.query<Rooms[], RoomListParam>({
 			query: params => ({ url: '/v1/rooms', params }),
