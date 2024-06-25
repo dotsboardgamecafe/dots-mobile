@@ -1,5 +1,6 @@
 export interface FilterItemListProps {
   label: string,
   selected: boolean,
-  onClick: (label: string) => void
+  onClick: (label: string, param?: any) => void,
+  clickParam?: any
 }

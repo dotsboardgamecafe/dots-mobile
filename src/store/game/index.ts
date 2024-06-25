@@ -1,10 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type GameListParams, type Games } from '../../models/games'
+import { baseApi } from '../../utils/base.api'
 
-export const gameApi = createApi({
-	reducerPath: 'gameApi',
-	baseQuery: baseQuery(),
+export const gameApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getListGame: builder.query<Games[], GameListParams>({
 			query: params => ({ url: '/v1/games', params }),
