@@ -27,6 +27,7 @@ import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
 import { useGetMonthlyTopAchieverQuery } from '../../store/champion'
 import { type MostVPParam, type MostVP } from '../../models/champions'
+import Loading from '../../components/loading'
 
 type Props = NavigationProps<'mvp'>
 
@@ -232,6 +233,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 					stickyHeaderIndices: [0]
 				} }
 			/>
+			<Loading isLoading={ isLoading } />
 		</Container>
 	)
 }
