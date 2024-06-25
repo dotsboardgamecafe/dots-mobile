@@ -1,12 +1,10 @@
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { WebView as ReactNativeWebView  } from 'react-native-webview'
 import { type NavigationProps } from '../../models/navigation'
 import withCommon from '../../hoc/with-common'
 import styles from './styles'
 import { ActivityIndicator, SafeAreaView, StatusBar, View } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
-import navigationConstant from '../../constants/navigation'
 
 type Props = NavigationProps<'webview'>
 
@@ -41,44 +39,6 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 
 	const webViewRef = useRef(null)
 
-	const backAction = useCallback(async() => {
-		try {
-			const promises = new Promise((resolve, reject) => {
-				// simulate request
-				setTimeout(() => {
-					resolve(200)
-				}, 500)
-			})
-			await promises
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 1,
-					routes: [
-						{
-							name: navigationConstant.screenName.bottomNav,
-							state: {
-								routes: [
-									{ name: 'Play' }
-								]
-							}
-						},
-						{ name: navigationConstant.screenName.paymentSuccess }
-					]
-				})
-			)
-		} catch (error) {
-			// todo error
-		}
-	}, [navigation])
-
-	useEffect(() => {
-		// const subsribe = navigation.addListener('beforeRemove', () => {
-		// 	backAction()
-		// })
-
-		// return subsribe
-	}, [])
-
 	return (
 		<SafeAreaView style={ styles.containerStyle }>
 			<StatusBar
@@ -100,7 +60,6 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 				onMessage={ (event: any) => {} }
 				onLoadStart={ ({ nativeEvent }: any) => {
 					const { url } = nativeEvent
-					console.log('url', url)
 					if (url?.toString() === REDIRECT_SUCCESS_URL) {
 						navigation.replace('paymentSuccess', { game_code })
 					} else if (url?.toString() === REDIRECT_FAILED_URL) {
@@ -120,7 +79,6 @@ const WebView = ({ route, navigation }: Props): React.ReactNode => {
 				javaScriptEnabledAndroid
 				onNavigationStateChange={ (navState: any) => {
 					// Keep track of going back navigation within component
-					// console.log(navState.canGoBack)
 				} }
 			/>
 		</SafeAreaView>
