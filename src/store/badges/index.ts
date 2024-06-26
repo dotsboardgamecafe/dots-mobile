@@ -12,7 +12,7 @@ export const badgesApi = baseApi.injectEndpoints({
 		}),
 		getBadges: builder.query<Badges[], BadgesQuery | undefined>({
 			query: (params: BadgesQuery) => {
-				const queryParam = params?.page ? `?limit=20&page=${params.page}` : ''
+				const queryParam = params?.page && params?.limit ? `?limit=${params.limit}&page=${params.page}` : ''
 				return ({ url: `/v1/users/${params.code}/badges${queryParam}` })
 			},
 			transformResponse: result => (result as {data: Badges[]}).data,
@@ -33,6 +33,12 @@ export const badgesApi = baseApi.injectEndpoints({
 			forceRefetch({ currentArg, previousArg }) {
 				return currentArg !== previousArg
 			},
+		}),
+		getBadgeDetail: builder.query<Badges, string | undefined>({
+			query: code => {
+				return ({ url: `/v1/badges/${code}` })
+			},
+			transformResponse: result => (result as {data: Badges}).data,
 		}),
 		updateBadgeClaimed: builder.mutation<void, { badge_code: string, user_code: string }>({
 			query: ({ badge_code, user_code }) => ({
@@ -66,5 +72,6 @@ export const {
 	useGetBadgesWidgetQuery,
 	useGetBadgesQuery,
 	useLazyGetBadgesQuery,
-	useUpdateBadgeClaimedMutation
+	useUpdateBadgeClaimedMutation,
+	useLazyGetBadgeDetailQuery
 } = badgesApi

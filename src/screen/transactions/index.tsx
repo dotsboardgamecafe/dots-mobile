@@ -77,15 +77,18 @@ interface RedeemTabProps {
 const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh }: HistoryTabProps): React.ReactNode => {
 	const _renderItem = useCallback(({ item }:ListRenderItemInfo<Transaction>): React.ReactElement => {
 		return (
-			<TouchableOpacity style={ styles.historyWrapperStyle } onPress={ () => { onPressHistoryItem(item) } }>
-				<View style={ [
-					styles.rowStyle, styles.historyContentStyle,
-				] }>
+			<View style={ styles.historyWrapperStyle }>
+				<View style={ [styles.rowStyle, styles.historyContentStyle] }>
 					<Image style={ styles.historyImageStyle }
 						source={ { uri: item.game_img_url } }
 					/>
 					<View style={ styles.growStyle }>
-						<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ moment(item.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
+						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
+							<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ moment(item.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
+							<TouchableOpacity onPress={ () => { onPressHistoryItem(item) } }>
+								<Text style={ styles.textBlueStyle } variant='bodySmallBold'>See order detail</Text>
+							</TouchableOpacity>
+						</View>
 						<Text style={ styles.historyTextSpaceStyle } variant='bodyMiddleDemi'>{ item.game_name }</Text>
 						<View style={ [styles.rowStyle, styles.spaceBetweenStyle, styles.historyTextSpaceStyle] }>
 							<Text variant='bodySmallMedium'>{ currencyFormatter(item.final_price_amount) }</Text>
@@ -101,7 +104,7 @@ const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefr
 						</View>
 					</View>
 				</View>
-			</TouchableOpacity>
+			</View>
 		)
 	}, [])
 

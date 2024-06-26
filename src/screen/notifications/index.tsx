@@ -56,10 +56,12 @@ const _generateNotifTitle = (type: string): TitleStyleType => {
 
 	switch (type) {
 		case 'tournament_reminder':
-			result.title = 'UPCOMING REMINDER'
+			result.title = 'UPCOMING TOURNAMENT'
 			break
 
 		case 'room_booking_confirmation':
+			result.title = 'ROOM REMINDER'
+			break
 		case 'tournament_booking_confirmation':
 			result.title = 'BOOKING CONFIRMATION'
 			break
@@ -81,9 +83,9 @@ const _generateDescription = (type: string, description?: string): string => {
 		case 'tournament_reminder':
 		case 'room_booking_confirmation':
 		case 'tournament_booking_confirmation':
-			currentDescription = `${moment(parseDescription.start_date as string).local()
-				.format('MMM, Do YYYY')} at ${moment(`${parseDescription.start_date} ${parseDescription.start_time}`).local()
-				.format('hh:mm')} - ${moment(`${parseDescription.start_date} ${parseDescription.end_time}`).local()
+			currentDescription = `${moment(parseDescription.start_date as string)
+				.format('MMM, Do YYYY')} at ${moment(`${parseDescription.start_date} ${parseDescription.start_time}`)
+				.format('hh:mm')} - ${moment(`${parseDescription.start_date} ${parseDescription.end_time}`)
 				.format('hh:mm')} at ${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
 			break
 	
@@ -117,12 +119,14 @@ const Notifications = (): React.ReactNode => {
 	}, [bottomSheetRef])
 
 	const onFetchNotifications = useCallback(() => {
-		fetchNotifications(pageRef.current)
-		pageRef.current += 1
-	}, [fetchNotifications])
+		if (notificationsData?.data && notificationsData?.data.length < notificationsData?.pagination.count) {
+			pageRef.current += 1
+			fetchNotifications(pageRef.current)
+		}
+	}, [fetchNotifications, notificationsData])
 
 	useEffect(() => {
-		onFetchNotifications()
+		fetchNotifications(pageRef.current)
 		
 		return () => {
 			dispatch(notificationsApi.util.resetApiState())
@@ -132,7 +136,7 @@ const Notifications = (): React.ReactNode => {
 	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<Notification>): React.ReactElement => {
 		const { title, color } = _generateNotifTitle(item.type)
 		const description = _generateDescription(item.type, item.description)
-		
+
 		return (
 			<Pressable style={ {
 				...styles.rowStyle,
@@ -179,7 +183,7 @@ const Notifications = (): React.ReactNode => {
 		return (
 			<View>
 				<FlatList
-					data={ notificationsData ?? [] }
+					data={ notificationsData?.data ?? [] }
 					renderItem={ _renderItem }
 					keyExtractor={ (_, index) => index.toString() }
 					ItemSeparatorComponent={ () => <View style={ styles.itemSeparatorStyle }/> }
@@ -233,11 +237,11 @@ const Notifications = (): React.ReactNode => {
 		const description: DescriptionNotification | string = JSON.parse(selectedNotif?.description ?? '{}')
 
 		if (!isEmpty(description) && typeof description === 'object') {
-			const startDate = moment(description.start_date).local()
+			const startDate = moment(description.start_date)
 				.format('MMM, Do')
-			const startTime = moment(`${description.start_date} ${description.start_time}`).local()
+			const startTime = moment(`${description.start_date} ${description.start_time}`)
 				.format('hh:mm')
-			const endTime = moment(`${description.start_date} ${description.end_time}`).local()
+			const endTime = moment(`${description.start_date} ${description.end_time}`)
 				.format('hh:mm')
 			const fullLocation = `${description.cafe_name}, ${description.cafe_address}`
 			return (

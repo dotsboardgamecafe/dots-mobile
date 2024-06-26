@@ -2,7 +2,7 @@ import React, {
 	Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
 import {
-	FlatList, ImageBackground, RefreshControl, TouchableOpacity, View,
+	FlatList, ImageBackground, RefreshControl, View,
 	type ListRenderItemInfo
 } from 'react-native'
 
@@ -30,6 +30,15 @@ import moment from 'moment'
 const LazyBannerTier = lazy(async() => await import('../../components/banner-tier'))
 
 type Props = NavigationProps<'tier'>
+
+const howToEarnPoint = [
+	'Smashing it in a regular game: No need for fancy rooms, just jump in and play!',
+	'Joining the party in a special event: We\'ve got awesome limited-time games, come join the fun!',
+	'Battling it out in a tournament: Feeling competitive? Tournaments are your jam!',
+	'Snagging a badge: Show off your skills and collect cool badges!',
+	'Grabbing a new board game: Gotta love that new game smell!',
+	'Fueling up with food and drinks: Gotta stay energized for all that winning, right?',
+]
 
 const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] }): React.ReactNode => {
 
@@ -61,7 +70,23 @@ const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] })
 const EarnPointActivityTab = (): React.ReactNode => {
 
 	return (
-		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle, { opacity: 0.7 }] } />
+		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle] }>
+			<Text style={ styles.pointActivityContentTitleStyle } variant='bodyLargeBold'>Earn sweet loot by:</Text>
+
+			<FlatList
+				data={ howToEarnPoint }
+				renderItem={ ({ item, index }) => {
+					return (
+						<View style={ [styles.rowStyle] }>
+							<View style={ [styles.pointActivityContentTitleStyle, styles.orderedStyle] }/>
+							<Text key={ index } style={ styles.pointActivityContentTitleStyle } variant='bodyMiddleRegular'>{ item }</Text>
+						</View>
+					)
+				} }
+				keyExtractor={ (_, index) => index.toString() }
+				scrollEnabled={ false }
+			/>
+		</View>
 	)
 }
 
@@ -146,18 +171,23 @@ const Tier = ({ t }: Props): React.ReactNode => {
 									key={ item.reward_code }
 									contentStyle={ styles.cardRedeemItemBackgroundStyle }
 								>
-									<TouchableOpacity onPress={ _onPressRedeemItem }>
+									<View>
 										<View style={ styles.overflowHiddenStyle }>
 											<View style={ { ...styles.ticketStyle, left: -15 } } />
 											<Image style={ { ...styles.cardRedeemItemImageStyle, zIndex: -2 } } source={ { uri: item.reward_img_url  } }  />
 											<View style={ { ...styles.ticketStyle, right: -15 } } />
 										</View>
 										<Text style={ styles.cardRedeemItemTitleStyle } variant='bodyMiddleBold'>{ item.reward_name }</Text>
-										<Text variant='bodyMiddleBold'>{ item.reward_description }</Text>
 										<View style={ [styles.rowStyle, styles.cardRedeemItemExpiryWrapperStyle] }>
-											<Text style={ styles.cardRedeemItemExpiryLeftStyle } variant='bodySmallRegular'>TODO</Text>
+											<Text
+												style={ styles.cardRedeemItemExpiryLeftStyle }
+												variant='bodySmallRegular'
+												numberOfLines={ 2 }
+											>
+												{ item.reward_description }
+											</Text>
 										</View>
-									</TouchableOpacity>
+									</View>
 								</RoundedBorder>
 							)
 						}) : null
