@@ -1,6 +1,6 @@
-import React, { type ReactNode, useMemo } from 'react'
+import React, { type ReactNode, useMemo, useEffect } from 'react'
 import { useColorScheme } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { PaperProvider } from 'react-native-paper'
 import BootSplash from 'react-native-bootsplash'
@@ -32,6 +32,7 @@ import TncPrivacyPolicy from '../screen/tnc-privacy-policy'
 import Notifications from '../screen/notifications'
 import Transactions from '../screen/transactions'
 import EditProfile from '../screen/edit-profile'
+import { OneSignal } from 'react-native-onesignal'
 
 const { screenName, } = navigationConstant
 
@@ -151,6 +152,7 @@ const privateNavigations = (): ReactNode => {
 const Navigations = (): React.ReactNode => {
 	const colorScheme = useColorScheme()
 	const { isLoggedIn } = useStorage({ init: true })
+	const navigationRef = createNavigationContainerRef()
 
 	const themeFactory = useMemo(() => {
 		const paperTheme = paperThemeLight
@@ -171,11 +173,26 @@ const Navigations = (): React.ReactNode => {
 		return publicNavigations()
 	}, [isLoggedIn])
 
+	useEffect(() => {
+		OneSignal.Notifications.addEventListener('click', event => {
+			if (navigationRef.isReady()) {
+				// TODO: handle screen based on event
+				console.log('push event', event)
+
+				const screenName = isLoggedIn ?
+					navigationConstant.screenName.transactions :
+					navigationConstant.screenName.login
+				navigationRef.navigate(screenName as never)
+			}
+		})
+	}, [isLoggedIn, navigationRef])
+
 	return (
 		<PaperProvider theme={ themeFactory.paperTheme }>
 			<GestureHandlerRootView style={ { flex: 1 } }>
 				<BottomSheetModalProvider>
 					<NavigationContainer
+						ref={ navigationRef }
 						theme={ themeFactory.navigationTheme }
 						onReady={ BootSplash.hide }
 						linking={ {
