@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "437037786586",
+    "project_id": "dotscafe-bd2bf",
+    "storage_bucket": "dotscafe-bd2bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437037786586:android:795db6cb0761408a704ce3",
+        "android_client_info": {
+          "package_name": "com.dots"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLl2E39SXIoJvDDGW7QZs7901R21yeF_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
