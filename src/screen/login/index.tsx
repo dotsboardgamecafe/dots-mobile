@@ -24,6 +24,7 @@ import { useForm, Controller, type FieldValues } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import Toast from 'react-native-toast-message'
+import { OneSignal } from 'react-native-onesignal'
 
 type Props = NavigationProps<'login'>
 
@@ -74,9 +75,10 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 		navigation.navigate(screenName.forgotPassword as never)
 	}, [])
 
-	const doLogin = useCallback((data: { email: string, password: string }) => {
+	const doLogin = useCallback(async(data: { email: string, password: string }) => {
 		Keyboard.dismiss()
-		postLogin(data)
+		const xplayer = (await OneSignal.User.pushSubscription.getIdAsync()) ?? ''
+		postLogin({ ...data, xplayer })
 	}, [])
 
 	useEffect(() => {

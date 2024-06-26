@@ -4,7 +4,7 @@ import {
 	TouchableOpacity
 } from 'react-native'
 import {
-	ArrowLeft, Category, Clock, ExportCurve, Level, Location, Profile2User
+	ArrowLeft, Clock, Level, Location, Profile2User
 } from 'iconsax-react-native'
 
 import Text from '../../components/text'
@@ -18,7 +18,6 @@ import FilterTag from '../../components/filter-tag'
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import { PageIndicator } from 'react-native-page-indicator'
 import CardGame from '../../components/card-game'
-import { avatars } from './data'
 import { type Games, type GameMasters } from '../../models/games'
 import Blush from '../../components/blush'
 import exitApp from '../../utils/exit.app'
@@ -78,14 +77,14 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		else setBlushOp((th - y) / th)
 	}, [])
 
-	const avatar = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
-		return (
-			<Image
-				source={ { uri: item } }
-				style={ [styles.avatar, index > 0 && styles.avatarNotFirst] }
-			/>
-		)
-	}, [])
+	// const avatar = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
+	// 	return (
+	// 		<Image
+	// 			source={ { uri: item } }
+	// 			style={ [styles.avatar, index > 0 && styles.avatarNotFirst] }
+	// 		/>
+	// 	)
+	// }, [])
 
 	const gamePlay = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
 		return (
@@ -110,14 +109,22 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		)
 	}, [])
 
+	const _navigateToRoomDteail = useCallback((param: Partial<Rooms>) => {
+		navigation.navigate('roomDetail', param)
+	}, [])
+
 	const room = useCallback(({ item }: ListRenderItemInfo<Rooms>) => {
 		return (
-			<Image
-				source={ { uri: item.room_image_url ?? '' } }
-				// resizeMode='cover'
-				style={ styles.room }
-				keepRatio
-			/>
+			<TouchableOpacity
+				onPress={ () => { _navigateToRoomDteail(item) } }
+			>
+				<Image
+					source={ { uri: item.room_image_url ?? '' } }
+					// resizeMode='cover'
+					style={ styles.room }
+					keepRatio
+				/>
+			</TouchableOpacity>
 		)
 	}, [])
 
@@ -192,7 +199,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						/>
 					</ImageBackground>
 
-					<View style={ styles.players }>
+					{ /* <View style={ styles.players }>
 						<FlatList
 							data={ avatars }
 							renderItem={ avatar }
@@ -216,7 +223,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						<View style={ styles.popularContainer }>
 							<Text variant='bodySmallBold' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
 						</View>
-					</View>
+					</View> */ }
 				</View>
 
 				<View style={ styles.infoContainer }>
@@ -227,7 +234,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Slot: { data?.minimal_participant }-{ data?.maximum_participant } players</Text>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Players: { data?.minimal_participant }-{ data?.maximum_participant } players</Text>
 
 						<Level
 							variant='Bold'
@@ -246,15 +253,13 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						/>
 						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Duration: { data?.duration } min</Text>
 
-						<Category
+						{ /* <Category
 							variant='Bold'
 							size={ scaleWidth(16) }
 							color={ theme.colors.gray }
 							style={ { marginEnd: scaleHorizontal(4) } }
 						/>
-						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: { data?.game_type }</Text>
-					</View>
-					<View style={ [styles.row, styles.mt8] }>
+						<Text variant='bodyMiddleRegular' style={ { flex: 1 } }>Category: { data?.game_type }</Text> */ }
 						<Location
 							variant='Bold'
 							size={ scaleWidth(16) }
@@ -274,7 +279,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 
 					{ _gameMechanic }
 
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Components</Text>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>How to Play</Text>
 				</View>
 				<View>
 					<FlatList

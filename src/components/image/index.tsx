@@ -7,7 +7,7 @@ import {
 
 import { imgFailed } from '../../assets/images'
 
-const Image = (props: ImageProps & { keepRatio?: boolean }): React.ReactNode => {
+const Image = (props: ImageProps & { keepRatio?: boolean, fallbackImg?: any }): React.ReactNode => {
 	const [valid, setValid] = useState(true)
 	const [sizeStyle, setSizeStyle] = useState<StyleProp<ImageStyle>>({})
 
@@ -40,7 +40,7 @@ const Image = (props: ImageProps & { keepRatio?: boolean }): React.ReactNode => 
 	return (
 		<ImageLib
 			{ ...props }
-			source={ imgFailed }
+			source={ props.fallbackImg || imgFailed }
 		/>
 	)
 }

@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import { SectionList, type SectionListData, TouchableOpacity, View } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -16,6 +18,7 @@ import Image from '../../components/image'
 import FilterItem from '../../components/filter-item'
 import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
+import Loading from '../../components/loading'
 
 type Props = NavigationProps<'play'>
 
@@ -25,7 +28,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 	const tabBarHeight = useBottomTabBarHeight()
 	const [param, setParam] = useState<RoomListParam>({ status: 'active' })
 	const { data, refetch, isLoading } = useGetListRoomQuery(param)
-	const { data: tourney, refetch: tourneyRefetch } = useGetListTourneyQuery(param)
+	const { data: tourney, isLoading: isLoadingTourney, refetch: tourneyRefetch } = useGetListTourneyQuery(param)
 	const [sections, setSections] = useState<Sections[]>([])
 	const filterLocRef = useRef<BottomSheetModal>(null)
 	const [location, setLocation] = useState('All Location')
@@ -34,6 +37,11 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		{ name: 'Jakarta', selected: false },
 		{ name: 'Bandung', selected: false },
 	])
+
+	const _isLoading = useMemo(() => {
+		return isLoading || isLoadingTourney
+	}, [isLoading, isLoadingTourney])
+
 	const sectionFooter = useCallback((info: {section: SectionListData<Partial<Rooms>, Sections>}) => {
 		return (
 			<View style={ styles.sectionFooter }>
@@ -58,9 +66,9 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 		return (
 			<View style={ styles.filterHeader }>
 				<Text variant='bodyExtraLargeMedium'>{ title }</Text>
-				<TouchableOpacity onPress={ onReset }>
+				{ /* <TouchableOpacity onPress={ onReset }>
 					<Text variant='bodyLargeBold' style={ styles.filterReset }>{ t('champion-page.filter-reset') }</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */ }
 			</View>
 		)
 	}, [])
@@ -112,7 +120,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 			/>
 			<SectionList
 				sections={ sections }
-				refreshing={ isLoading }
+				refreshing={ _isLoading }
 				onRefresh={ refresh }
 				keyExtractor={ (item, index) => (item.room_code ?? '') + index }
 				renderItem={ ({ item }) => (
@@ -146,13 +154,14 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					data: locations,
 					ListHeaderComponent: filterHeader(
 						t('champion-page.filter-loc'),
-						() => { setLoc('Jakarta') }
+						() => { setLoc('All Location') }
 					),
 					renderItem: ({ item }) => (<FilterItemList label={ item.name } selected={ item.selected } onClick={ setLoc } />),
 					ItemSeparatorComponent: () => <View style={ styles.filterItemSeparator } />,
 					stickyHeaderIndices: [0]
 				} }
 			/>
+			<Loading isLoading={ _isLoading } />
 		</Container>
 	)
 }

@@ -6,7 +6,7 @@ import {
 	FlatList, type ListRenderItemInfo, ScrollView, View,
 	ActivityIndicator,
 } from 'react-native'
-import { ArrowLeft, CloseCircle, ExportCurve } from 'iconsax-react-native'
+import { ArrowLeft, CloseCircle } from 'iconsax-react-native'
 import { type BottomSheetModal, SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import moment from 'moment'
 
@@ -29,6 +29,7 @@ import { type Users } from '../../models/users'
 import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
 import ErrorModal from '../../components/error-modal'
+import { LOGO } from '../../assets/images'
 
 type Props = NavigationProps<'roomDetail'>
 
@@ -194,7 +195,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data, isTourney])
+	}, [data, isTourney, schedule])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.room_type === 'Tournament') {
@@ -268,6 +269,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 						<Image
 							source={ { uri: item.user_image_url ?? '' } }
 							style={ styles.player }
+							fallbackImg={ LOGO }
 						/>
 					</Shadow>
 				</Shadow>
@@ -363,7 +365,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<>
 					<ScrollView showsVerticalScrollIndicator={ false }>
 						<Image
-							source={ { uri: params.room_img_url ?? data?.image_url } }
+							source={ { uri: params.room_img_url ?? data?.room_banner_url ?? data?.image_url } }
 							resizeMode='cover'
 							style={ {
 								width: SCREEN_WIDTH,

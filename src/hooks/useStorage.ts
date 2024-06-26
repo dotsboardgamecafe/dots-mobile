@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMMKVNumber, useMMKVObject, useMMKVString } from 'react-native-mmkv'
 import { type User } from '../models/profile'
+import { OneSignal } from 'react-native-onesignal'
 
 interface UseStorageReturnType {
   isLoggedIn: boolean,
@@ -61,6 +62,9 @@ const useStorage = ({ init }: UseStorageProps = { init: false }): UseStorageRetu
 
 	const onSetUser = useCallback((data: User) => {
 		setUser(data)
+
+		data.email && OneSignal.User.addEmail(data.email)
+		data.user_code && OneSignal.User.addTag('user_code', data.user_code)
 	}, [])
 
 	useEffect(() => {

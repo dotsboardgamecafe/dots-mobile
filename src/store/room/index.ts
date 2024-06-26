@@ -1,11 +1,7 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import baseQuery from '../../utils/base.query'
 import { type BookResult, type RoomListParam, type Rooms } from '../../models/rooms'
+import { baseApi } from '../../utils/base.api'
 
-export const roomApi = createApi({
-	reducerPath: 'roomApi',
-	tagTypes: ['Rooms'],
-	baseQuery: baseQuery(),
+export const roomApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getListRoom: builder.query<Rooms[], RoomListParam>({
 			query: params => ({ url: '/v1/rooms', params }),
@@ -13,7 +9,8 @@ export const roomApi = createApi({
 		}),
 		getRoomDetail: builder.query<Rooms, string>({
 			query: id => ({ url: `/v1/rooms/${id}` }),
-			transformResponse: result => (result as {data: Rooms}).data
+			transformResponse: result => (result as {data: Rooms}).data,
+			forceRefetch: () => true
 		}),
 		getListTourney: builder.query<Rooms[], RoomListParam>({
 			query: params => ({ url: '/v1/tournaments', params }),
@@ -21,7 +18,8 @@ export const roomApi = createApi({
 		}),
 		getTourneyDetail: builder.query<Rooms, string>({
 			query: id => ({ url: `/v1/tournaments/${id}` }),
-			transformResponse: result => (result as {data: Rooms}).data
+			transformResponse: result => (result as {data: Rooms}).data,
+			forceRefetch: () => true
 		}),
 		postJoinRoom: builder.mutation<BookResult, string>({
 			query: id => ({
