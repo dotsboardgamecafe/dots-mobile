@@ -28,6 +28,7 @@ import LoadingDialog from '../../components/loading-dialog'
 import { Controller, useForm } from 'react-hook-form'
 import ErrorModal from '../../components/error-modal'
 import Modal from '../../components/modal'
+import { OneSignal } from 'react-native-onesignal'
 
 type Props = NavigationProps<'register'>
 
@@ -91,10 +92,11 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 			navigation.replace('login', {})
 	}, [])
 
-	const doRegister = useCallback((data: RegisterParam) => {
+	const doRegister = useCallback(async(data: RegisterParam) => {
 		Keyboard.dismiss()
 		onSetUser({ email: data.email })
-		postRegister(data)
+		const xplayer = (await OneSignal.User.pushSubscription.getIdAsync()) ?? ''
+		postRegister({ ...data, xplayer })
 	}, [])
 
 	const openMail = useCallback(() => {

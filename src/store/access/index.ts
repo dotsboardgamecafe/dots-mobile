@@ -3,20 +3,21 @@ import { baseApi } from '../../utils/base.api'
 
 export const accessApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
-		postLogin: builder.mutation<Profile, {email: string, password: string}>({
+		postLogin: builder.mutation<Profile, {email: string, password: string, xplayer?: string}>({
 			query: data => ({
 				method: 'post',
 				url: '/v1/auths/login',
-				headers: { 'X-Actor-Type': 'user' },
+				headers: { 'X-Actor-Type': 'user', 'X-PLAYER': data.xplayer },
 				isPrivate: false,
 				data
 			}),
 			transformResponse: (result: {data: Profile}) => result.data
 		}),
-		postRegister: builder.mutation<unknown, RegisterParam>({
+		postRegister: builder.mutation<unknown, RegisterParam & { xplayer?: string }>({
 			query: data => ({
 				method: 'post',
 				url: '/v1/auths/register',
+				headers: { 'X-PLAYER': data.xplayer },
 				isPrivate: false,
 				data
 			}),
