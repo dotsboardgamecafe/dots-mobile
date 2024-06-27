@@ -77,6 +77,52 @@ PODS:
   - MMKV (1.3.3):
     - MMKVCore (~> 1.3.3)
   - MMKVCore (1.3.3)
+  - OneSignalXCFramework (5.2.1):
+    - OneSignalXCFramework/OneSignalComplete (= 5.2.1)
+  - OneSignalXCFramework/OneSignal (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalExtension
+    - OneSignalXCFramework/OneSignalLiveActivities
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalComplete (5.2.1):
+    - OneSignalXCFramework/OneSignal
+    - OneSignalXCFramework/OneSignalInAppMessages
+    - OneSignalXCFramework/OneSignalLocation
+  - OneSignalXCFramework/OneSignalCore (5.2.1)
+  - OneSignalXCFramework/OneSignalExtension (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalOutcomes
+  - OneSignalXCFramework/OneSignalInAppMessages (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalLiveActivities (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalLocation (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalNotifications (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalExtension
+    - OneSignalXCFramework/OneSignalOutcomes
+  - OneSignalXCFramework/OneSignalOSCore (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+  - OneSignalXCFramework/OneSignalOutcomes (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+  - OneSignalXCFramework/OneSignalUser (5.2.1):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -955,18 +1001,23 @@ PODS:
     - React-Core
   - react-native-color-matrix-image-filters (6.0.9):
     - React-Core
-  - react-native-mmkv (2.11.0):
-    - MMKV (>= 1.2.13)
+  - react-native-mmkv (2.12.2):
+    - glog
+    - MMKV (>= 1.3.3)
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-netinfo (11.3.0):
+  - react-native-netinfo (11.3.2):
     - React-Core
-  - react-native-pager-view (6.3.0):
+  - react-native-onesignal (5.2.1):
+    - OneSignalXCFramework (= 5.2.1)
+    - React (< 1.0.0, >= 0.13.0)
+  - react-native-pager-view (6.3.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-safe-area-context (4.9.0):
+  - react-native-safe-area-context (4.10.5):
     - React-Core
-  - react-native-webview (13.8.4):
+  - react-native-webview (13.10.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1137,37 +1188,38 @@ PODS:
     - React-jsi (= 0.73.4)
     - React-logger (= 0.73.4)
     - React-perflogger (= 0.73.4)
-  - RNBootSplash (5.4.1):
+  - RNBootSplash (5.5.3):
     - React-Core
-  - RNDeviceInfo (10.13.1):
+  - RNDeviceInfo (10.14.0):
     - React-Core
-  - RNFlashList (1.6.3):
+  - RNFlashList (1.6.4):
     - React-Core
-  - RNGestureHandler (2.15.0):
+  - RNGestureHandler (2.17.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNImageCropPicker (0.41.1):
+  - RNImageCropPicker (0.41.2):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.41.1)
+    - RNImageCropPicker/QBImagePickerController (= 0.41.2)
     - TOCropViewController (~> 2.7.4)
-  - RNImageCropPicker/QBImagePickerController (0.41.1):
+  - RNImageCropPicker/QBImagePickerController (0.41.2):
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
   - RNPermissions (4.1.5):
     - React-Core
-  - RNReanimated (3.7.2):
+  - RNReanimated (3.12.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-  - RNScreens (3.29.0):
+  - RNScreens (3.32.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNSVG (15.0.0):
+    - React-RCTImage
+  - RNSVG (15.3.0):
     - React-Core
   - SocketRocket (0.6.1)
   - TOCropViewController (2.7.4)
@@ -1202,6 +1254,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
+  - OneSignalXCFramework (< 6.0, >= 5.0.0)
   - OpenSSL-Universal (= 1.1.1100)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1231,6 +1284,7 @@ DEPENDENCIES:
   - react-native-color-matrix-image-filters (from `../node_modules/react-native-color-matrix-image-filters`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-onesignal (from `../node_modules/react-native-onesignal`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -1280,6 +1334,7 @@ SPEC REPOS:
     - libevent
     - MMKV
     - MMKVCore
+    - OneSignalXCFramework
     - OpenSSL-Universal
     - SocketRocket
     - TOCropViewController
@@ -1350,6 +1405,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-mmkv"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-onesignal:
+    :path: "../node_modules/react-native-onesignal"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -1438,6 +1495,7 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MMKV: f902fb6719da13c2ab0965233d8963a59416f911
   MMKVCore: d26e4d3edd5cb8588c2569222cbd8be4231374e9
+  OneSignalXCFramework: fbafb3b4964a37f8b0ff273419d1c0e5ac0e07d6
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: ab7f915c15569f04a49669e573e6e319a53f9faa
@@ -1462,11 +1520,12 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 63913773ed7f96b814a2521e13e6d010282096ad
   react-native-blur: 27113acc008facbc8accae5fb3a78b8424f64cfd
   react-native-color-matrix-image-filters: e2df0971b44f1aba49f4740463fdda857d467adf
-  react-native-mmkv: e97c0c79403fb94577e5d902ab1ebd42b0715b43
-  react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
-  react-native-pager-view: ffde7887fb8dbf2d5b7a5df6d558f9e9a32942c5
-  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
-  react-native-webview: a9454e7b9a99dc4c3fc865fd92de3e95d2eb79d2
+  react-native-mmkv: 61c0e00963aee12f65c2c34ee83a3dc890026a0d
+  react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
+  react-native-onesignal: 77a5dfd158b6c190243af73e2a9fc724130fbff5
+  react-native-pager-view: 51b8a98ed400354aea0250186669db6c66a6231f
+  react-native-safe-area-context: a240ad4b683349e48b1d51fed1611138d1bdad97
+  react-native-webview: 7ef975b88c4cfbccf1a5dc15d1bd8bce22312ea5
   React-nativeconfig: d7af5bae6da70fa15ce44f045621cf99ed24087c
   React-NativeModulesApple: 0123905d5699853ac68519607555a9a4f5c7b3ac
   React-perflogger: 8a1e1af5733004bdd91258dcefbde21e0d1faccd
@@ -1487,19 +1546,19 @@ SPEC CHECKSUMS:
   React-runtimescheduler: ed48e5faac6751e66ee1261c4bd01643b436f112
   React-utils: 6e5ad394416482ae21831050928ae27348f83487
   ReactCommon: 840a955d37b7f3358554d819446bffcf624b2522
-  RNBootSplash: eff8239c4f795ce42a0604873aef3733aac0dedd
-  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
-  RNFlashList: 4b4b6b093afc0df60ae08f9cbf6ccd4c836c667a
-  RNGestureHandler: deda62b8339496ba721a45e0f3e2d7a319932cee
-  RNImageCropPicker: 601604515fd6fbba318147b0a56aed0be9379415
+  RNBootSplash: e025d4ee98d942ee6c8b495a6fe66339a6b5f6dd
+  RNDeviceInfo: 59344c19152c4b2b32283005f9737c5c64b42fba
+  RNFlashList: b521ebdd7f9352673817f1d98e8bdc0c8cf8545b
+  RNGestureHandler: 1eb1a73093d6ec6cb3b30b189b59aba1c3b84b2e
+  RNImageCropPicker: 771e2ca319d2cf92e04ebf334ece892ee9a6728f
   RNPermissions: 804379cdb8fa76ad0ab6617240057fb66b0eb0dd
-  RNReanimated: 3850671fd0c67051ea8e1e648e8c3e86bf3a28eb
-  RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
-  RNSVG: 3f65a03e0c61a8495dee92bf82545ed9041cbf3b
+  RNReanimated: fa47e0572971cdb0b29b8eca683980e9c97e952f
+  RNScreens: f0edd01b3ab160acc31fb056622a1d7c2909a0a5
+  RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
 
-PODFILE CHECKSUM: aeb75017b81a47378ee861358031cf4dc32c6589
+PODFILE CHECKSUM: 0a286357a62ad454f8b821e98bc7fe19919540df
 
 COCOAPODS: 1.15.2
