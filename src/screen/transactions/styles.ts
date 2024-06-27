@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
 	textGrayStyle: {
 		color: colorsTheme.gray500
 	},
+	textBlueStyle: {
+		color: colorsTheme.blueSuccess
+	},
 	historyTextSpaceStyle: {
 		marginTop: scaleHeight(2)
 	},

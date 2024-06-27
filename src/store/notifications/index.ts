@@ -1,16 +1,21 @@
 import { type PaginationNotificationType, type Notification } from '../../models/notification'
 import { baseApi } from '../../utils/base.api'
 
+interface NotificationResponse {
+	data: Notification[],
+	pagination: PaginationNotificationType
+}
+
 export const notificationsApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
-		getNotifications: builder.query<Notification[], number | undefined>({
+		getNotifications: builder.query<NotificationResponse, number | undefined>({
 			query: page => ({ url: `/v1/notifications?page=${page}` }),
-			transformResponse: result => (result as {data: Notification[]})?.data,
+			transformResponse: result => (result as NotificationResponse),
 			serializeQueryArgs: ({ endpointName }) => {
 				return endpointName
 			},
 			merge: (currentCache, newItems) => {
-				if (newItems.length) currentCache.push(...newItems)
+				if (newItems.data.length) currentCache.data.push(...newItems.data)
 			},
 			forceRefetch({ currentArg, previousArg }) {
 				return currentArg !== previousArg
@@ -31,8 +36,8 @@ export const notificationsApi = baseApi.injectEndpoints({
 			async onQueryStarted(patch, { dispatch, queryFulfilled }) {
 				const patchResult = dispatch(
 					notificationsApi.util.updateQueryData('getNotifications', undefined, draft => {
-						const indexOfPatch = draft.findIndex(item => item.notification_code === patch.notification_code)
-						draft[indexOfPatch].status_read = true
+						const indexOfPatch = draft.data.findIndex(item => item.notification_code === patch.notification_code)
+						draft.data[indexOfPatch].status_read = true
 						
 						return draft
 					})

@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
 	},
 	cardRedeemItemExpiryWrapperStyle: {
 		marginTop: scaleVertical(8),
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		width: scaleWidth(236),
 	},
 	cardRedeemItemExpiryLeftStyle: {
 		color: colorsTheme.gray500
@@ -127,6 +128,14 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 		opacity: 1,
 		backgroundColor: colorsTheme.background
+	},
+	orderedStyle: {
+		width: scaleWidth(5),
+		height: scaleWidth(5),
+		backgroundColor: 'black',
+		borderRadius: 100,
+		marginRight: scaleWidth(10),
+		marginTop: scaleHeight(7)
 	}
 })
 

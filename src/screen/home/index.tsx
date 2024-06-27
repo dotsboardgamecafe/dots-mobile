@@ -53,23 +53,6 @@ const textFormatter = (text:string, target:string): React.ReactNode => {
 	})
 }
 
-const getGreetingMessage = (): string => {
-	const currentTime = new Date()
-	const currentHour = currentTime.getHours()
-
-	let greeting
-
-	if (currentHour < 12) {
-		greeting = 'Good morning!'
-	} else if (currentHour < 18) {
-		greeting = 'Good afternoon!'
-	} else {
-		greeting = 'Good evening!'
-	}
-
-	return greeting
-}
-
 const Home = ({ navigation, t }:Props): React.ReactNode => {
 	const [isRefresh, setIsRefresh] = useState(false)
 	const { user } = useStorage()
@@ -164,7 +147,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 						<Avatar.Image size={ scaleWidth(48) } source={  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
 					</TouchableOpacity>
 					<View style={ styles.greetingWrapperStyle }>
-						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>{ getGreetingMessage() } 👋</Text>
+						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>Hello 👋</Text>
 						<TouchableOpacity onPress={ _navigateToProfile }>
 							<Text variant='bodyLargeDemi'>{ userProfileData?.fullname }</Text>
 						</TouchableOpacity>
