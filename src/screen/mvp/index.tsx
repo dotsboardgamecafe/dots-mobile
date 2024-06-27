@@ -4,7 +4,6 @@ import React, {
 import {
 	View,
 	FlatList,
-	TouchableOpacity,
 	Platform,
 } from 'react-native'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -177,9 +176,9 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 		return (
 			<View style={ styles.filterHeader }>
 				<Text variant='bodyExtraLargeMedium'>{ title }</Text>
-				<TouchableOpacity onPress={ onReset }>
+				{ /* <TouchableOpacity onPress={ onReset }>
 					<Text variant='bodyLargeBold' style={ styles.filterReset }>{ t('champion-page.filter-reset') }</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */ }
 			</View>
 		)
 	}, [])
