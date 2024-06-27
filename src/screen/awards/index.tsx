@@ -40,7 +40,7 @@ import { useDispatch } from 'react-redux'
 
 type Props = NavigationProps<'awards'>
 
-const defaultLimit = 15
+const defaultLimit = 20
 
 const Awards = ({ t }: Props): React.ReactNode => {
 	const dispatch = useDispatch()
