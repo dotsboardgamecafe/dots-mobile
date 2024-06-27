@@ -1,6 +1,9 @@
 import {
-	View, ScrollView, Pressable, FlatList,
-	TouchableOpacity
+	View,
+	ScrollView,
+	Pressable,
+	FlatList,
+	TouchableOpacity,
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
@@ -36,6 +39,8 @@ import Toast from 'react-native-toast-message'
 import { useDispatch } from 'react-redux'
 
 type Props = NavigationProps<'awards'>
+
+const defaultLimit = 15
 
 const Awards = ({ t }: Props): React.ReactNode => {
 	const dispatch = useDispatch()
@@ -93,6 +98,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		getBadges({
 			code: user?.user_code,
 			page: pageRef.current,
+			limit: defaultLimit
 		})
 	}, [user])
 
@@ -100,11 +106,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		setSelectedFilter(index)
 	}, [])
 
-	const _factoryAwards = useMemo(() => {
+	const _factoryBadges = useMemo(() => {
 		if (badgesData?.length) {
 			const resultBadges = badgesData
 			if (selectedFilter) {
-				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_claim : !item.is_claim)
+				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_badge_owned && item.is_claim : item.is_badge_owned && !item.is_claim)
 			}
 			return resultBadges
 		}
@@ -116,6 +122,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		getBadges({
 			code: user?.user_code,
 			page: pageRef.current,
+			limit: defaultLimit
 		})
 		pageRef.current += 1
 	}, [getBadges])
@@ -152,7 +159,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 
 	const _renderFilterCardRedeem = useMemo(() => {
 		const listFilter = [
-			'All', 'Owned', 'Unclaim'
+			'All', 'Claimed', 'Unclaim'
 		]
 
 		return (
@@ -196,7 +203,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onSelectedFilter, selectedFilter])
 
-	const _greyScaledImage = useCallback((image: string, shouldGrayScale: boolean) => {
+	const _greyScaledImageItem = useCallback((image: string, shouldGrayScale: boolean) => {
 		const imageStyle = shouldGrayScale ? styles.cardAwardUnClaimStyle :  styles.cardAwardItemImageStyle
 		if (shouldGrayScale) {
 			return (
@@ -210,7 +217,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	}, [])
 
 	const _renderListBadge = useMemo(() => {
-		const { numColumns, resultData } = formatGridData<Badges>(_factoryAwards ?? [])
+		const { numColumns, resultData } = formatGridData<Badges>(_factoryBadges ?? [])
 
 		if (_isError) return <ReloadView onRefetch={ _onRefresh } />
 
@@ -219,21 +226,22 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				style={ [styles.listGameWrapperStyle, styles.midContentHorizontalStyle] }
 				data={ resultData }
 				renderItem={ ({ item }) => {
-					if (item) return (
-						<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
-							{
-								item?.is_claim ?
-									<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
-							}
-							{ _greyScaledImage(item?.badge_image_url, !item?.is_claim) }
-						</TouchableOpacity>
-					)
+					if (item) {
+						return (
+							<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
+								{
+									item?.is_badge_owned ?
+										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
+								}
+								{ _greyScaledImageItem(item?.badge_image_url, !item?.is_badge_owned) }
+							</TouchableOpacity>
+						)
+					}
 
 					return <View style={ styles.boardGameItemStyle }/>
 				} }
 				keyExtractor={ (_, index) => index.toString() as any }
 				numColumns={ numColumns }
-				scrollEnabled={ false }
 				contentContainerStyle={ [styles.justifyCenterStyle, styles.rowCenterStyle] }
 				columnWrapperStyle={ styles.justifyCenterStyle }
 				removeClippedSubviews
@@ -241,7 +249,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				onEndReachedThreshold={ 0.8 }
 			/>
 		)
-	}, [_onPressAward, _isError, _factoryAwards, _onRefresh])
+	}, [_onPressAward, _isError, _factoryBadges, _onRefresh])
   
 	const _renderBottomSheetTopContent = useMemo(() => {
 		return (
@@ -254,21 +262,50 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onPressClose, selectedAward])
 
+	const _greyScaledBluryImage = useCallback((image?: string, shouldGrayScale?: boolean) => {
+		const resultImage = <Image
+			key={ 'blurryImage' }
+			source={ { uri: image } }
+			style={ styles.absoluteStyle }
+		/>
+		
+		if (shouldGrayScale) {
+			return (
+				<Grayscale style={ styles.absoluteStyle }>
+					{ resultImage }
+				</Grayscale>
+			)
+		}
+
+		return resultImage
+	}, [])
+
+	const _greyScaledDetailImage = useCallback((image?: string, shouldGrayScale?: boolean) => {
+		const resultImage = <Image style={ styles.cardAwardItemImageStyle } source={ { uri: image } } />
+		
+		if (shouldGrayScale) {
+			return (
+				<Grayscale>
+					{ resultImage }
+				</Grayscale>
+			)
+		}
+
+		return resultImage
+	}, [])
+
 	const _renderBottomSheetMidContent = useMemo(() => {
+
 		return (
 			<View style={ styles.blurViewWrapperStyle }>
-				<Image
-					key={ 'blurryImage' }
-					source={ { uri: selectedAward?.badge_image_url } }
-					style={ styles.absoluteStyle }
-				/>
+				{ _greyScaledBluryImage(selectedAward?.badge_image_url, !selectedAward?.is_badge_owned) }
 				<BlurView
 					style={ styles.absoluteStyle }
 					blurType='light'
 					blurAmount={ 10 }
 					reducedTransparencyFallbackColor='white'
 				/>
-				<Image style={ styles.cardAwardItemImageStyle } source={ { uri: selectedAward?.badge_image_url } } />
+				{ _greyScaledDetailImage(selectedAward?.badge_image_url, !selectedAward?.is_badge_owned) }
 				{
 					selectedAward?.is_claim ?
 						<View style={ [styles.absoluteStyle, styles.labelClaimedStyle] } >
@@ -281,25 +318,32 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	}, [selectedAward])
 
 	const _renderButton =  useMemo(() => {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (selectedAward?.is_claim) {
 			return (
 				<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.descriptionPointWrapperStyle] }>
 					<CalendarIcon/>
-					<Text style={ styles.claimDateStyle } variant='bodySmallRegular'>{ selectedAward.created_date }</Text>
+					<Text style={ styles.claimDateStyle } variant='bodySmallRegular'>{ selectedAward?.created_date }</Text>
 				</View>
 			)
 		}
-		return (
-			<ActionButton
-				style={ styles.buttonWrapperStyle }
-				label={ 'Claim' }
-				onPress={ _onPressUpdateClaimedBadge(selectedAward) }
-				loading={ isLoadingUpdateBadgeClaimed }
-			/>
-		)
+
+		if (selectedAward?.is_badge_owned) {
+			return (
+				<ActionButton
+					style={ styles.buttonWrapperStyle }
+					label={ 'Claim' }
+					onPress={ _onPressUpdateClaimedBadge(selectedAward) }
+					loading={ isLoadingUpdateBadgeClaimed }
+				/>
+			)
+		}
+
+		return null
 	}, [selectedAward, _toggleModal, isLoadingUpdateBadgeClaimed, _onPressUpdateClaimedBadge])
 
 	const _renderBottomSheetBottomContent = useMemo(() => {
+		
 		return (
 			<React.Fragment>
 				<View style={ [styles.rowCenterStyle, styles.rowStyle, styles.descriptionPointWrapperStyle] }>
