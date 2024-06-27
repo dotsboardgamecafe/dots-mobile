@@ -10,7 +10,7 @@ export const championApi = baseApi.injectEndpoints({
 			}),
 			transformResponse: result => (result as {data: MostVP[]}).data
 		}),
-		getHallOfFame: builder.query<HallOfFame[], number>({
+		getHallOfFame: builder.query<HallOfFame[], string>({
 			query: year => ({
 				url: '/v1/players/hall-of-fame',
 				params: { year }

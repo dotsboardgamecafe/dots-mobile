@@ -61,6 +61,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 	const _resetParam = useCallback(() => {
 		setParam(defaultParam)
+		setApplyFilter(false)
 		bottomSheetRef.current?.dismiss()
 	}, [])
 

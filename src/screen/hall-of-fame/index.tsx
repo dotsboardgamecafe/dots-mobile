@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { FlatList, TouchableOpacity, View } from 'react-native'
+import { FlatList, View } from 'react-native'
 
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
@@ -19,7 +19,6 @@ type Props = NavigationProps<'hallOfFame'>
 
 const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 	const styles = createStyle(theme)
-	const { data, isLoading, refetch, isFetching } = useGetHallOfFameQuery()
 	const filterRef = useRef<BottomSheetModal>(null)
 	const date = new Date()
 	date.setFullYear(date.getFullYear() + 1)
@@ -31,6 +30,7 @@ const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 		}
 	}))
 	const [year, setYear] = useState(years[0].name)
+	const { data, isLoading, refetch, isFetching } = useGetHallOfFameQuery(year)
 
 	const arrowDown = useMemo(() => {
 		return (
@@ -44,9 +44,9 @@ const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 		return (
 			<View style={ styles.filterHeader }>
 				<Text variant='bodyExtraLargeMedium'>{ title }</Text>
-				<TouchableOpacity onPress={ onReset }>
+				{ /* <TouchableOpacity onPress={ onReset }>
 					<Text variant='bodyLargeBold' style={ styles.filterReset }>{ t('champion-page.filter-reset') }</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */ }
 			</View>
 		)
 	}, [])
