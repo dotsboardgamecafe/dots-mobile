@@ -34,12 +34,6 @@ export const badgesApi = baseApi.injectEndpoints({
 				return currentArg !== previousArg
 			},
 		}),
-		getBadgeDetail: builder.query<Badges, string | undefined>({
-			query: code => {
-				return ({ url: `/v1/badges/${code}` })
-			},
-			transformResponse: result => (result as {data: Badges}).data,
-		}),
 		updateBadgeClaimed: builder.mutation<void, { badge_code: string, user_code: string }>({
 			query: ({ badge_code, user_code }) => ({
 				url: `/v1/users/${user_code}/badges/${badge_code}`,
@@ -73,5 +67,4 @@ export const {
 	useGetBadgesQuery,
 	useLazyGetBadgesQuery,
 	useUpdateBadgeClaimedMutation,
-	useLazyGetBadgeDetailQuery
 } = badgesApi

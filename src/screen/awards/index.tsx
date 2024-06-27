@@ -1,7 +1,9 @@
 import {
-	View, ScrollView, Pressable, FlatList,
+	View,
+	ScrollView,
+	Pressable,
+	FlatList,
 	TouchableOpacity,
-	ActivityIndicator
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
@@ -28,14 +30,13 @@ import Modal from '../../components/modal'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import useStorage from '../../hooks/useStorage'
-import { badgesApi, useLazyGetBadgeDetailQuery, useLazyGetBadgesQuery, useUpdateBadgeClaimedMutation } from '../../store/badges'
+import { badgesApi, useLazyGetBadgesQuery, useUpdateBadgeClaimedMutation } from '../../store/badges'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
 import { type Badges } from '../../models/badges'
 import Image from '../../components/image'
 import Toast from 'react-native-toast-message'
 import { useDispatch } from 'react-redux'
-import { colorsTheme } from '../../constants/theme'
 
 type Props = NavigationProps<'awards'>
 
@@ -55,12 +56,6 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		}
 	] = useLazyGetBadgesQuery()
 	const [
-		getBadgeDetail,
-		{
-			isLoading: isLoadingBadgeDetail,
-		}
-	] = useLazyGetBadgeDetailQuery()
-	const [
 		updateBadgeClaimed,
 		{
 			isLoading: isLoadingUpdateBadgeClaimed,
@@ -70,20 +65,12 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	const [selectedAward, setSelectedAward] = useState<Badges>()
 	const [modalVisible, setModalVisible] = useState(false)
 
-	const _onPressAward = useCallback((value: Badges) => async() => {
-		try {
-			const response = await getBadgeDetail(value.badge_code).unwrap()
-			setSelectedAward({
-				...value,
-				description: response.description
-			})
+	const _onPressAward = useCallback((value: Badges) => () => {
+		setSelectedAward(value)
+		if (value) {
 			bottomSheetRef.current?.present()
-		} catch (error) {
+		} else {
 			bottomSheetRef.current?.close()
-			Toast.show({
-				type: 'error',
-				text1: get(error, 'data', 'Something went wrong')
-			})
 		}
 	}, [bottomSheetRef])
 
@@ -309,8 +296,6 @@ const Awards = ({ t }: Props): React.ReactNode => {
 
 	const _renderBottomSheetMidContent = useMemo(() => {
 
-		if (isLoadingBadgeDetail) return <ActivityIndicator size={ scaleWidth(48) } color={ colorsTheme.black }/>
-
 		return (
 			<View style={ styles.blurViewWrapperStyle }>
 				{ _greyScaledBluryImage(selectedAward?.badge_image_url, !selectedAward?.is_badge_owned) }
@@ -330,7 +315,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				}
 			</View>
 		)
-	}, [selectedAward, isLoadingBadgeDetail])
+	}, [selectedAward])
 
 	const _renderButton =  useMemo(() => {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -358,7 +343,6 @@ const Awards = ({ t }: Props): React.ReactNode => {
 	}, [selectedAward, _toggleModal, isLoadingUpdateBadgeClaimed, _onPressUpdateClaimedBadge])
 
 	const _renderBottomSheetBottomContent = useMemo(() => {
-		if (isLoadingBadgeDetail) return null
 		
 		return (
 			<React.Fragment>
@@ -372,7 +356,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				{ _renderButton }
 			</React.Fragment>
 		)
-	}, [selectedAward, _renderButton, isLoadingBadgeDetail])
+	}, [selectedAward, _renderButton])
 
 	const _bottomSheetContent = useMemo(() => {
 		if (selectedAward) {

@@ -176,8 +176,6 @@ const Navigations = (): React.ReactNode => {
 	useEffect(() => {
 		OneSignal.Notifications.addEventListener('click', event => {
 			if (navigationRef.isReady()) {
-				// TODO: handle screen based on event
-				console.log('push event', event)
 
 				const screenName = isLoggedIn ?
 					navigationConstant.screenName.transactions :
