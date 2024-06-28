@@ -1,4 +1,4 @@
-import React, { type ReactNode, useMemo, useEffect } from 'react'
+import React, { type ReactNode, useMemo, useEffect, useCallback } from 'react'
 import { useColorScheme } from 'react-native'
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -6,6 +6,7 @@ import { PaperProvider } from 'react-native-paper'
 import BootSplash from 'react-native-bootsplash'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import get from 'lodash/get'
 
 import Main from '../screen/main'
 import Profile from '../screen/profile'
@@ -33,6 +34,10 @@ import Notifications from '../screen/notifications'
 import Transactions from '../screen/transactions'
 import EditProfile from '../screen/edit-profile'
 import { OneSignal } from 'react-native-onesignal'
+
+interface AdditionalDataType {
+  type: string
+}
 
 const { screenName, } = navigationConstant
 
@@ -154,6 +159,18 @@ const Navigations = (): React.ReactNode => {
 	const { isLoggedIn } = useStorage({ init: true })
 	const navigationRef = createNavigationContainerRef()
 
+	const _getScreenName = useCallback((type:string) => {
+		switch (type) {
+			case 'room':
+			case 'tournament':
+				return screenName.notifications
+			case 'transaction':
+				return screenName.transactions
+			default:
+				return screenName.main
+		}
+	}, [])
+
 	const themeFactory = useMemo(() => {
 		const paperTheme = paperThemeLight
 		const navigationTheme = navigationThemeLight
@@ -176,10 +193,12 @@ const Navigations = (): React.ReactNode => {
 	useEffect(() => {
 		OneSignal.Notifications.addEventListener('click', event => {
 			if (navigationRef.isReady()) {
+				const additionalData = get(event.notification, 'additionalData', { type: '' }) as AdditionalDataType
 
 				const screenName = isLoggedIn ?
-					navigationConstant.screenName.transactions :
+					_getScreenName(additionalData.type) :
 					navigationConstant.screenName.login
+
 				navigationRef.navigate(screenName as never)
 			}
 		})
