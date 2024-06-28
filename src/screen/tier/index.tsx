@@ -47,7 +47,12 @@ const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] })
 			<View style={ [styles.rowStyle, styles.rowCenterStyle, styles.spaceBetweenStyle] }>
 				<View>
 					<Text variant='bodyMiddleDemi' style={ styles.pointActivityContentTitleStyle }>{ item.title_description }</Text>
-					<Text style={ styles.pointActivityDateStyle } variant='bodySmallRegular' >{ moment(item.created_date).format('MMMM DD, YYYY h:mm a') }</Text>
+					<Text
+						style={ styles.pointActivityDateStyle }
+						variant='bodySmallRegular'>
+						{ moment(item.created_date).local()
+							.format('MMMM DD, YYYY h:mm a') }
+					</Text>
 				</View>
 				<Text variant='bodyMiddleBold'>{ `${item.point}+` }</Text>
 			</View>
