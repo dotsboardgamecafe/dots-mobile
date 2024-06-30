@@ -76,6 +76,8 @@ interface RedeemTabProps {
 
 const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh }: HistoryTabProps): React.ReactNode => {
 	const _renderItem = useCallback(({ item }:ListRenderItemInfo<Transaction>): React.ReactElement => {
+		const dateTime = moment(item.created_date).local()
+			.format('MMM, Do YYYY - hh:mm')
 		return (
 			<View style={ styles.historyWrapperStyle }>
 				<View style={ [styles.rowStyle, styles.historyContentStyle] }>
@@ -84,7 +86,7 @@ const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefr
 					/>
 					<View style={ styles.growStyle }>
 						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>
-							<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ moment(item.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
+							<Text style={ styles.textGrayStyle } variant='bodySmallRegular'>{ dateTime }</Text>
 							<TouchableOpacity onPress={ () => { onPressHistoryItem(item) } }>
 								<Text style={ styles.textBlueStyle } variant='bodySmallBold'>See order detail</Text>
 							</TouchableOpacity>
