@@ -240,7 +240,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 							gameName: item.game_name,
 							point: item.point
 						})
-						const resultData = moment(item.created_date).startOf('hour')
+						const resultData = moment(item.created_date).local()
 							.fromNow()
 						
 						return (

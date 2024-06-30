@@ -275,10 +275,17 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 			message = 'Your transaction is currently being processed'
 		}
 
+		const dateTime = moment(selectedHistory?.created_date).local()
+			.format('MMM, Do YYYY - hh:mm')
+
 		return (
 			<View style={ { paddingBottom: 34 } }>
 				{ _renderStatusTransaction(selectedHistory?.status) }
-				<Text variant='bodySmallDemi' style={ [styles.textCenterStyle, styles.historyDateStyle] }>{ moment(selectedHistory?.created_date).format('MMM, Do YYYY - hh:mm') }</Text>
+				<Text
+					variant='bodySmallDemi'
+					style={ [styles.textCenterStyle, styles.historyDateStyle] }>
+					{ dateTime }
+				</Text>
 				<View style={ [styles.rowStyle, styles.justifyBetweenStyle, styles.bookingWrapperStyle, styles.bottomSheetPaddingStyle] }>
 					<Text variant='bodyMiddleRegular'>Booking ID</Text>
 					<Text variant='bodyMiddleRegular'>#{ selectedHistory?.transaction_code }</Text>

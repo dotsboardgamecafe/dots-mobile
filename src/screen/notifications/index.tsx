@@ -63,7 +63,7 @@ const _generateNotifTitle = (type: string): TitleStyleType => {
 			result.title = 'ROOM REMINDER'
 			break
 		case 'tournament_booking_confirmation':
-			result.title = 'BOOKING CONFIRMATION'
+			result.title = 'TOURNAMENT REMINDER'
 			break
 
 		default:
