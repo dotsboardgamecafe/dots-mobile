@@ -35,6 +35,26 @@ interface Props {
 
 const defaultDevide = 1.5
 
+const getPercentage = (userProfile?: UserProfile): number => {
+	if (userProfile) {
+		const { tier_range_point } = userProfile
+		const { min_point, max_point } = tier_range_point
+		let value = userProfile.latest_point
+
+		if (value < min_point) {
+			value = min_point
+		} else if (value > max_point) {
+			value = max_point
+		}
+
+		const percentage = ((value - min_point) / (max_point - min_point)) * 100
+		
+		return percentage - defaultDevide
+	}
+
+	return 0
+}
+
 const BannerTier = ({
 	style, starsFieldContentStyle, screen, onPressTripleDot, userProfileData, onPressChangeAvatar, selectedImage
 }: Props): React.ReactNode => {
@@ -48,7 +68,7 @@ const BannerTier = ({
 
 	const interpolatedValue = useMemo(() => {
 		return animatedValue.interpolate({
-			inputRange: [userProfileData?.tier_range_point.min_point ?? 0, userProfileData?.tier_range_point.max_point ?? 0],
+			inputRange: [0, 100],
 			outputRange: ['0%', '100%']
 		})
 	}, [userProfileData])
@@ -58,9 +78,8 @@ const BannerTier = ({
 	}, [navigation])
 
 	useEffect(() => {
-		const resultDevide = defaultDevide * (Number(userProfileData?.tier_range_point.max_point) / 100)
 		Animated.timing(animatedValue, {
-			toValue: userProfileData?.latest_point ?? resultDevide - resultDevide,
+			toValue: getPercentage(userProfileData),
 			useNativeDriver: false,
 			duration: 1500
 		}).start(() => {
