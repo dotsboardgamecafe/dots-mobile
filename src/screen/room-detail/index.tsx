@@ -163,15 +163,15 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data, isTourney])
 
 	const schedule = useMemo(() => {
-		let d1 = data?.start_date
-		let d2 = data?.end_date
+		let d1 = moment(`${data?.start_date} ${data?.start_time}`)
+		let d2 = moment(`${data?.end_date} ${data?.end_time}`)
 		if (!isTourney) {
-			d1 = data?.start_date?.substring(0, 19)
-			d2 = data?.end_date?.substring(0, 19)
+			d1 = moment(data?.start_date, 'YYYY-MM-DD HH:mm:ss Z')
+			d2 = moment(data?.end_date, 'YYYY-MM-DD HH:mm:ss Z')
 		}
-		const startDate = moment(d1 ?? '')
-		const endDate = moment(d2 ?? '')
-		return startDate.format('MMM, Do [at] h:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'h:mm' : 'MMM, Do [at] h:mm')
+		const startDate = d1.local()
+		const endDate = d2.local()
+		return startDate.format('MMM, Do [at] HH:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'HH:mm' : 'MMM, Do [at] HH:mm')
 	}, [data, isTourney])
 
 	const detail = useMemo(() => {
