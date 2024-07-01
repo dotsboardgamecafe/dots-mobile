@@ -30,6 +30,8 @@ import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
 import ErrorModal from '../../components/error-modal'
 import { LOGO } from '../../assets/images'
+import Toast from 'react-native-toast-message'
+import { get } from 'lodash'
 
 type Props = NavigationProps<'roomDetail'>
 
@@ -324,7 +326,10 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				game_code: gameCode
 			})
 		} else if (joinRoomError) {
-			console.error(joinRoomError)
+			Toast.show({
+				type: 'error',
+				text1: get(joinRoomError, 'data', 'Failed to join room') as string
+			})
 		}
 	}, [joinRoomData, joinRoomError, gameCode])
 
@@ -335,7 +340,10 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				game_code: gameCode
 			})
 		} else if (joinTourneyError) {
-			console.error(joinTourneyError)
+			Toast.show({
+				type: 'error',
+				text1: get(joinTourneyError, 'data', 'Failed to join room') as string
+			})
 		}
 	}, [joinTourneyData, joinTourneyError, gameCode])
 
