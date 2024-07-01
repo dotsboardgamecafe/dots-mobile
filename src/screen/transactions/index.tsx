@@ -28,7 +28,7 @@ import Modal from '../../components/modal'
 import CloseIcon from '../../assets/svg/close.svg'
 import { redeemSuccessIllu } from '../../assets/images'
 import ActionButton from '../../components/action-button'
-import { useGetTransactionQuery } from '../../store/transactions'
+import { useLazyGetTransactionQuery } from '../../store/transactions'
 import useStorage from '../../hooks/useStorage'
 import { type StatusTransactionType, type Transaction } from '../../models/transaction'
 import Loading from '../../components/loading'
@@ -67,14 +67,15 @@ interface HistoryTabProps {
   onPressHistoryItem: (item: Transaction) => void,
 	listTransactionData?: Transaction[],
 	isRefresh?: boolean,
-	onRefresh?: () => void
+	onRefresh?: () => void,
+	onReachEnd?: () => void
 }
 
 interface RedeemTabProps {
   onPressRedeem: () => void
 }
 
-const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh }: HistoryTabProps): React.ReactNode => {
+const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh, onReachEnd }: HistoryTabProps): React.ReactNode => {
 	const _renderItem = useCallback(({ item }:ListRenderItemInfo<Transaction>): React.ReactElement => {
 		const dateTime = moment(item.created_date).local()
 			.format('MMM, Do YYYY - hh:mm')
@@ -118,6 +119,8 @@ const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefr
 			keyExtractor={ item => item.transaction_code }
 			ItemSeparatorComponent={ () => <View style={ styles.itemSeparatorStyle }/> }
 			refreshControl={ <RefreshControl refreshing={ Boolean(isRefresh) } onRefresh={ onRefresh }/> }
+			onEndReached={ onReachEnd }
+			onEndReachedThreshold={ 0.8 }
 		/>
 	)
 }
@@ -192,16 +195,31 @@ const RedeemTab = ({ onPressRedeem }: RedeemTabProps): React.ReactNode => {
 
 const Transactions = ({ t }: Props): React.ReactNode => {
 	const { user } = useStorage()
+	const pageRef = useRef(1)
 	const [selectedHistory, setSelectedHistory] = useState<Transaction>()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	const [visibleRedeem, setVisibleRedeem] = useState(false)
 	const [isRefresh, setIsRefresh] = useState(false)
-	const {
-		data: listTransactionData,
-		isFetching: isLoadingTransaction,
-		refetch: refetchTransaction,
-		isError: isErrorTransaction,
-	} = useGetTransactionQuery(user?.user_code)
+	const [
+		getTransaction,
+		{
+			data: listTransactionData,
+			isFetching: isLoadingTransaction,
+			isError: isErrorTransaction,
+		}
+	] = useLazyGetTransactionQuery()
+
+	const _onFetchTransaction = useCallback((page?:number) => {
+		if (listTransactionData?.data && listTransactionData?.data.length < listTransactionData?.pagination.count && !page) return
+		
+		if (!page) pageRef.current = pageRef.current + 1
+
+		getTransaction(({
+			usercode: user?.user_code,
+			page: page ?? pageRef.current
+		}))
+		
+	}, [user, listTransactionData, pageRef])
 
 	const _onPressHistoryItem = useCallback((item: Transaction) => {
 		setSelectedHistory(item)
@@ -214,7 +232,7 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 
 	const _onRefresh = useCallback(() => {
 		setIsRefresh(true)
-		refetchTransaction()
+		_onFetchTransaction(1)
 	}, [])
 
 	const _isLoading = useMemo(() => {
@@ -226,6 +244,10 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 	useEffect(() => {
 		if (!_isLoading && isRefresh) setIsRefresh(false)
 	}, [_isLoading, isRefresh])
+
+	useEffect(() => {
+		_onFetchTransaction(1)
+	}, [])
 
 	const _renderStatusTransaction = useCallback((status?: StatusTransactionType) => {
 		const content = {
@@ -342,11 +364,12 @@ const Transactions = ({ t }: Props): React.ReactNode => {
 			<HistoryTab
 				isRefresh={ isRefresh }
 				onRefresh={ _onRefresh }
-				listTransactionData={ listTransactionData }
+				listTransactionData={ listTransactionData?.data }
 				onPressHistoryItem={ _onPressHistoryItem }
+				onReachEnd={ () => { _onFetchTransaction() } }
 			/>
 		)
-	}, [_onPressRedeem, listTransactionData, isRefresh])
+	}, [_onPressRedeem, listTransactionData, isRefresh, _onFetchTransaction])
 
 	const _renderModalContent = useMemo(() => {
 		return (
