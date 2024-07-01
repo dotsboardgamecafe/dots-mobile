@@ -11,7 +11,7 @@ interface LoadingProps {
 const Loading = ({ isLoading }: LoadingProps): React.ReactNode => {
 	return (
 		<Portal>
-			<Modal visible={ isLoading }>
+			<Modal visible={ isLoading } dismissable={ false }>
 				<View style={ styles.contentStyle }>
 					<ActivityIndicator size={ scaleWidth(48) } color={ colorsTheme.background }/>
 				</View>

@@ -78,15 +78,19 @@ const _generateNotifTitle = (type: string): TitleStyleType => {
 const _generateDescription = (type: string, description?: string): string => {
 	const parseDescription = JSON.parse(description ?? '{}')
 	let currentDescription = ''
+	let generatedDate = ''
 
 	switch (type) {
 		case 'tournament_reminder':
 		case 'room_booking_confirmation':
 		case 'tournament_booking_confirmation':
+			generatedDate =	parseDescription.start_date && parseDescription.end_time ?
+				`at ${moment(`${parseDescription.start_date} ${parseDescription.start_time}`)
+					.format('hh:mm')} - ${moment(`${parseDescription.start_date} ${parseDescription.end_time}`)
+					.format('hh:mm')} `
+				: ''
 			currentDescription = `${moment(parseDescription.start_date as string)
-				.format('MMM, Do YYYY')} at ${moment(`${parseDescription.start_date} ${parseDescription.start_time}`)
-				.format('hh:mm')} - ${moment(`${parseDescription.start_date} ${parseDescription.end_time}`)
-				.format('hh:mm')} at ${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
+				.format('MMM, Do YYYY')} ${generatedDate}at ${parseDescription.cafe_name}, ${parseDescription.cafe_address}`
 			break
 	
 		default:
@@ -239,16 +243,17 @@ const Notifications = (): React.ReactNode => {
 		if (!isEmpty(description) && typeof description === 'object') {
 			const startDate = moment(description.start_date)
 				.format('MMM, Do')
-			const startTime = moment(`${description.start_date} ${description.start_time}`)
-				.format('hh:mm')
-			const endTime = moment(`${description.start_date} ${description.end_time}`)
-				.format('hh:mm')
+			const startTime = description.start_time ? moment(`${description.start_date} ${description.start_time}`)
+				.format('hh:mm') : ''
+			const endTime = description.end_time ?  moment(`${description.start_date} ${description.end_time}`)
+				.format('hh:mm') : ''
 			const fullLocation = `${description.cafe_name}, ${description.cafe_address}`
+			const resultTime = startTime && endTime ? `at ${ startTime } - ${ endTime }` : ''
 			return (
 				<View style={ styles.bottomsheetBottomContentStyle }>
 					<View style={ styles.rowStyle }>
 						<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Schedule</Text>
-						<Text variant='bodyMiddleMedium'>{ startDate } at { startTime } - { endTime }</Text>
+						<Text variant='bodyMiddleMedium'>{ startDate } { resultTime }</Text>
 					</View>
 					<View style={ styles.rowStyle }>
 						<Text style={ styles.titleBottomSheetBottomContentStyle } variant='bodyMiddleRegular'>Location</Text>
