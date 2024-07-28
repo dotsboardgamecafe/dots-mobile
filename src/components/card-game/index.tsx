@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
@@ -26,19 +26,28 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 			/>
 		</View>
 
-		if (item.is_popular) {
-			return (
-				<View>
-					{ image }
-					<View style={ styles.popularContainer }>
-						<Text variant='bodySmallMedium' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
-					</View>
-				</View>
-			)
-		}
+		// if (item.is_popular) {
+		// 	return (
+		// 		<View>
+		// 			{ image }
+		// 			<View style={ styles.popularContainer }>
+		// 				<Text variant='bodySmallMedium' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
+		// 			</View>
+		// 		</View>
+		// 	)
+		// }
 
 		return image
 	}
+
+	const _gameLocation = useMemo(() => {
+		if (item.location)
+			return (
+				<View style={ styles.tagContainer }>
+					<Text variant='bodySmallMedium' style={ styles.gameTag }>{ item.location.charAt(0).toUpperCase() + item.location.slice(1) }</Text>
+				</View>
+			)
+	}, [item])
 
 	return (
 		<RoundedBorder style={ style } radius={ 12 } borderWidth={ 1 } key={ item.game_code }>
@@ -57,9 +66,7 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 					<Clock size={ scaleWidth(14) } color={ theme.colors.gray } variant='Bold' />
 					<Text variant='bodyMiddleRegular' style={ styles.textInfo }>{ t('discover-page.duration') }: { item.duration } { t('discover-page.minute') }</Text>
 				</View>
-				<View style={ styles.tagContainer }>
-					<Text variant='bodySmallMedium' style={ styles.gameTag }>{ item.game_type }</Text>
-				</View>
+				{ _gameLocation }
 			</TouchableOpacity>
 		</RoundedBorder>
 	)

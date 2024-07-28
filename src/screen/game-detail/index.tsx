@@ -18,7 +18,7 @@ import FilterTag from '../../components/filter-tag'
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
 import { PageIndicator } from 'react-native-page-indicator'
 import CardGame from '../../components/card-game'
-import { type Games, type GameMasters } from '../../models/games'
+import { type Games } from '../../models/games'
 import Blush from '../../components/blush'
 import exitApp from '../../utils/exit.app'
 import { useGetDetailGameQuery } from '../../store/game'
@@ -29,7 +29,7 @@ import Image from '../../components/image'
 import { useGetSettingQuery } from '../../store/setting'
 import FilterIcon from '../../components/filter-icon'
 
-type Props = NavigationProps<'gameDetail'>
+type Props = NavigationProps<'gameDetail'>;
 
 const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => {
 	const { params: game } = route
@@ -39,33 +39,147 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const { data, error } = useGetDetailGameQuery(game.game_code ?? '')
 	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
 
-	const _gameMechanic = useMemo(() => {
-		if (!data?.game_categories) return
+	const _descriptionSection = useMemo(() => {
+		if (data?.description)
+			return (
+				<View style={ styles.section }>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Description</Text>
+					<Text variant='paragraphMiddleRegular' style={ styles.mt12 }>
+						{ data?.description }
+					</Text>
+					{ /* <Text variant='bodyMiddleBold' style={ styles.contReading }>Continue Reading</Text> */ }
+				</View>
+			)
+	}, [data])
 
-		const categories = data.game_categories.map(c => c.category_name)
-		const list = listGameMechanic?.filter(m => m.set_key && categories.includes(m.set_key))
-		if (list?.length) {
+	const _gameMechanicSection = useMemo(() => {
+		if (data?.game_categories) {
+			const categories = data.game_categories.map(c => c.category_name)
+			const list = listGameMechanic?.filter(m => m.content_value && categories.includes(m.content_value))
+			if (list?.length) {
+				return (
+					<View style={ styles.section }>
+						<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Mechanics</Text>
+						<FlatList
+							data={ list }
+							keyExtractor={ (i, idx) => `${ idx }-${ i.setting_code }` }
+							renderItem={ ({ item }) => <FilterTag
+								id={ item.set_order ?? 0 }
+								code={ item.setting_code ?? '' }
+								icon={ <FilterIcon { ...item } /> }
+								label={ item.content_value ?? '' }
+							/> }
+							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
+							contentContainerStyle={ styles.wrapList }
+							showsVerticalScrollIndicator={ false }
+							scrollEnabled={ false }
+						/>
+					</View>
+				)
+			}
+		}
+	}, [data, listGameMechanic])
+
+	const _howToPlaySection = useMemo(() => {
+		const list = data?.collection_url ?? []
+
+		if (list.length) {
+			const content = list.length > 1 ?
+				<>
+					<FlatList
+						horizontal
+						data={ list }
+						renderItem={ _gamePlayItem }
+						pagingEnabled
+						onScroll={ onGamePlaySroll }
+						showsHorizontalScrollIndicator={ false }
+					/>
+					<PageIndicator
+						count={ list.length }
+						current={ gamePlayIndex }
+						color='#2325269E'
+						activeColor='#232526'
+						style={ {
+							position: 'absolute',
+							bottom: scaleVertical(16),
+							alignSelf: 'center',
+						} }
+					/>
+				</> :
+				<View style={ styles.section }>
+					<Image
+						source={ { uri: list[0] } }
+						style={ { borderRadius: 16 } }
+						keepRatio
+					/>
+				</View>
+
 			return (
 				<>
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Mechanics</Text>
-					<FlatList
-						data={ list }
-						keyExtractor={ (i, idx) => `${idx}-${i.setting_code}` }
-						renderItem={ ({ item }) => <FilterTag
-							id={ item.set_order ?? 0 }
-							code={ item.setting_code ?? '' }
-							icon={ <FilterIcon { ...item }/> }
-							label={ item.content_value ?? '' }
-						/> }
-						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
-						contentContainerStyle={ styles.wrapList }
-						showsVerticalScrollIndicator={ false }
-						scrollEnabled={ false }
-					/>
+					<View style={ styles.section }>
+						<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>How to Play</Text>
+					</View>
+					{ content }
 				</>
 			)
 		}
-	}, [data, listGameMechanic])
+	}, [data])
+
+	const _gameMasterSection = useMemo(() => {
+		if (data?.game_masters)
+			return (
+				<View style={ styles.section }>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Game Master</Text>
+					<View style={ styles.wrapList }>
+						<View style={ { alignContent: 'center', marginHorizontal: scaleHorizontal(16) } }>
+							<Image
+								source={ { uri: data.game_masters.image_url } }
+								style={ styles.gameMaster }
+							/>
+							<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ data.game_masters.user_name }</Text>
+						</View>
+					</View>
+					{ /* <FlatList
+					scrollEnabled={ false }
+					data={ data?.game_masters }
+					renderItem={ gameMaster }
+					ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
+					contentContainerStyle={ [styles.wrapList] }
+				/> */ }
+				</View>
+			)
+	}, [data])
+
+	const _roomSection = useMemo(() => {
+		if (data?.game_rooms?.length)
+			return <View style={ styles.section }>
+				<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Available Room</Text>
+				<FlatList
+					data={ data?.game_rooms }
+					renderItem={ room }
+					ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(16) } } /> }
+					scrollEnabled={ false }
+					contentContainerStyle={ styles.mt16 }
+				/>
+			</View>
+	}, [data])
+
+	const _relatedGamesSection = useMemo(() => {
+		if (data?.game_related?.length)
+			return <View style={ styles.section }>
+				<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Related Games</Text>
+				<FlatList
+					data={ data?.game_related }
+					keyExtractor={ item => item.game_code }
+					renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
+					ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
+					style={ styles.list }
+					columnWrapperStyle={ styles.columnWrapper }
+					numColumns={ 2 }
+					scrollEnabled={ false }
+				/>
+			</View>
+	}, [data])
 
 	const onPageScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const start = 30
@@ -86,28 +200,28 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	// 	)
 	// }, [])
 
-	const gamePlay = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
+	const _gamePlayItem = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
 		return (
 			<Image
 				source={ { uri: item } }
 				style={ styles.gamePlay }
 				resizeMode='stretch'
-				// keepRatio
+			// keepRatio
 			/>
 		)
 	}, [])
 
-	const gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMasters>) => {
-		return (
-			<View style={ { alignContent: 'center', marginHorizontal: scaleHorizontal(16) } }>
-				<Image
-					source={ { uri: item.image_url } }
-					style={ styles.gameMaster }
-				/>
-				<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.user_name }</Text>
-			</View>
-		)
-	}, [])
+	// const _gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMasters>) => {
+	// 	return (
+	// 		<View style={ { alignContent: 'center', marginHorizontal: scaleHorizontal(16) } }>
+	// 			<Image
+	// 				source={ { uri: item.image_url } }
+	// 				style={ styles.gameMaster }
+	// 			/>
+	// 			<Text variant='bodyMiddleMedium' style={ [styles.mt8, { textAlign: 'center' }] }>{ item.user_name }</Text>
+	// 		</View>
+	// 	)
+	// }, [])
 
 	const _navigateToRoomDteail = useCallback((param: Partial<Rooms>) => {
 		navigation.navigate('roomDetail', param)
@@ -270,72 +384,12 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 					</View>
 				</View>
 
-				<View style={ styles.section }>
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>Description</Text>
-					<Text variant='paragraphMiddleRegular' style={ styles.mt12 }>
-						{ data?.description }
-					</Text>
-					{ /* <Text variant='bodyMiddleBold' style={ styles.contReading }>Continue Reading</Text> */ }
-
-					{ _gameMechanic }
-
-					<Text variant='bodyLargeBold' style={ styles.sectionTitle }>How to Play</Text>
-				</View>
-				<View>
-					<FlatList
-						horizontal
-						data={ data?.collection_url }
-						renderItem={ gamePlay }
-						pagingEnabled
-						onScroll={ onGamePlaySroll }
-						showsHorizontalScrollIndicator={ false }
-					/>
-					{ (data?.collection_url?.length ?? 0) > 1 &&
-						<PageIndicator
-							count={ data?.collection_url?.length ?? 0 }
-							current={ gamePlayIndex }
-							color='#2325269E'
-							activeColor='#232526'
-							style={ {
-								position: 'absolute',
-								bottom: scaleVertical(16),
-								alignSelf: 'center',
-							} }
-						/>
-					}
-				</View>
-
-				<View style={ styles.section }>
-					{ data?.game_masters?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Game Master</Text> }
-					<FlatList
-						scrollEnabled={ false }
-						data={ data?.game_masters }
-						renderItem={ gameMaster }
-						ItemSeparatorComponent={ () => <View style={ { height: scaleVertical(8) } } /> }
-						contentContainerStyle={ [styles.wrapList] }
-					/>
-
-					{ data?.game_rooms?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Available Room</Text> }
-					<FlatList
-						data={ data?.game_rooms }
-						renderItem={ room }
-						ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(16) } } /> }
-						scrollEnabled={ false }
-						contentContainerStyle={ styles.mt16 }
-					/>
-
-					{ data?.game_related?.length && <Text variant='bodyLargeBold' style={ styles.sectionTitle }>Related Games</Text> }
-					<FlatList
-						data={ data?.game_related }
-						keyExtractor={ item => item.game_code }
-						renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
-						ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
-						style={ styles.list }
-						columnWrapperStyle={ styles.columnWrapper }
-						numColumns={ 2 }
-						scrollEnabled={ false }
-					/>
-				</View>
+				{ _descriptionSection }
+				{ _gameMechanicSection }
+				{ _howToPlaySection }
+				{ _gameMasterSection }
+				{ _roomSection }
+				{ _relatedGamesSection }
 			</ScrollView>
 
 			{
@@ -345,7 +399,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 					onDismiss={ navigation.goBack }
 					style={ { alignItems: 'center' } }
 				>
-					<Text>{ (error as {data:string}).data }</Text>
+					<Text>{ (error as { data: string; }).data }</Text>
 					<ActionButton label='Go Back' onPress={ navigation.goBack } />
 				</Modal>
 			}

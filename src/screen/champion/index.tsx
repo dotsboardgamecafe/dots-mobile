@@ -40,7 +40,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 			>
 				<FlatList
 					data={ mvpData?.slice(0, 10) }
-					keyExtractor={ (item, index) => `${item.rank}.${item.user_name}.${index}` }
+					keyExtractor={ (item, index) => `${ item.rank }.${ item.user_name }.${ index }` }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
@@ -61,7 +61,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 			>
 				<FlatList
 					data={ uniqueData?.slice(0, 10) }
-					keyExtractor={ (item, index) => `${item.rank}.${item.user_name}.${index}` }
+					keyExtractor={ (item, index) => `${ item.rank }.${ item.user_name }.${ index }` }
 					renderItem={ ({ item, index }) => <MvpItem item={ item } index={ index } showVP={ false } /> }
 					contentContainerStyle={ { flexGrow: 1 } }
 					style={ { marginVertical: scaleVertical(16) } }
@@ -105,7 +105,7 @@ const Champion = ({ t, navigation }: Props): React.ReactNode => {
 			<Carousel
 				pagingEnabled={ true }
 				snapEnabled={ false }
-				loop={ false }
+				loop={ true }
 				width={ SCREEN_WIDTH }
 				height={ SCREEN_HEIGHT - statusBarHeight - navBarHeight - scaleHeight(16) }
 				data={ cards }
