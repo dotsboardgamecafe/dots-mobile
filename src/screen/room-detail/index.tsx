@@ -33,7 +33,7 @@ import { LOGO } from '../../assets/images'
 import Toast from 'react-native-toast-message'
 import { get } from 'lodash'
 
-type Props = NavigationProps<'roomDetail'>
+type Props = NavigationProps<'roomDetail'>;
 
 const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => {
 	const params = route.params
@@ -75,7 +75,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 
 		if (isTourney) {
 			return (
-				<View style={ [styles.ph] }>
+				<View style={ [styles.ph32] }>
 					<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
 					<Image
 						source={ { uri: data?.prizes_img_url } }
@@ -165,8 +165,8 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data, isTourney])
 
 	const schedule = useMemo(() => {
-		const d1 = moment(`${data?.start_date} ${data?.start_time}`)
-		const d2 = moment(`${data?.end_date} ${data?.end_time}`)
+		const d1 = moment(`${ data?.start_date } ${ data?.start_time }`)
+		const d2 = moment(`${ data?.end_date } ${ data?.end_time }`)
 		const startDate = d1.local()
 		const endDate = d2.local()
 		return startDate.format('MMM, Do [at] HH:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'HH:mm' : 'MMM, Do [at] HH:mm')
@@ -237,7 +237,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		const vp = ` - Get ${isTourney ? data?.participant_vp : data?.reward_point}`
+		const vp = ` - Get ${ isTourney ? data?.participant_vp : data?.reward_point }`
 		return (
 			<View style={ styles.actionJoin }>
 				<ActionButton
@@ -276,7 +276,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		)
 	}, [playerColors, data])
 
-	const hideRegModal = useCallback(() => {
+	const _postJoin = useCallback(() => {
 		if (isRoom) {
 			postJoinRoom(params.room_code ?? '')
 		} else if (isTourney) {
@@ -284,6 +284,8 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		}
 		setRegModalVisible(false)
 	}, [isRoom, isTourney])
+
+	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
 	useEffect(() => {
 		if (!params.room_code && !params.tournament_code) {
@@ -441,7 +443,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 					label={ t('room-detail.pay') }
 					style={ styles.mt16 }
 					loading={ isRoom ? joinRoomLoading : joinTourneyLoading }
-					onPress={ hideRegModal }
+					onPress={ _postJoin }
 				/>
 			</Modal>
 			<ErrorModal

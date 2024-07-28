@@ -8,14 +8,14 @@ export const championApi = baseApi.injectEndpoints({
 				url: '/v1/players/monthly-top-achiever',
 				params
 			}),
-			transformResponse: result => (result as {data: MostVP[]}).data
+			transformResponse: result => (result as { data: MostVP[] }).data
 		}),
-		getHallOfFame: builder.query<HallOfFame[], string>({
+		getHallOfFame: builder.query<HallOfFame[], number>({
 			query: year => ({
 				url: '/v1/players/hall-of-fame',
 				params: { year }
 			}),
-			transformResponse: result => (result as {data: HallOfFame[]}).data
+			transformResponse: result => (result as { data: HallOfFame[] }).data
 		}),
 	})
 })
