@@ -28,12 +28,12 @@ import { useDispatch } from 'react-redux'
 type Props = NavigationProps<'discover'>;
 
 const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const defaultParam: GameListParams = { status: 'active', limit: 20, page: 1, sort: 'desc' }
+	const defaultParam: GameListParams = { status: 'active', limit: 20, page: 1, sort: 'desc', location: 'Bandung' }
 	const [search, setSearch] = useState('')
 	const [param, setParam] = useState<GameListParams>(defaultParam)
 	const [filterType, setFilterType] = useState<string[]>([])
 	const [filterMechanic, setFilterMechanic] = useState<string[]>([])
-	const [filterLocation, setFilterLocation] = useState<string[]>([])
+	const [filterLocation, setFilterLocation] = useState<string[]>(['Bandung'])
 	const [filterSection, setFilterSection] = useState(filterSections)
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
@@ -271,12 +271,12 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 							renderItem={ ({ item }) => <FilterTag
 								id={ item.set_order }
 								code={ item.setting_code }
-								icon={ <FilterIcon { ...item } /> }
+								// icon={ <FilterIcon { ...item } /> }
 								label={ item.content_value }
 								active={ [...filterMechanic].includes(item.content_value ?? '') }
 								onClick={ _onFilterGameMechanic }
 							/> }
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }
+							// ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }
 							contentContainerStyle={ styles.wrapList }
 							showsVerticalScrollIndicator={ false }
 						/>

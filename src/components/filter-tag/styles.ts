@@ -6,6 +6,7 @@ import { colorsTheme } from '../../constants/theme'
 const styles = StyleSheet.create({
 	container: {
 		marginEnd: scaleWidth(8),
+		marginTop: scaleHeight(8),
 		flex: 0
 	},
 	content: {
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
 	},
 	inactive: {
 		marginEnd: scaleWidth(8),
+		marginTop: scaleHeight(8),
 		borderRadius: 16,
 		backgroundColor: colorsTheme.gray100,
 		paddingVertical: scaleHeight(8),
