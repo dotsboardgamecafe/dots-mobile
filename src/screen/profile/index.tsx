@@ -108,7 +108,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		refetch: refetchBadges,
 		isError: isErrorBadges
 	} = useGetBadgesWidgetQuery({
-		limit: 4,
+		limit: 5,
 		page: 1,
 		code: user?.user_code,
 	})
@@ -351,10 +351,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 								key={ item.badge_id }
 							>
 								{
-									item?.is_badge_owned ?
+									item?.is_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImage(item?.badge_image_url, !item?.is_badge_owned) }
+								{ _greyScaledImage(item?.badge_image_url, !item?.is_claim) }
 							</View>
 						)
 					})

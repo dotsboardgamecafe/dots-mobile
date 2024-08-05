@@ -76,14 +76,14 @@ interface RedeemTabProps {
 }
 
 const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefresh, onReachEnd }: HistoryTabProps): React.ReactNode => {
-	const _renderItem = useCallback(({ item }:ListRenderItemInfo<Transaction>): React.ReactElement => {
+	const _renderItem = useCallback(({ item, index }:ListRenderItemInfo<Transaction>): React.ReactElement => {
 		const dateTime = moment(item.created_date).local()
 			.format('MMM, Do YYYY - HH:mm')
 		return (
 			<View style={ styles.historyWrapperStyle }>
 				<View style={ [styles.rowStyle, styles.historyContentStyle] }>
 					<Image style={ styles.historyImageStyle }
-						source={ { uri: item.game_img_url } }
+						source={ { uri: item?.game_img_url ?? '' } }
 					/>
 					<View style={ styles.growStyle }>
 						<View style={ [styles.rowStyle, styles.spaceBetweenStyle] }>

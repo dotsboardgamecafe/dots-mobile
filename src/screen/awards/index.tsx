@@ -110,7 +110,11 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		if (badgesData?.length) {
 			const resultBadges = badgesData
 			if (selectedFilter) {
-				return resultBadges?.filter(item => selectedFilter === 1 ? item.is_badge_owned && item.is_claim : item.is_badge_owned && !item.is_claim)
+				resultBadges[0].is_claim = false
+				return resultBadges?.filter(item => selectedFilter === 1 ?
+					item.is_badge_owned && item.is_claim :
+					item.is_badge_owned && !item.is_claim
+				)
 			}
 			return resultBadges
 		}
@@ -230,10 +234,10 @@ const Awards = ({ t }: Props): React.ReactNode => {
 						return (
 							<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
 								{
-									item?.is_badge_owned ?
+									item?.is_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImageItem(item?.badge_image_url, !item?.is_badge_owned) }
+								{ _greyScaledImageItem(item?.badge_image_url, !item?.is_claim) }
 							</TouchableOpacity>
 						)
 					}

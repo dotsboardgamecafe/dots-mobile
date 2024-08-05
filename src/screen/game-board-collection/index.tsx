@@ -1,4 +1,4 @@
-import { View, FlatList } from 'react-native'
+import { View, FlatList, TouchableOpacity } from 'react-native'
 import React, { useCallback, useMemo } from 'react'
 import Container from '../../components/container'
 import Header from '../../components/header'
@@ -16,7 +16,7 @@ import Image from '../../components/image'
 
 type Props = NavigationProps<'gameBoardCollection'>
 
-const GameBoardCollection = ({ t }: Props): React.ReactNode => {
+const GameBoardCollection = ({ t, navigation }: Props): React.ReactNode => {
 	const { user } = useStorage()
 	const {
 		data: gameBoardCollectionData,
@@ -49,7 +49,18 @@ const GameBoardCollection = ({ t }: Props): React.ReactNode => {
 				style={ styles.listGameWrapperStyle }
 				data={ resultData }
 				renderItem={ ({ item }) => {
-					if (item) return <Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } />
+					if (item) {
+						return (
+							<TouchableOpacity onPress={ () => {
+								navigation.navigate('gameDetail', {
+									game_code: item.game_code,
+									image_url: item.game_image_url
+								})
+							} }>
+								<Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } />
+							</TouchableOpacity>
+						)
+					}
 
 					return <View style={ styles.boardGameItemStyle }/>
 				} }
