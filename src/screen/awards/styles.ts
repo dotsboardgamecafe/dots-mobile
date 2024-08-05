@@ -62,11 +62,13 @@ const styles = StyleSheet.create({
 	cardAwardItemImageNeonStyle: {
 		width: scaleWidth(112),
 		height: scaleWidth(112),
+		alignSelf: 'center'
 	},
 	cardAwardItemImageStyle: {
-		width: scaleWidth(75),
-		height: scaleWidth(75),
+		width: scaleWidth(80),
+		height: scaleWidth(80),
 		borderRadius: 100,
+		top: scaleHeight(13)
 	},
 	cardAwardUnClaimStyle: {
 		width: scaleWidth(90),

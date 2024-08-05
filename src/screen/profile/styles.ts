@@ -76,14 +76,16 @@ const styles = StyleSheet.create({
 		position: 'absolute'
 	},
 	cardAwardItemImageNeonStyle: {
-		width: scaleWidth(95),
-		height: scaleWidth(95),
+		width: scaleWidth(100),
+		height: scaleWidth(100),
 		borderRadius: 100,
 	},
 	cardAwardItemImageStyle: {
-		width: scaleWidth(75),
-		height: scaleWidth(75),
+		width: scaleWidth(70),
+		height: scaleWidth(70),
 		borderRadius: 100,
+		alignSelf: 'center',
+		top: scaleHeight(11)
 	},
 	cardAwardContentStyle: {
 		paddingVertical: 0,
