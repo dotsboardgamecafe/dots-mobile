@@ -33,6 +33,9 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	ph: {
 		paddingHorizontal: scaleHorizontal(16),
 	},
+	ph32: {
+		paddingHorizontal: scaleHorizontal(32),
+	},
 	mh12: {
 		marginHorizontal: scaleHorizontal(12)
 	},
@@ -208,8 +211,8 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		flex: 1
 	},
 	bookingVal: {
-		flex: 2, marginStart:
-      scaleHorizontal(8)
+		flex: 2,
+		marginStart: scaleHorizontal(8)
 	},
 })
 

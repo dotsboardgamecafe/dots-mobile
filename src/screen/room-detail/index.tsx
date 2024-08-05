@@ -17,9 +17,9 @@ import Text from '../../components/text'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import createStyle from './styles'
 import ActionButton2 from '../../components/action-button2'
-import Rank1ST from '../../assets/svg/Rank1ST.svg'
-import Rank2ND from '../../assets/svg/Rank2ND.svg'
-import Rank3RD from '../../assets/svg/Rank3RD.svg'
+// import Rank1ST from '../../assets/svg/Rank1ST.svg'
+// import Rank2ND from '../../assets/svg/Rank2ND.svg'
+// import Rank3RD from '../../assets/svg/Rank3RD.svg'
 import VP from '../../assets/svg/VP.svg'
 import ActionButton from '../../components/action-button'
 import ShareBottomSheet from '../../components/share-bottom-sheet'
@@ -33,7 +33,7 @@ import { LOGO } from '../../assets/images'
 import Toast from 'react-native-toast-message'
 import { get } from 'lodash'
 
-type Props = NavigationProps<'roomDetail'>
+type Props = NavigationProps<'roomDetail'>;
 
 const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => {
 	const params = route.params
@@ -75,7 +75,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 
 		if (isTourney) {
 			return (
-				<View style={ [styles.ph] }>
+				<View style={ [styles.ph32] }>
 					<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
 					<Image
 						source={ { uri: data?.prizes_img_url } }
@@ -86,87 +86,87 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		return (
-			<View style={ [styles.ph] }>
-				<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
+		// return (
+		// 	<View style={ [styles.ph] }>
+		// 		<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
 
-				<Shadow
-					startColor='#DCC10C'
-					distance={ scaleWidth(16) }
-					containerStyle={ styles.firstPrizeShadow1 }
-				>
-					<Shadow
-						startColor='#ffffffb0'
-						distance={ scaleWidth(8) }
-						containerStyle={ styles.firstPrizeShadow2 }
-						style={ styles.firstPrizeShadow2 }
-					>
-						<View style={ styles.firstPrizeContent }>
-							<View style={ styles.firstPrizeBorder } />
-							<Rank1ST width={ scaleWidth(72) } style={ styles.firstPriceIcon } />
-							<View style={ styles.rowAlignCenter }>
-								<View>
-									<Image
-										source={ { uri: 'https://picsum.photos/72' } }
-										resizeMode='cover'
-										style={ styles.firstPriceBadge }
-									/>
-									<Image
-										source={ { uri: 'https://picsum.photos/72' } }
-										resizeMode='cover'
-										style={ [styles.firstPriceBadge, styles.mt16] }
-									/>
-								</View>
-								<Image
-									source={ { uri: 'https://picsum.photos/124' } }
-									resizeMode='cover'
-									style={ styles.firstPriceBadgeMain }
-								/>
-							</View>
-							<View style={ styles.rowAlignCenter }>
-								<Text variant='bodyLargeBold'>10.000</Text>
-								<VP width={ 32 } style={ { marginStart: scaleWidth(4) } } />
-							</View>
-						</View>
-					</Shadow>
-				</Shadow>
+		// 		<Shadow
+		// 			startColor='#DCC10C'
+		// 			distance={ scaleWidth(16) }
+		// 			containerStyle={ styles.firstPrizeShadow1 }
+		// 		>
+		// 			<Shadow
+		// 				startColor='#ffffffb0'
+		// 				distance={ scaleWidth(8) }
+		// 				containerStyle={ styles.firstPrizeShadow2 }
+		// 				style={ styles.firstPrizeShadow2 }
+		// 			>
+		// 				<View style={ styles.firstPrizeContent }>
+		// 					<View style={ styles.firstPrizeBorder } />
+		// 					<Rank1ST width={ scaleWidth(72) } style={ styles.firstPriceIcon } />
+		// 					<View style={ styles.rowAlignCenter }>
+		// 						<View>
+		// 							<Image
+		// 								source={ { uri: 'https://picsum.photos/72' } }
+		// 								resizeMode='cover'
+		// 								style={ styles.firstPriceBadge }
+		// 							/>
+		// 							<Image
+		// 								source={ { uri: 'https://picsum.photos/72' } }
+		// 								resizeMode='cover'
+		// 								style={ [styles.firstPriceBadge, styles.mt16] }
+		// 							/>
+		// 						</View>
+		// 						<Image
+		// 							source={ { uri: 'https://picsum.photos/124' } }
+		// 							resizeMode='cover'
+		// 							style={ styles.firstPriceBadgeMain }
+		// 						/>
+		// 					</View>
+		// 					<View style={ styles.rowAlignCenter }>
+		// 						<Text variant='bodyLargeBold'>10.000</Text>
+		// 						<VP width={ 32 } style={ { marginStart: scaleWidth(4) } } />
+		// 					</View>
+		// 				</View>
+		// 			</Shadow>
+		// 		</Shadow>
 
-				<View style={ [styles.otherPrize, styles.secondPrize] }>
-					<Rank2ND width={ scaleWidth(50) } />
-					<View style={ { flex: 1, alignSelf: 'flex-end' } }>
-						<View style={ styles.otherPrizeLine } />
-					</View>
-					<Text variant='bodyMiddleBold'>5.000</Text>
-					<VP width={ scaleWidth(32) } />
-					<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
-					<Image
-						source={ { uri: 'https://picsum.photos/32' } }
-						resizeMode='cover'
-						style={ styles.otherPrizeBadge }
-					/>
-				</View>
+		// 		<View style={ [styles.otherPrize, styles.secondPrize] }>
+		// 			<Rank2ND width={ scaleWidth(50) } />
+		// 			<View style={ { flex: 1, alignSelf: 'flex-end' } }>
+		// 				<View style={ styles.otherPrizeLine } />
+		// 			</View>
+		// 			<Text variant='bodyMiddleBold'>5.000</Text>
+		// 			<VP width={ scaleWidth(32) } />
+		// 			<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
+		// 			<Image
+		// 				source={ { uri: 'https://picsum.photos/32' } }
+		// 				resizeMode='cover'
+		// 				style={ styles.otherPrizeBadge }
+		// 			/>
+		// 		</View>
 
-				<View style={ [styles.otherPrize, styles.thirdPrize] }>
-					<Rank3RD width={ scaleWidth(50) } />
-					<View style={ { flex: 1, alignSelf: 'flex-start' } }>
-						<View style={ styles.otherPrizeLine } />
-					</View>
-					<Text variant='bodyMiddleBold'>3.000</Text>
-					<VP width={ scaleWidth(32) } />
-					<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
-					<Image
-						source={ { uri: 'https://picsum.photos/32' } }
-						resizeMode='cover'
-						style={ styles.otherPrizeBadge }
-					/>
-				</View>
-			</View>
-		)
+		// 		<View style={ [styles.otherPrize, styles.thirdPrize] }>
+		// 			<Rank3RD width={ scaleWidth(50) } />
+		// 			<View style={ { flex: 1, alignSelf: 'flex-start' } }>
+		// 				<View style={ styles.otherPrizeLine } />
+		// 			</View>
+		// 			<Text variant='bodyMiddleBold'>3.000</Text>
+		// 			<VP width={ scaleWidth(32) } />
+		// 			<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
+		// 			<Image
+		// 				source={ { uri: 'https://picsum.photos/32' } }
+		// 				resizeMode='cover'
+		// 				style={ styles.otherPrizeBadge }
+		// 			/>
+		// 		</View>
+		// 	</View>
+		// )
 	}, [data, isTourney])
 
 	const schedule = useMemo(() => {
-		const d1 = moment(`${data?.start_date} ${data?.start_time}`)
-		const d2 = moment(`${data?.end_date} ${data?.end_time}`)
+		const d1 = moment(`${ data?.start_date } ${ data?.start_time }`)
+		const d2 = moment(`${ data?.end_date } ${ data?.end_time }`)
 		const startDate = d1.local()
 		const endDate = d2.local()
 		return startDate.format('MMM, Do [at] HH:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'HH:mm' : 'MMM, Do [at] HH:mm')
@@ -196,12 +196,12 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data, isTourney, schedule])
 
 	const tourneyDesc = useMemo(() => {
-		if (data?.room_type === 'Tournament') {
+		if (data?.tournament_rules) {
 			return (
 				<View style={ [styles.ph, styles.mv32] }>
 					<Text variant='bodyLargeMedium'>Tournament Rules</Text>
 					<Text variant='paragraphMiddleRegular' style={ styles.mt8 }>
-						In Apiary, each player controls one of twenty unique factions. Your faction starts the game with a hive, a few resources, and worker bees. A worker-placement, hive-building challenge awaits you: explore planets, gather resources, develop technologies, and create carvings to demonstrate your faction`s strengths (measured in victory points) over one year`s Flow. However, the Dearth quickly approaches, and your workers can take only a few actions before they must hibernate! Can you thrive or merely survive?
+						{ data.tournament_rules }
 					</Text>
 				</View>
 			)
@@ -237,7 +237,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		const vp = ` - Get ${isTourney ? data?.participant_vp : data?.reward_point}`
+		const vp = ` - Get ${ isTourney ? data?.participant_vp : data?.reward_point }`
 		return (
 			<View style={ styles.actionJoin }>
 				<ActionButton
@@ -276,7 +276,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		)
 	}, [playerColors, data])
 
-	const hideRegModal = useCallback(() => {
+	const _postJoin = useCallback(() => {
 		if (isRoom) {
 			postJoinRoom(params.room_code ?? '')
 		} else if (isTourney) {
@@ -284,6 +284,8 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		}
 		setRegModalVisible(false)
 	}, [isRoom, isTourney])
+
+	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
 	useEffect(() => {
 		if (!params.room_code && !params.tournament_code) {
@@ -441,7 +443,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 					label={ t('room-detail.pay') }
 					style={ styles.mt16 }
 					loading={ isRoom ? joinRoomLoading : joinTourneyLoading }
-					onPress={ hideRegModal }
+					onPress={ _postJoin }
 				/>
 			</Modal>
 			<ErrorModal

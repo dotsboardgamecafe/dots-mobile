@@ -127,6 +127,9 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	sectionTitle: {
 		marginTop: scaleVertical(32)
 	},
+	sectionTitleHowTo: {
+		marginTop: scaleVertical(16)
+	},
 	contReading: {
 		color: colors.blueAccent,
 		marginTop: scaleVertical(8)

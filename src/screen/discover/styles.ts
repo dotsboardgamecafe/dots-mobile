@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		alignItems: 'center',
-		marginTop: scaleHeight(12)
+		marginTop: scaleHeight(8)
 	},
 
 	filterAction: {
