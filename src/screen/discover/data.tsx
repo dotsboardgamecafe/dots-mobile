@@ -23,7 +23,7 @@ export const gameTypes: GameType[] = [
 	{
 		id: 1,
 		name: 'Cards',
-		icon: <GiCardRandom width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+		icon: <GiCardRandom width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 2,
@@ -41,7 +41,7 @@ export const gameMechanics: GameType[] = [
 	{
 		id: 1,
 		name: 'Bluffing',
-		icon: <GiDualityMask width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+		icon: <GiDualityMask width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 2,
@@ -56,7 +56,7 @@ export const gameMechanics: GameType[] = [
 	{
 		id: 4,
 		name: 'Dice Rolling',
-		icon: <GiRollingDices width={ scaleWidth(17) } height={ scaleHeight(17) }/>
+		icon: <GiRollingDices width={ scaleWidth(17) } height={ scaleHeight(17) } />
 	},
 	{
 		id: 5,
@@ -73,4 +73,11 @@ export const gameMechanics: GameType[] = [
 export const locations: GameType[] = [
 	{ id: 0, name: 'Bandung', },
 	{ id: 1, name: 'Jakarta', },
+]
+
+export const rangeNumbers: GameType[] = [
+	{ id: 0, name: '2 - 4', },
+	{ id: 1, name: '4 - 6', },
+	{ id: 2, name: '6 - 8', },
+	{ id: 3, name: '8+', },
 ]

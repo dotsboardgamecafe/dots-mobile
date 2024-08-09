@@ -17,9 +17,6 @@ import Text from '../../components/text'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import createStyle from './styles'
 import ActionButton2 from '../../components/action-button2'
-// import Rank1ST from '../../assets/svg/Rank1ST.svg'
-// import Rank2ND from '../../assets/svg/Rank2ND.svg'
-// import Rank3RD from '../../assets/svg/Rank3RD.svg'
 import VP from '../../assets/svg/VP.svg'
 import ActionButton from '../../components/action-button'
 import ShareBottomSheet from '../../components/share-bottom-sheet'
@@ -42,13 +39,11 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	const shareRef = useRef<BottomSheetModal>(null)
 	const bsErrRef = useRef<BottomSheetModal>(null)
 	const [regModalVisible, setRegModalVisible] = useState(false)
-	const [isRoom, setIsRoom] = useState(false)
-	const [isTourney, setIsTourney] = useState(false)
 	const [data, setData] = useState<Rooms>()
 	const [gameCode, setGameCode] = useState('')
 	const [isLoading, setLoading] = useState(false)
-	const { data: room, isLoading: roomLoading, refetch: roomRefetch } = useGetRoomDetailQuery(params.room_code ?? '', { skip: !isRoom })
-	const { data: tourney, isLoading: tourneyLoading, refetch: tourneyRefetch } = useGetTourneyDetailQuery(params.tournament_code ?? '', { skip: !isTourney })
+	const { data: room, isLoading: roomLoading, refetch: roomRefetch } = useGetRoomDetailQuery(params.room_code ?? '', { skip: !params.room_code })
+	const { data: tourney, isLoading: tourneyLoading, refetch: tourneyRefetch } = useGetTourneyDetailQuery(params.tournament_code ?? '', { skip: !params.tournament_code })
 	const [postJoinRoom, {
 		data: joinRoomData,
 		isLoading: joinRoomLoading,
@@ -61,8 +56,6 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}] = usePostJoinTourneyMutation()
 
 	const quotePrize = useMemo(() => {
-		setGameCode(data?.game_code ?? '')
-
 		if (data?.room_type === 'normal' || data?.room_type === 'special_event') {
 			return (
 				<View style={ styles.ph }>
@@ -73,7 +66,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		if (isTourney) {
+		if (data?.tournament_code) {
 			return (
 				<View style={ [styles.ph32] }>
 					<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
@@ -85,84 +78,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			)
 		}
-
-		// return (
-		// 	<View style={ [styles.ph] }>
-		// 		<Text variant='bodyDoubleExtraLargeBold' style={ styles.prizes }>PRIZES</Text>
-
-		// 		<Shadow
-		// 			startColor='#DCC10C'
-		// 			distance={ scaleWidth(16) }
-		// 			containerStyle={ styles.firstPrizeShadow1 }
-		// 		>
-		// 			<Shadow
-		// 				startColor='#ffffffb0'
-		// 				distance={ scaleWidth(8) }
-		// 				containerStyle={ styles.firstPrizeShadow2 }
-		// 				style={ styles.firstPrizeShadow2 }
-		// 			>
-		// 				<View style={ styles.firstPrizeContent }>
-		// 					<View style={ styles.firstPrizeBorder } />
-		// 					<Rank1ST width={ scaleWidth(72) } style={ styles.firstPriceIcon } />
-		// 					<View style={ styles.rowAlignCenter }>
-		// 						<View>
-		// 							<Image
-		// 								source={ { uri: 'https://picsum.photos/72' } }
-		// 								resizeMode='cover'
-		// 								style={ styles.firstPriceBadge }
-		// 							/>
-		// 							<Image
-		// 								source={ { uri: 'https://picsum.photos/72' } }
-		// 								resizeMode='cover'
-		// 								style={ [styles.firstPriceBadge, styles.mt16] }
-		// 							/>
-		// 						</View>
-		// 						<Image
-		// 							source={ { uri: 'https://picsum.photos/124' } }
-		// 							resizeMode='cover'
-		// 							style={ styles.firstPriceBadgeMain }
-		// 						/>
-		// 					</View>
-		// 					<View style={ styles.rowAlignCenter }>
-		// 						<Text variant='bodyLargeBold'>10.000</Text>
-		// 						<VP width={ 32 } style={ { marginStart: scaleWidth(4) } } />
-		// 					</View>
-		// 				</View>
-		// 			</Shadow>
-		// 		</Shadow>
-
-		// 		<View style={ [styles.otherPrize, styles.secondPrize] }>
-		// 			<Rank2ND width={ scaleWidth(50) } />
-		// 			<View style={ { flex: 1, alignSelf: 'flex-end' } }>
-		// 				<View style={ styles.otherPrizeLine } />
-		// 			</View>
-		// 			<Text variant='bodyMiddleBold'>5.000</Text>
-		// 			<VP width={ scaleWidth(32) } />
-		// 			<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
-		// 			<Image
-		// 				source={ { uri: 'https://picsum.photos/32' } }
-		// 				resizeMode='cover'
-		// 				style={ styles.otherPrizeBadge }
-		// 			/>
-		// 		</View>
-
-		// 		<View style={ [styles.otherPrize, styles.thirdPrize] }>
-		// 			<Rank3RD width={ scaleWidth(50) } />
-		// 			<View style={ { flex: 1, alignSelf: 'flex-start' } }>
-		// 				<View style={ styles.otherPrizeLine } />
-		// 			</View>
-		// 			<Text variant='bodyMiddleBold'>3.000</Text>
-		// 			<VP width={ scaleWidth(32) } />
-		// 			<Text variant='bodyMiddleBold' style={ styles.mh12 }>+</Text>
-		// 			<Image
-		// 				source={ { uri: 'https://picsum.photos/32' } }
-		// 				resizeMode='cover'
-		// 				style={ styles.otherPrizeBadge }
-		// 			/>
-		// 		</View>
-		// 	</View>
-		// )
-	}, [data, isTourney])
+	}, [data])
 
 	const schedule = useMemo(() => {
 		const d1 = moment(`${ data?.start_date } ${ data?.start_time }`)
@@ -175,7 +91,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	const detail = useMemo(() => {
 		return (
 			<View style={ [styles.ph, styles.mt16] }>
-				<Text variant='bodyLargeMedium'>{ isTourney ? 'Tournament' : data?.room_type === 'special_event' ? 'Event' : 'Room' } { t('room-detail.details') }</Text>
+				<Text variant='bodyLargeMedium'>{ data?.tournament_code ? 'Tournament' : data?.room_type === 'special_event' ? 'Event' : 'Room' } { t('room-detail.details') }</Text>
 				<View style={ styles.rowDetail }>
 					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.schedule') }</Text>
 					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ schedule }
@@ -193,7 +109,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data, isTourney, schedule])
+	}, [data, schedule])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.tournament_rules) {
@@ -222,13 +138,13 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data])
 
 	const joinAction = useMemo(() => {
-		const totalSlot = (isTourney ? data?.player_slot : data?.maximum_participant) ?? 0
+		const totalSlot = (data?.tournament_code ? data?.player_slot : data?.maximum_participant) ?? 0
 		const usedSlot = data?.current_used_slot ?? 0
 		if (usedSlot >= totalSlot) {
 			return null
 		}
 
-		const room = isTourney ? 'room' : 'tournament'
+		const room = data?.tournament_code ? 'room' : 'tournament'
 		if (data?.have_joined) {
 			return (
 				<Text variant='bodyMiddleBold' style={ styles.labelJoined }>
@@ -237,7 +153,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		const vp = ` - Get ${ isTourney ? data?.participant_vp : data?.reward_point }`
+		const vp = ` - Get ${ data?.tournament_code ? data?.participant_vp : data?.reward_point }`
 		return (
 			<View style={ styles.actionJoin }>
 				<ActionButton
@@ -247,7 +163,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				/>
 			</View>
 		)
-	}, [data, isTourney, isRoom])
+	}, [data])
 
 	const players = useCallback(({ item, index }: ListRenderItemInfo<Users>) => {
 		return (
@@ -277,13 +193,13 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [playerColors, data])
 
 	const _postJoin = useCallback(() => {
-		if (isRoom) {
+		if (data?.room_code) {
 			postJoinRoom(params.room_code ?? '')
-		} else if (isTourney) {
+		} else if (data?.tournament_code) {
 			postJoinTourney(params.tournament_code ?? '')
 		}
 		setRegModalVisible(false)
-	}, [isRoom, isTourney])
+	}, [data])
 
 	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
@@ -291,21 +207,20 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		if (!params.room_code && !params.tournament_code) {
 			bsErrRef.current?.present()
 		} else if (params.room_code) {
-			setIsRoom(true)
 			setData(room)
 			setLoading(roomLoading)
 		} else {
-			setIsTourney(true)
 			setData(tourney)
 			setLoading(tourneyLoading)
 		}
 	}, [params, room, tourney])
 
 	useEffect(() => {
+		setGameCode(data?.game_code ?? '')
 		const focusSubscribe = navigation.addListener('focus', () => {
 			if (!data) return
 
-			if (isRoom) {
+			if (data?.room_code) {
 				roomRefetch()
 				setLoading(roomLoading)
 			} else {
@@ -315,7 +230,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		})
 
 		return focusSubscribe
-	}, [isRoom, data])
+	}, [data])
 
 	useEffect(() => {
 		if (joinRoomData) {
@@ -357,12 +272,6 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<Text variant='bodyExtraLargeHeavy' style={ styles.title }>
 					{ data?.name ?? params.name }
 				</Text>
-				{ /* <ExportCurve
-					variant='Linear'
-					color={ theme.colors.onBackground }
-					size={ scaleWidth(24) }
-					onPress={ () => shareRef.current?.present() }
-				/> */ }
 			</View>
 			{ isLoading && <View style={ {
 				flex: 1, justifyContent: 'center', alignItems: 'center'
@@ -371,8 +280,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<>
 					<ScrollView showsVerticalScrollIndicator={ false }>
 						<Image
-							source={ { uri: params.room_img_url ?? data?.room_banner_url ?? data?.image_url } }
-							resizeMode='cover'
+							source={ { uri: params.room_img_url ?? params.image_url ?? data?.room_banner_url ?? data?.image_url } }
 							style={ {
 								width: SCREEN_WIDTH,
 								height: scaleHeight(210)
@@ -381,7 +289,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 						/>
 						<View style={ styles.imageInfo }>
 							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.currency') }{ (data?.booking_price ?? 0).toLocaleString('id-ID', { maximumFractionDigits: 0 }) }</Text>
-							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.slot') } { data?.current_used_slot }/{ isTourney ? data?.player_slot : data?.maximum_participant }</Text>
+							<Text variant='bodyLargeMedium' style={ styles.imageInfoLabel }>{ t('room-detail.slot') } { data?.current_used_slot }/{ data?.tournament_code ? data?.player_slot : data?.maximum_participant }</Text>
 						</View>
 						{ quotePrize }
 						{ detail }
@@ -442,7 +350,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				<ActionButton
 					label={ t('room-detail.pay') }
 					style={ styles.mt16 }
-					loading={ isRoom ? joinRoomLoading : joinTourneyLoading }
+					loading={ data?.room_code ? joinRoomLoading : joinTourneyLoading }
 					onPress={ _postJoin }
 				/>
 			</Modal>
