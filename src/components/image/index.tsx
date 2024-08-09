@@ -45,4 +45,4 @@ const Image = (props: ImageProps & { keepRatio?: boolean, fallbackImg?: any }): 
 	)
 }
 
-export default React.memo(Image)
+export default Image

@@ -12,7 +12,7 @@ import TextInput from '../../components/text-input'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import styles from './styles'
 import { useKeyboardShown } from '../../utils/keyboard'
-import { filterSections, gameMechanics, locations } from './data'
+import { locations, rangeNumbers } from './data'
 import FilterTag from '../../components/filter-tag'
 import ActionButton from '../../components/action-button'
 import withCommon from '../../hoc/with-common'
@@ -22,19 +22,21 @@ import BottomSheet from '../../components/bottom-sheet'
 import { gameApi, useLazyGetGamesQuery } from '../../store/game'
 import Text from '../../components/text'
 import { useGetSettingQuery } from '../../store/setting'
-import FilterIcon from '../../components/filter-icon'
+// import FilterIcon from '../../components/filter-icon'
 import { useDispatch } from 'react-redux'
+import { debounce } from 'lodash'
 
 type Props = NavigationProps<'discover'>;
 
 const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
-	const defaultParam: GameListParams = { status: 'active', limit: 20, page: 1, sort: 'desc', location: 'Bandung' }
-	const [search, setSearch] = useState('')
+	const defaultParam: GameListParams = { status: 'active', limit: 20, page: 1, order: 'games.name', sort: 'asc', location: 'Bandung' }
+	// const [search, setSearch] = useState('')
 	const [param, setParam] = useState<GameListParams>(defaultParam)
 	const [filterType, setFilterType] = useState<string[]>([])
 	const [filterMechanic, setFilterMechanic] = useState<string[]>([])
 	const [filterLocation, setFilterLocation] = useState<string[]>(['Bandung'])
-	const [filterSection, setFilterSection] = useState(filterSections)
+	const [filterPlayer, setFilterPlayer] = useState<string[]>([])
+	// const [filterSection, setFilterSection] = useState(filterSections)
 	const tabBarHeight = useBottomTabBarHeight()
 	const isKeyboardShown = useKeyboardShown()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
@@ -70,7 +72,6 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		pageRef.current = 1
 		getGames({ ...defaultParam, page: pageRef.current })
 		pageRef.current += 1
-		// setApplyFilter(false)
 		bottomSheetRef.current?.dismiss()
 	}, [])
 
@@ -109,10 +110,17 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		})
 	}, [])
 
+	const _onTypeSearch = useCallback((value: string) => {
+		dispatch(gameApi.util.resetApiState())
+		pageRef.current = 1
+		getGames({ ...param, page: pageRef.current, keyword: value })
+		pageRef.current += 1
+	}, [param])
+
 	useEffect(() => {
 		_onFetchGame()
 
-		return () => dispatch(gameApi.util.resetApiState())
+		return () => { dispatch(gameApi.util.resetApiState()) }
 	}, [])
 
 	return (
@@ -130,24 +138,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						placeholder: t('discover-page.search-game'),
 						placeholderTextColor: theme.colors.gray,
 						enterKeyHint: 'search',
-						value: search,
-						onChangeText: setSearch
+						onChangeText: debounce(_onTypeSearch, 300)
 					} }
 				/>
-				<Button
-					onPress={ () => { setParam(param => ({ ...param, keyword: search })) } }
-					labelStyle={ styles.filterReset }
-					style={ {
-						borderRadius: 10,
-						backgroundColor: theme.colors.background,
-						marginStart: 8,
-						alignSelf: 'stretch',
-						justifyContent: 'center'
-					} }
-					rippleColor={ theme.colors.background }
-				>
-					Search
-				</Button>
 			</View>
 
 			<View style={ styles.filterContainer }>
@@ -162,7 +155,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						/>
 					}
 					onPress={ () => {
-						setFilterSection(filterSections)
+						// setFilterSection(filterSections)
 						bottomSheetRef.current?.present()
 					} }
 				/>
@@ -210,78 +203,90 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					</Button>
 				</View>
 
-				{ filterSection.includes('location') &&
-					<>
-						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-location') }</Text>
-						<FlatList
-							data={ locations }
-							keyExtractor={ i => i.name }
-							extraData={ [filterLocation] }
-							renderItem={ ({ item }) => <FilterTag
-								id={ item.id }
-								code={ item.name }
-								label={ item.name }
-								active={ [...filterLocation].includes(item.name) }
-								onClick={ (_id, label) => {
-									setFilterLocation(locs => {
-										if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
-										return label ? [...locs, label] : locs
-									})
-								}
-								}
-							/>
-							}
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(locations.length > 4 ? 8 : 0) } } /> }
-							contentContainerStyle={ styles.wrapList }
-							showsVerticalScrollIndicator={ false }
-						/>
-					</>
-				}
+				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-location') }</Text>
+				<FlatList
+					data={ locations }
+					keyExtractor={ i => i.name }
+					extraData={ [filterLocation] }
+					renderItem={ ({ item }) => <FilterTag
+						id={ item.id }
+						code={ item.name }
+						label={ item.name }
+						active={ [...filterLocation].includes(item.name) }
+						onClick={ (_id, label) => {
+							setFilterLocation(locs => {
+								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
+								return label ? [...locs, label] : locs
+							})
+						}
+						}
+					/>
+					}
+					contentContainerStyle={ styles.wrapList }
+					showsVerticalScrollIndicator={ false }
+					scrollEnabled={ false }
+				/>
 
-				{ /* { filterSection.includes('type') &&
-					<>
-						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
-						<FlatList
-							data={ listGameType }
-							keyExtractor={ (i, id) => `${id}-${i.setting_code}` }
-							extraData={ [filterType] }
-							renderItem={ ({ item }) => <FilterTag
-								id={ item.set_order }
-								icon={ <FilterIcon { ...item }/> }
-								code={ item.setting_code }
-								label={ item.content_value }
-								active={ [...filterType].includes(item.content_value ?? '') }
-								onClick={ _onFilterGameType }
-							/>
-							}
-							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameTypes.length > 3 ? 8 : 0) } } /> }
-							contentContainerStyle={ styles.wrapList }
-							showsVerticalScrollIndicator={ false }
-						/>
-					</>
-				} */ }
+				<Text style={ styles.filterSecTitle }>Number of Player</Text>
+				<FlatList
+					data={ rangeNumbers }
+					keyExtractor={ i => i.name }
+					extraData={ [filterPlayer] }
+					renderItem={ ({ item }) => <FilterTag
+						id={ item.id }
+						code={ item.name }
+						label={ item.name }
+						active={ [...filterPlayer].includes(item.name) }
+						onClick={ (_id, label) => {
+							setFilterPlayer(locs => {
+								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
+								return label ? [...locs, label] : locs
+							})
+						}
+						}
+					/>
+					}
+					contentContainerStyle={ styles.wrapList }
+					showsVerticalScrollIndicator={ false }
+					scrollEnabled={ false }
+				/>
 
-				{ filterSection.includes('mechanics') &&
-					<>
-						<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
-						<FlatList
-							data={ listGameMechanic }
-							keyExtractor={ (i, id) => `${ id }-${ i.setting_code }` }
-							extraData={ [filterMechanic] }
-							renderItem={ ({ item }) => <FilterTag
-								id={ item.set_order }
-								code={ item.setting_code }
-								// icon={ <FilterIcon { ...item } /> }
-								label={ item.content_value }
-								active={ [...filterMechanic].includes(item.content_value ?? '') }
-								onClick={ _onFilterGameMechanic }
-							/> }
-							// ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(gameMechanics.length > 3 ? 8 : 0) } } /> }
-							contentContainerStyle={ styles.wrapList }
-							showsVerticalScrollIndicator={ false }
+				{ /* <Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
+					<FlatList
+						data={ listGameType }
+						keyExtractor={ (i, id) => `${id}-${i.setting_code}` }
+						extraData={ [filterType] }
+						renderItem={ ({ item }) => <FilterTag
+							id={ item.set_order }
+							icon={ <FilterIcon { ...item }/> }
+							code={ item.setting_code }
+							label={ item.content_value }
+							active={ [...filterType].includes(item.content_value ?? '') }
+							onClick={ _onFilterGameType }
 						/>
-					</>
-				}
+						}
+						contentContainerStyle={ styles.wrapList }
+						showsVerticalScrollIndicator={ false }
+					/>
+				*/ }
+
+				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
+				<FlatList
+					data={ listGameMechanic }
+					keyExtractor={ (i, id) => `${ id }-${ i.setting_code }` }
+					extraData={ [filterMechanic] }
+					renderItem={ ({ item }) => <FilterTag
+						id={ item.set_order }
+						code={ item.setting_code }
+						// icon={ <FilterIcon { ...item } /> }
+						label={ item.content_value }
+						active={ [...filterMechanic].includes(item.content_value ?? '') }
+						onClick={ _onFilterGameMechanic }
+					/> }
+					contentContainerStyle={ styles.wrapList }
+					showsVerticalScrollIndicator={ false }
+					scrollEnabled={ false }
+				/>
 
 				<ActionButton
 					style={ styles.filterAction }
