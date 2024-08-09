@@ -84,6 +84,20 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			delete obj.game_type
 		}
 
+		delete obj.minimal_participant
+		delete obj.maximum_participant
+		if (filterPlayer.length) {
+			if (filterPlayer.includes('8+')) {
+				obj.minimal_participant = 8
+			} else {
+				// filterPlayer = ["6 - 8", "2 - 4", "4 - 6"]
+				const splitRanges = filterPlayer.map(i => i.split(' - '))
+				const ranges = ([] as string[]).concat(...splitRanges).sort()
+				obj.minimal_participant = Number(ranges[0])
+				obj.maximum_participant = Number(ranges[ranges.length - 1])
+			}
+		}
+
 		if (filterMechanic.length) {
 			obj.game_category_name = [...filterMechanic].join(',')
 		} else {
@@ -101,7 +115,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		getGames({ ...obj, page: pageRef.current })
 		pageRef.current += 1
 		bottomSheetRef.current?.dismiss()
-	}, [param, filterType, filterMechanic, filterLocation])
+	}, [param, filterType, filterPlayer, filterMechanic, filterLocation])
 
 	const _onFilterGameMechanic = useCallback((id?: number, code?: string, label?: string) => {
 		setFilterMechanic(types => {

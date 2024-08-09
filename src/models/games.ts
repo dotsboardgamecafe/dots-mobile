@@ -43,7 +43,9 @@ export interface GameListParams {
 	page?: number
 	location?: string
 	game_type?: string,
-	game_category_name?: string
+	game_category_name?: string,
+	minimal_participant?: number,
+	maximum_participant?: number
 }
 
 export interface GameMasters {
