@@ -110,11 +110,12 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		if (badgesData?.length) {
 			const resultBadges = badgesData
 			if (selectedFilter) {
-				resultBadges[0].is_claim = false
-				return resultBadges?.filter(item => selectedFilter === 1 ?
+				const filteredBadges = resultBadges?.filter(item => selectedFilter === 1 ?
 					item.is_badge_owned && item.is_claim :
 					item.is_badge_owned && !item.is_claim
 				)
+
+				return filteredBadges
 			}
 			return resultBadges
 		}
@@ -234,10 +235,10 @@ const Awards = ({ t }: Props): React.ReactNode => {
 						return (
 							<TouchableOpacity style={ styles.boardGameItemStyle } onPress={ _onPressAward(item) }>
 								{
-									item?.is_claim ?
+									item?.need_to_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImageItem(item?.badge_image_url, !item?.is_claim) }
+								{ _greyScaledImageItem(item?.badge_image_url, !(item?.is_claim || item.need_to_claim)) }
 							</TouchableOpacity>
 						)
 					}
@@ -253,7 +254,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				onEndReachedThreshold={ 0.8 }
 			/>
 		)
-	}, [_onPressAward, _isError, _factoryBadges, _onRefresh])
+	}, [_onPressAward, _isError, _factoryBadges, _onRefresh, _greyScaledImageItem])
   
 	const _renderBottomSheetTopContent = useMemo(() => {
 		return (

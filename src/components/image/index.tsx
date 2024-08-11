@@ -29,7 +29,7 @@ const Image = (props: ImageProps & { keepRatio?: boolean, fallbackImg?: any }): 
 		} else if (uri === '') {
 			setValid(false)
 		}
-	}, [])
+	}, [props.source])
 
 	if (valid) return <ImageLib
 		{ ...props }
@@ -45,4 +45,4 @@ const Image = (props: ImageProps & { keepRatio?: boolean, fallbackImg?: any }): 
 	)
 }
 
-export default Image
+export default React.memo(Image)

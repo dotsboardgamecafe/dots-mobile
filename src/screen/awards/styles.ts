@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
 		top: scaleHeight(13)
 	},
 	cardAwardUnClaimStyle: {
-		width: scaleWidth(90),
-		height: scaleWidth(90),
+		width: scaleWidth(80),
+		height: scaleWidth(80),
 		borderRadius: 100,
 	},
 	bottomSheetView: {

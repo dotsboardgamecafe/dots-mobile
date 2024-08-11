@@ -8,7 +8,8 @@ export interface Badges {
   created_date: string;
   is_badge_owned: boolean;
   description?:string,
-  vp_point: number
+  vp_point: number,
+  need_to_claim: boolean
 }
 
 export interface BadgesQuery {

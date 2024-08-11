@@ -47,6 +47,7 @@ export const badgesApi = baseApi.injectEndpoints({
 					badgesApi.util.updateQueryData('getBadges', undefined, draft => {
 						const indexOfPatch = draft.findIndex(item => item.badge_code === patch.badge_code)
 						draft[indexOfPatch].is_claim = true
+						draft[indexOfPatch].need_to_claim = false
 						
 						return draft
 					})
