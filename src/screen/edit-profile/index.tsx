@@ -14,6 +14,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useGetUserProfileQuery, useUpdateProfileMutation } from '../../store/user'
 import { ArrowDown2 } from 'iconsax-react-native'
 import { scaleWidth } from '../../utils/pixel.ratio'
+import Toast from 'react-native-toast-message'
 
 type Props = NavigationProps<'login'>
 
@@ -75,11 +76,22 @@ const EditProfile = ({ theme, t, navigation }: Props): React.ReactNode => {
 	}, [])
 
 	const _onSubmit = useCallback(async(data:any) => {
-		await updateProfile({
-			...userProfileData,
-			fullname: data.fullName,
-			phone_number: data.phoneNumber
-		}).unwrap()
+		try {
+			await updateProfile({
+				...userProfileData,
+				fullname: data.fullName,
+				phone_number: data.phoneNumber
+			}).unwrap()
+			Toast.show({
+				type: 'success',
+				text1: 'Update profile successfully'
+			})
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Something went wrong'
+			})
+		}
 	}, [userProfileData])
 
 	useEffect(() => {

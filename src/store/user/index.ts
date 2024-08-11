@@ -12,7 +12,7 @@ export const userProfileApi = baseApi.injectEndpoints({
 				url: '/v1/users/profile',
 				method: 'put',
 				data: {
-					fullname: profile.fullname,
+					full_name: profile.fullname,
 					phone_number: profile.phone_number,
 					image_url: profile.image_url
 				},

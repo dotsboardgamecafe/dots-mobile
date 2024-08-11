@@ -351,10 +351,10 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 								key={ item.badge_id }
 							>
 								{
-									item?.is_claim ?
+									item?.need_to_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImage(item?.badge_image_url, !item?.is_claim) }
+								{ _greyScaledImage(item?.badge_image_url, !(item?.is_claim || item.need_to_claim)) }
 							</View>
 						)
 					})
