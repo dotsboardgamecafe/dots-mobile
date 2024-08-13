@@ -32,6 +32,16 @@ export const headingConfigs = {
 		lineHeight: scaleHeight(28),
 		fontSize: scaleFont(24),
 		color: colors.lightTheme.neutralLink
+	},
+	headingBoldJunegull: {
+		fontFamily: 'Junegull-Regular',
+		fontWeight: Platform.select({
+			android: '900',
+			ios: 'bold'
+		}),
+		lineHeight: scaleHeight(28),
+		fontSize: scaleFont(24),
+		color: colors.lightTheme.neutralLink
 	}
 }
 
@@ -85,6 +95,15 @@ const bodyConfigs = {
 			ios: '700'
 		}),
 		fontSize: scaleFont(18),
+		color: colors.lightTheme.neutralLink
+	},
+	bodyDoubleExtraLargeJunegull: {
+		fontFamily: 'Junegull-Regular',
+		fontWeight: Platform.select({
+			android: '600',
+			ios: 'bold'
+		}),
+		fontSize: scaleFont(20),
 		color: colors.lightTheme.neutralLink
 	},
 	bodyLargeRegular: {

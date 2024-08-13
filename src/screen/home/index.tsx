@@ -229,7 +229,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 	const _renderListGame = useMemo(() => {
 		return (
 			<View style={ [styles.sectionWrapperStyle, styles.listGameWrapperStyle] }>
-				<Text variant='bodyDoubleExtraLargeBold'>{ t('home-page.activities-title') }</Text>
+				<Text variant='bodyDoubleExtraLargeJunegull'>{ t('home-page.activities-title') }</Text>
 				<FlatList
 					data={ activitiesHighlightData }
 					style={ styles.listGameStyle }

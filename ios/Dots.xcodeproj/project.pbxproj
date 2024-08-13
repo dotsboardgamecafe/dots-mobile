@@ -26,6 +26,7 @@
 		A8B8B961DBCA47ACB26EE89F /* FuturaPT-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */; };
 		C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0370F42E401A498D994BDC7C /* Poppins-Black.ttf */; };
 		FD56A8C587542C4B36713FAA /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C969D47F4D66E6F2057561A /* libPods-OneSignalNotificationServiceExtension.a */; };
+		D4378A7E60774E3DA102E98D /* Junegull-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		A5C7A3CC2C2CBFC600016E55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5C7A3D42C2CC08900016E55 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */ = {isa = PBXFileReference; name = "Junegull-Regular.ttf"; path = "../src/assets/fonts/Junegull-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,6 +247,7 @@
 				6BACCCB838764ACE9C3EC4B2 /* FuturaPT-Demi.ttf */,
 				7A3A8C06C62F42DEAD56CE06 /* FuturaPT-Heavy.ttf */,
 				0370F42E401A498D994BDC7C /* Poppins-Black.ttf */,
+				4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				03872AC562C749E8B4258F3C /* FuturaPT-Demi.ttf in Resources */,
 				881ED25CBB5642658E618BFF /* FuturaPT-Heavy.ttf in Resources */,
 				C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */,
+				D4378A7E60774E3DA102E98D /* Junegull-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

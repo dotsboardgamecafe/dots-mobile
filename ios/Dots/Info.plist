@@ -65,7 +65,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to take picture from your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow access to take audio from your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -79,6 +79,7 @@
 		<string>FuturaPT-Demi.ttf</string>
 		<string>FuturaPT-Heavy.ttf</string>
 		<string>Poppins-Black.ttf</string>
+		<string>Junegull-Regular.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

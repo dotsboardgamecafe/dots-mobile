@@ -162,7 +162,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 					opacity={ .5 }
 					style={ styles.blush2 }
 				 />
-				<Text variant='headingBold' style={ [styles.title, { backgroundColor: 'transparent' }] }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
+				<Text variant='headingBoldJunegull' style={ [styles.title, { backgroundColor: 'transparent' }] }>{ unique ? t('champion-page.unique') : t('champion-page.mvp') }</Text>
 				<View style={ [styles.topRank, { backgroundColor: 'transparent' }] }>
 					{ _topRank3 }
 					{ _topRank1 }
