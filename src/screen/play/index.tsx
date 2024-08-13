@@ -136,7 +136,7 @@ const Play = ({ theme, navigation, t }: Props): React.ReactNode => {
 					</TouchableOpacity>
 				) }
 				renderSectionHeader={ ({ section: { title } }) => (
-					<Text variant='headingBold' style={ styles.section }>{ title }</Text>
+					<Text variant='headingBoldJunegull' style={ styles.section }>{ title }</Text>
 				) }
 				renderSectionFooter={ sectionFooter }
 				ItemSeparatorComponent={ () => <View style={ styles.itemSeparator } /> }

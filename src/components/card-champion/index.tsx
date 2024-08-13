@@ -36,7 +36,7 @@ const CardChampion = ({ children, title, onClickSeeMore }: CardChampionType): Re
 				style={ styles.blush4 }
 				opacity={ .3 }
 			/>
-			<Text variant='headingBold' style={ { alignSelf: 'center' } }>{ title }</Text>
+			<Text variant='headingBoldJunegull' style={ { alignSelf: 'center' } }>{ title }</Text>
 			{ children }
 			<ActionButton2
 				label={ t('champion-page.see-more') }

@@ -26,6 +26,10 @@
       "sha1": "d633453cd20a2fe9bb6ed0067b2188500b3562d3"
     },
     {
+      "path": "src/assets/fonts/Junegull-Regular.ttf",
+      "sha1": "6b2aae4e60e9cdb6e7fc47e8977b555ff357ab0c"
+    },
+    {
       "path": "src/assets/fonts/Poppins-Black.ttf",
       "sha1": "645e04c53c6b5b35bce654a811ebce16af8aa721"
     }
