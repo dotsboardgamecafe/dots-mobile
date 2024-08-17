@@ -26,16 +26,16 @@ const CardGame = ({ item, onPress, style }: CardGameProps): React.ReactNode => {
 			/>
 		</View>
 
-		// if (item.is_popular) {
-		// 	return (
-		// 		<View>
-		// 			{ image }
-		// 			<View style={ styles.popularContainer }>
-		// 				<Text variant='bodySmallMedium' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
-		// 			</View>
-		// 		</View>
-		// 	)
-		// }
+		if (item.is_popular) {
+			return (
+				<View>
+					{ image }
+					<View style={ styles.popularContainer }>
+						<Text variant='bodySmallMedium' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
+					</View>
+				</View>
+			)
+		}
 
 		return image
 	}

@@ -22,6 +22,9 @@ export interface Games {
 	game_rooms?: Rooms[],
 	// game_masters?: GameMasters[],
 	game_masters?: GameMasters,
+	is_popular?: boolean
+	total_player?: number
+	user_have_played_game_history?: Array<{ user_image?: string }>
 }
 
 export interface GameRelated {

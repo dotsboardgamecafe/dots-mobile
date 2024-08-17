@@ -181,6 +181,16 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 			</View>
 	}, [data])
 
+	const _playersAvatar = useMemo(() => {
+		if (data?.user_have_played_game_history) {
+			return data.user_have_played_game_history
+				.map(i => i.user_image)
+				.filter(i => i) as string[]
+		}
+
+		return []
+	}, [data])
+
 	const onPageScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const start = 30
 		const end = 200
@@ -191,14 +201,14 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		else setBlushOp((th - y) / th)
 	}, [])
 
-	// const avatar = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
-	// 	return (
-	// 		<Image
-	// 			source={ { uri: item } }
-	// 			style={ [styles.avatar, index > 0 && styles.avatarNotFirst] }
-	// 		/>
-	// 	)
-	// }, [])
+	const avatar = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
+		return (
+			<Image
+				source={ { uri: item } }
+				style={ [styles.avatar, index > 0 && styles.avatarNotFirst] }
+			/>
+		)
+	}, [])
 
 	const _gamePlayItem = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
 		return (
@@ -313,31 +323,37 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						/>
 					</ImageBackground>
 
-					{ /* <View style={ styles.players }>
+					<View style={ styles.players }>
 						<FlatList
-							data={ avatars }
+							data={ _playersAvatar }
 							renderItem={ avatar }
 							horizontal
 							style={ styles.avatarContainer }
 						/>
 
-						<Text
-							variant='bodySmallBold'
-							style={ { marginStart: scaleHorizontal(8) } }
-						>
-							20K+
-						</Text>
-						<Text
-							variant='bodySmallMedium'
-							style={ { marginHorizontal: scaleHorizontal(2), flex: 1 } }
-						>
-							people have played
-						</Text>
+						{ (data?.total_player ?? 0) > 0 &&
+							<>
+								<Text
+									variant='bodySmallBold'
+									style={ { marginStart: scaleHorizontal(8) } }
+								>
+									{ data?.total_player }
+								</Text>
+								<Text
+									variant='bodySmallMedium'
+									style={ { marginHorizontal: scaleHorizontal(2), flex: 1 } }
+								>
+									people have played
+								</Text>
+							</>
+						}
 
-						<View style={ styles.popularContainer }>
-							<Text variant='bodySmallBold' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
-						</View>
-					</View> */ }
+						{ data?.is_popular &&
+							<View style={ styles.popularContainer }>
+								<Text variant='bodySmallBold' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
+							</View>
+						}
+					</View>
 				</View>
 
 				<View style={ styles.infoContainer }>
