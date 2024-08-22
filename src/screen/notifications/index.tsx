@@ -28,6 +28,7 @@ import { useDispatch } from 'react-redux'
 import { type NavigationProps } from '../../models/navigation'
 import { useLazyGetTourneyDetailQuery } from '../../store/room'
 import Toast from 'react-native-toast-message'
+import withCommon from '../../hoc/with-common'
 
 interface TitleStyleType {
 	title: string,
@@ -332,4 +333,4 @@ const Notifications = ({ navigation }: Props): React.ReactNode => {
 	)
 }
 
-export default React.memo(Notifications)
+export default withCommon(React.memo(Notifications))
