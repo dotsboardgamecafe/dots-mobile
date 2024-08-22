@@ -354,7 +354,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 				<View style={ [styles.rowCenterStyle, styles.rowStyle, styles.descriptionPointWrapperStyle] }>
 					<Text variant='bodyMiddleRegular'>{ selectedAward?.description }</Text>
 					<React.Fragment>
-						<Text variant='bodyMiddleMedium'>{ selectedAward?.vp_point }</Text>
+						<Text style={ styles.vpPointStyle } variant='bodyMiddleMedium'>{ selectedAward?.vp_point }</Text>
 						<VPIcon width={ scaleWidth(20) } height={ scaleHeight(20) } />
 					</React.Fragment>
 				</View>

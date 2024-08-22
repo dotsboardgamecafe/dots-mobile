@@ -25,11 +25,16 @@ import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
 import moment from 'moment'
 import { useDispatch } from 'react-redux'
+import { type NavigationProps } from '../../models/navigation'
+import { useLazyGetTourneyDetailQuery } from '../../store/room'
+import Toast from 'react-native-toast-message'
 
 interface TitleStyleType {
 	title: string,
 	color: string
 }
+
+type Props = NavigationProps<'notifications'>;
 
 const _generateNotifTitle = (type: string): TitleStyleType => {
 	const result = {
@@ -102,20 +107,43 @@ const _generateDescription = (type: string, description?: string): string => {
 	
 }
 
-const Notifications = (): React.ReactNode => {
+const Notifications = ({ navigation }: Props): React.ReactNode => {
 	const dispatch = useDispatch()
 	const pageRef = useRef(1)
 	const [
 		fetchNotifications, { data: notificationsData, isFetching: isFetchingNotifications, isError: isErrorNotifications,  }
 	] = useLazyGetNotificationsQuery()
+	const [
+		fetchTourneyDetail
+	] = useLazyGetTourneyDetailQuery()
 	const [updateSeenNotification] = useUpdateSeenNotificationMutation()
 	const [selectedNotif, setSelectedNotif] = useState<Notification>()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 
-	const _onPressNotif = useCallback((notif: Notification) => {
+	const _onPressNotif = useCallback(async(notif: Notification) => {
 		setSelectedNotif(notif)
-		bottomSheetRef.current?.present()
 		if (!notif.status_read) updateSeenNotification(notif)
+			
+		if (notif.type !== 'tournament_reminder') {
+			bottomSheetRef.current?.present()
+		} else {
+			try {
+				const response  = await fetchTourneyDetail(notif.transaction_code)
+				if (response.error) {
+					Toast.show({
+						type: 'error',
+						text1: 'Tournamen sudah berakhir atau tidak aktif'
+					})
+					return
+				}
+				navigation.navigate('roomDetail', { tournament_code: notif.transaction_code, isFromNotif: true })
+			} catch (error) {
+				Toast.show({
+					type: 'error',
+					text1: 'Somethink went wrong'
+				})
+			}
+		}
 	}, [])
 
 	const _onPressClose = useCallback(() => {
@@ -193,6 +221,7 @@ const Notifications = (): React.ReactNode => {
 					ItemSeparatorComponent={ () => <View style={ styles.itemSeparatorStyle }/> }
 					onEndReached={ onFetchNotifications }
 					onEndReachedThreshold={ 0.8 }
+					contentContainerStyle={ styles.contentStyle }
 				/>
 			</View>
 		)

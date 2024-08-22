@@ -45,4 +45,5 @@ export const {
 	useGetTourneyDetailQuery,
 	usePostJoinRoomMutation,
 	usePostJoinTourneyMutation,
+	useLazyGetTourneyDetailQuery
 } = roomApi

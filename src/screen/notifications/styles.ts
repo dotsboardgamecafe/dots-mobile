@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 		paddingHorizontal: 0,
 		paddingVertical: 0
+	},
+	contentStyle: {
+		paddingBottom: Platform.OS === 'android' ? scaleHeight(100) : scaleHeight(22)
 	}
 })
 

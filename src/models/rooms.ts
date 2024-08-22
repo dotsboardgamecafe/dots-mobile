@@ -37,6 +37,7 @@ export interface Rooms {
   participant_vp?: number,
   status?: string,
   have_joined?: boolean,
+  isFromNotif?: boolean
 }
 
 export interface RoomListParam {
