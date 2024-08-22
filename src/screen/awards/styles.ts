@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
 		margin: scaleHorizontal(1),
 		overflow: 'hidden',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		display: 'flex',
+		position: 'relative'
 	},
 	justifyCenterStyle: {
 		justifyContent: 'center',
@@ -60,15 +62,14 @@ const styles = StyleSheet.create({
 		position: 'absolute'
 	},
 	cardAwardItemImageNeonStyle: {
+		marginTop: scaleHeight(5),
 		width: scaleWidth(112),
 		height: scaleWidth(112),
-		alignSelf: 'center'
 	},
 	cardAwardItemImageStyle: {
 		width: scaleWidth(80),
 		height: scaleWidth(80),
 		borderRadius: 100,
-		top: scaleHeight(13)
 	},
 	cardAwardUnClaimStyle: {
 		width: scaleWidth(80),
@@ -131,6 +132,9 @@ const styles = StyleSheet.create({
 	},
 	labelClaimedTextStyle: {
 		color: colorsTheme.background
+	},
+	vpPointStyle: {
+		marginLeft: scaleWidth(5)
 	}
 })
 

@@ -5,7 +5,7 @@ import Container from '../../components/container'
 import ImagePicker, { type ImageOrVideo, type Options } from 'react-native-image-crop-picker'
 import styles from './styles'
 import {
-	ImageBackground, TouchableOpacity, View, FlatList, ScrollView,
+	ImageBackground, TouchableOpacity, View, FlatList, ScrollView, Platform
 } from 'react-native'
 import Text from '../../components/text'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
@@ -365,7 +365,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 
 	const _renderFavoriteGame = useMemo((): React.ReactNode => {
 		return (
-			<View style={ styles.awardWrapperStyle }>
+			<View style={ [styles.awardWrapperStyle, styles.gameCollectionBottomStyle] }>
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
 					gameFavouriteData?.map(item => {
@@ -374,7 +374,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 						return (
 							<RoundedBorder
 								style={ styles.roundedGameFavStyle }
-								spaceBorder={ 0.5 }
+								spaceBorder={ Platform.OS === 'ios' ? 0.5 : undefined }
 								radius={ 12 }
 								borderWidth={ 1 }
 								key={ item.game_category_id }

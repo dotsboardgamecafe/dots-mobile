@@ -5,7 +5,7 @@ export const badgesApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
 		getBadgesWidget: builder.query<Badges[], BadgesQuery | undefined>({
 			query: (params: BadgesQuery) => {
-				const queryParam = params?.limit && params?.page ? `?limit=${params.limit}&page=${params.page}&status=active` : ''
+				const queryParam = params?.limit && params?.page ? `?limit=${params.limit}&page=${params.page}&status=active&is_claim=true` : ''
 				return ({ url: `/v1/users/${params.code}/badges${queryParam}` })
 			},
 			transformResponse: result => (result as {data: Badges[]}).data,

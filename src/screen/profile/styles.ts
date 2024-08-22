@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import {
 	isIphoneXorAbove, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
 } from '../../utils/pixel.ratio'
@@ -70,12 +70,15 @@ const styles = StyleSheet.create({
 		height: scaleWidth(95),
 		justifyContent: 'center',
 		alignItems: 'center',
-		flex: 1
+		flex: 1,
+		display: 'flex',
+		position: 'relative'
 	},
 	cardAwardAbsoluteStyle: {
 		position: 'absolute'
 	},
 	cardAwardItemImageNeonStyle: {
+		marginTop: scaleHeight(5),
 		width: scaleWidth(100),
 		height: scaleWidth(100),
 		borderRadius: 100,
@@ -84,8 +87,6 @@ const styles = StyleSheet.create({
 		width: scaleWidth(70),
 		height: scaleWidth(70),
 		borderRadius: 100,
-		alignSelf: 'center',
-		top: scaleHeight(11)
 	},
 	cardAwardContentStyle: {
 		paddingVertical: 0,
@@ -149,6 +150,9 @@ const styles = StyleSheet.create({
 	},
 	changePictureDescriptionStyle: {
 		marginVertical: scaleHeight(16)
+	},
+	gameCollectionBottomStyle: {
+		paddingBottom: scaleHeight(Platform.OS === 'android' ? 40 : 20)
 	}
 })
 
