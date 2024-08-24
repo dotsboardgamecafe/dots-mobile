@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import { Button } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
-import { SearchNormal, Setting4 } from 'iconsax-react-native'
+import { CloseCircle, SearchNormal, Setting4 } from 'iconsax-react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
@@ -49,13 +51,27 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		{ data: dataGames, isLoading: isLoadingGames }
 	] = useLazyGetGamesQuery()
 
+	const _emptyListComponent = useMemo(() => {
+		if (!isLoadingGames)
+			return (
+				<View style={ styles.emptyList }>
+					<Text
+						variant='paragraphDoubleExtraLargeRegular'
+						style={ styles.emptyListLabel }
+					>
+						No Game Found
+					</Text>
+				</View>
+			)
+	}, [isLoadingGames])
+
 	const _onRefresh = useCallback(() => {
 		dispatch(gameApi.util.resetApiState())
 		pageRef.current = 1
 		_onFetchGame()
 	}, [])
 
-	const navigateToDetail = useCallback((game: Games) => {
+	const _navigateToDetail = useCallback((game: Games) => {
 		navigation.navigate('gameDetail', game)
 	}, [])
 
@@ -64,16 +80,22 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		pageRef.current += 1
 	}, [param])
 
+	const _onReachEnd = useCallback(() => {
+		if ((dataGames?.length ?? 0) % 20 == 0)
+			_onFetchGame()
+	}, [dataGames, _onFetchGame])
+
 	const _onResetFilter = useCallback(() => {
 		setFilterType([])
 		setFilterMechanic([])
 		setFilterLocation([])
-		setParam(defaultParam)
+		const newParam = { ...defaultParam, keyword: param.keyword }
+		setParam(newParam)
 		pageRef.current = 1
-		getGames({ ...defaultParam, page: pageRef.current })
+		getGames({ ...newParam, page: pageRef.current })
 		pageRef.current += 1
 		bottomSheetRef.current?.dismiss()
-	}, [])
+	}, [param])
 
 	const _onApplyFilter = useCallback(() => {
 		const obj: GameListParams = { ...param }
@@ -124,12 +146,17 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		})
 	}, [])
 
-	const _onTypeSearch = useCallback((value: string) => {
+	const _fetchSearch = debounce(() => {
 		dispatch(gameApi.util.resetApiState())
 		pageRef.current = 1
-		getGames({ ...param, page: pageRef.current, keyword: value })
+		getGames({ ...param, page: pageRef.current })
 		pageRef.current += 1
-	}, [param])
+	}, 1000)
+
+	const _onTypeSearch = (value: string): void => {
+		setParam({ ...param, keyword: value })
+		_fetchSearch()
+	}
 
 	useEffect(() => {
 		_onFetchGame()
@@ -147,12 +174,24 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			} }>
 				<TextInput
 					containerStyle={ { flex: 1, alignSelf: 'stretch' } }
-					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
+					prefix={ <SearchNormal size={ scaleWidth(18) } color={ theme.colors.gray } /> }
+					suffix={ param.keyword && <CloseCircle
+						onTouchEnd={ () => {
+							dispatch(gameApi.util.resetApiState())
+							pageRef.current = 1
+							getGames({ ...param, page: pageRef.current, keyword: '' })
+							setParam({ ...param, keyword: '' })
+							pageRef.current += 1
+						} }
+						size={ scaleWidth(20) }
+						color={ theme.colors.gray } />
+					}
 					inputProps={ {
 						placeholder: t('discover-page.search-game'),
 						placeholderTextColor: theme.colors.gray,
 						enterKeyHint: 'search',
-						onChangeText: debounce(_onTypeSearch, 300)
+						onChangeText: _onTypeSearch,
+						value: param.keyword
 					} }
 				/>
 			</View>
@@ -195,13 +234,14 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				refreshing={ isLoadingGames }
 				onRefresh={ _onRefresh }
 				keyExtractor={ item => item.game_code }
-				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
+				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ _navigateToDetail } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 				style={ styles.list }
 				columnWrapperStyle={ styles.columnWrapper }
-				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight } }
+				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight, flexGrow: 1 } }
+				ListEmptyComponent={ _emptyListComponent }
 				numColumns={ 2 }
-				onEndReached={ _onFetchGame }
+				onEndReached={ _onReachEnd }
 				onEndReachedThreshold={ .7 }
 			/>
 
