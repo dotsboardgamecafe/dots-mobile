@@ -21,11 +21,10 @@ import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import { type GameListParams, type Games } from '../../models/games'
 import BottomSheet from '../../components/bottom-sheet'
-import { gameApi, useLazyGetGamesQuery } from '../../store/game'
+import { useLazyGetGamesQuery } from '../../store/game'
 import Text from '../../components/text'
 import { useGetSettingQuery } from '../../store/setting'
 // import FilterIcon from '../../components/filter-icon'
-import { useDispatch } from 'react-redux'
 import { debounce } from 'lodash'
 
 type Props = NavigationProps<'discover'>;
@@ -44,15 +43,14 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	// const { data: listGameType } = useGetSettingQuery('game_type')
 	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
-	const dispatch = useDispatch()
 	const pageRef = useRef(1)
 	const [
 		getGames,
-		{ data: dataGames, isLoading: isLoadingGames }
+		{ data: dataGames, isLoading: isLoadingGames, isFetching }
 	] = useLazyGetGamesQuery()
 
 	const _emptyListComponent = useMemo(() => {
-		if (!isLoadingGames)
+		if (!isLoadingGames && !isFetching)
 			return (
 				<View style={ styles.emptyList }>
 					<Text
@@ -63,10 +61,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					</Text>
 				</View>
 			)
-	}, [isLoadingGames])
+	}, [isLoadingGames, isFetching])
 
 	const _onRefresh = useCallback(() => {
-		dispatch(gameApi.util.resetApiState())
 		pageRef.current = 1
 		_onFetchGame()
 	}, [])
@@ -81,7 +78,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	}, [param])
 
 	const _onReachEnd = useCallback(() => {
-		if ((dataGames?.length ?? 0) % 20 == 0)
+		if ((dataGames?.length ?? 0) % 20 === 0)
 			_onFetchGame()
 	}, [dataGames, _onFetchGame])
 
@@ -146,22 +143,30 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		})
 	}, [])
 
-	const _fetchSearch = debounce(() => {
-		dispatch(gameApi.util.resetApiState())
+	const _fetchSearch = useCallback((keyword: string, params: GameListParams) => {
 		pageRef.current = 1
-		getGames({ ...param, page: pageRef.current })
+		getGames({ ...params, page: pageRef.current, keyword })
 		pageRef.current += 1
-	}, 1000)
+	}, [])
+
+	const debouncedSendRequest = useMemo(() => {
+		return debounce(_fetchSearch, 300)
+	}, [_fetchSearch])
 
 	const _onTypeSearch = (value: string): void => {
 		setParam({ ...param, keyword: value })
-		_fetchSearch()
+		debouncedSendRequest(value, param)
 	}
+
+	const _onClearSearch = useCallback(() => {
+		pageRef.current = 1
+		getGames({ ...param, page: pageRef.current, keyword: '' })
+		setParam({ ...param, keyword: '' })
+		pageRef.current += 1
+	}, [param])
 
 	useEffect(() => {
 		_onFetchGame()
-
-		return () => { dispatch(gameApi.util.resetApiState()) }
 	}, [])
 
 	return (
@@ -176,13 +181,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					containerStyle={ { flex: 1, alignSelf: 'stretch' } }
 					prefix={ <SearchNormal size={ scaleWidth(18) } color={ theme.colors.gray } /> }
 					suffix={ param.keyword && <CloseCircle
-						onTouchEnd={ () => {
-							dispatch(gameApi.util.resetApiState())
-							pageRef.current = 1
-							getGames({ ...param, page: pageRef.current, keyword: '' })
-							setParam({ ...param, keyword: '' })
-							pageRef.current += 1
-						} }
+						onTouchEnd={ _onClearSearch }
 						size={ scaleWidth(20) }
 						color={ theme.colors.gray } />
 					}
@@ -231,7 +230,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 			<FlatList
 				data={ dataGames }
-				refreshing={ isLoadingGames }
+				refreshing={ isLoadingGames || isFetching }
 				onRefresh={ _onRefresh }
 				keyExtractor={ item => item.game_code }
 				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ _navigateToDetail } /> }
