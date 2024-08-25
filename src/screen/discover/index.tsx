@@ -106,7 +106,10 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		delete obj.minimal_participant
 		delete obj.maximum_participant
 		if (filterPlayer.length) {
-			if (filterPlayer.includes('8+')) {
+			if (filterPlayer.includes('1')) {
+				obj.minimal_participant = 0
+				obj.maximum_participant = 1
+			} else if (filterPlayer.includes('8+')) {
 				obj.minimal_participant = 8
 			} else {
 				// filterPlayer = ["6 - 8", "2 - 4", "4 - 6"]
@@ -293,7 +296,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						onClick={ (_id, label) => {
 							setFilterPlayer(locs => {
 								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
-								return label ? [...locs, label] : locs
+								// return label ? [...locs, label] : locs
+								return label ? [label] : locs
 							})
 						}
 						}

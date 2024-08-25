@@ -76,8 +76,9 @@ export const locations: GameType[] = [
 ]
 
 export const rangeNumbers: GameType[] = [
-	{ id: 0, name: '2 - 4', },
-	{ id: 1, name: '4 - 6', },
-	{ id: 2, name: '6 - 8', },
-	{ id: 3, name: '8+', },
+	{ id: 0, name: '1', },
+	{ id: 1, name: '2 - 4', },
+	{ id: 2, name: '4 - 6', },
+	{ id: 3, name: '6 - 8', },
+	{ id: 4, name: '8+', },
 ]
