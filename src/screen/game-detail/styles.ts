@@ -128,7 +128,8 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		marginTop: scaleVertical(32)
 	},
 	sectionTitleHowTo: {
-		marginTop: scaleVertical(16)
+		marginHorizontal: scaleHorizontal(16),
+		// marginTop: scaleVertical(16)
 	},
 	contReading: {
 		color: colors.blueAccent,
@@ -137,6 +138,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	gamePlay: {
 		width: SCREEN_WIDTH - scaleWidth(32),
 		height: scaleHeight(220),
+		marginVertical: scaleVertical(16),
 		borderRadius: 16,
 		marginHorizontal: scaleHorizontal(16)
 	},

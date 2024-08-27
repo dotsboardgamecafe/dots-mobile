@@ -27,7 +27,6 @@ import ActionButton from '../../components/action-button'
 import { type Rooms } from '../../models/rooms'
 import Image from '../../components/image'
 import { useGetSettingQuery } from '../../store/setting'
-import FilterIcon from '../../components/filter-icon'
 
 type Props = NavigationProps<'gameDetail'>;
 
@@ -59,14 +58,14 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 			if (list?.length) {
 				return (
 					<View style={ styles.section }>
-						<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Mechanics</Text>
+						<Text variant='bodyLargeBold'>Mechanics</Text>
 						<FlatList
 							data={ list }
 							keyExtractor={ (i, idx) => `${ idx }-${ i.setting_code }` }
 							renderItem={ ({ item }) => <FilterTag
 								id={ item.set_order ?? 0 }
 								code={ item.setting_code ?? '' }
-								icon={ <FilterIcon { ...item } /> }
+								// icon={ <FilterIcon { ...item } /> }
 								label={ item.content_value ?? '' }
 							/> }
 							ItemSeparatorComponent={ () => <View style={ { height: scaleHeight(list.length > 3 ? 8 : 0) } } /> }
@@ -80,6 +79,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		}
 	}, [data, listGameMechanic])
 
+	const _onGamePlaySroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+		const x = nativeEvent.contentOffset.x
+		setGamePlayIndex(x / SCREEN_WIDTH)
+	}, [])
+
 	const _howToPlaySection = useMemo(() => {
 		const list = data?.collection_url ?? []
 
@@ -89,9 +93,14 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 					<FlatList
 						horizontal
 						data={ list }
-						renderItem={ _gamePlayItem }
+						renderItem={ ({ item }) => <Image
+							source={ { uri: item } }
+							style={ styles.gamePlay }
+							resizeMode='stretch'
+						/>
+						}
 						pagingEnabled
-						onScroll={ onGamePlaySroll }
+						onScroll={ _onGamePlaySroll }
 						showsHorizontalScrollIndicator={ false }
 					/>
 					<PageIndicator
@@ -101,12 +110,12 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						activeColor='#232526'
 						style={ {
 							position: 'absolute',
-							bottom: scaleVertical(16),
+							bottom: 0,
 							alignSelf: 'center',
 						} }
 					/>
 				</> :
-				<View style={ styles.section }>
+				<View style={ [styles.section, { marginTop: scaleVertical(16) }] }>
 					<Image
 						source={ { uri: list[0] } }
 						style={ { borderRadius: 16 } }
@@ -115,15 +124,13 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 				</View>
 
 			return (
-				<>
-					<View style={ styles.section }>
-						<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>How to Play</Text>
-					</View>
+				<View>
+					<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>How to Play</Text>
 					{ content }
-				</>
+				</View>
 			)
 		}
-	}, [data])
+	}, [data, _onGamePlaySroll, gamePlayIndex])
 
 	const _gameMasterSection = useMemo(() => {
 		if (data?.game_masters)
@@ -153,7 +160,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const _roomSection = useMemo(() => {
 		if (data?.game_rooms?.length)
 			return <View style={ styles.section }>
-				<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Available Room</Text>
+				<Text variant='bodyLargeBold'>Available Room</Text>
 				<FlatList
 					data={ data?.game_rooms }
 					renderItem={ room }
@@ -167,7 +174,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const _relatedGamesSection = useMemo(() => {
 		if (data?.game_related?.length)
 			return <View style={ styles.section }>
-				<Text variant='bodyLargeBold' style={ styles.sectionTitleHowTo }>Related Games</Text>
+				<Text variant='bodyLargeBold'>Related Games</Text>
 				<FlatList
 					data={ data?.game_related }
 					keyExtractor={ item => item.game_code }
@@ -210,16 +217,16 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		)
 	}, [])
 
-	const _gamePlayItem = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
-		return (
-			<Image
-				source={ { uri: item } }
-				style={ styles.gamePlay }
-				resizeMode='stretch'
-			// keepRatio
-			/>
-		)
-	}, [])
+	// const _gamePlayItem = useCallback(({ item, index }: ListRenderItemInfo<string>) => {
+	// 	return (
+	// 		<Image
+	// 			source={ { uri: item } }
+	// 			style={ styles.gamePlay }
+	// 			resizeMode='stretch'
+	// 		// keepRatio
+	// 		/>
+	// 	)
+	// }, [])
 
 	// const _gameMaster = useCallback(({ item, index }: ListRenderItemInfo<GameMasters>) => {
 	// 	return (
@@ -252,10 +259,10 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		)
 	}, [])
 
-	const onGamePlaySroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-		const x = nativeEvent.contentOffset.x
-		setGamePlayIndex(x / SCREEN_WIDTH)
-	}, [])
+	// const onGamePlaySroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+	// 	const x = nativeEvent.contentOffset.x
+	// 	setGamePlayIndex(x / SCREEN_WIDTH)
+	// }, [])
 
 	const _onPressBack = useCallback(() => {
 		if (navigation.canGoBack()) {

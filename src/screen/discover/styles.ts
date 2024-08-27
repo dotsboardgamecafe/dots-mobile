@@ -73,6 +73,16 @@ const styles = StyleSheet.create({
 
 	filterAction: {
 		marginTop: scaleHeight(20)
+	},
+
+	emptyList: {
+		height: '100%',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+
+	emptyListLabel: {
+		color: colorsTheme.gray500
 	}
 })
 

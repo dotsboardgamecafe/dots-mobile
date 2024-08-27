@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+	useCallback, useEffect, useMemo, useRef, useState
+} from 'react'
 import { Button } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
-import { SearchNormal, Setting4 } from 'iconsax-react-native'
+import { CloseCircle, SearchNormal, Setting4 } from 'iconsax-react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 
@@ -19,11 +21,10 @@ import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
 import { type GameListParams, type Games } from '../../models/games'
 import BottomSheet from '../../components/bottom-sheet'
-import { gameApi, useLazyGetGamesQuery } from '../../store/game'
+import { useLazyGetGamesQuery } from '../../store/game'
 import Text from '../../components/text'
 import { useGetSettingQuery } from '../../store/setting'
 // import FilterIcon from '../../components/filter-icon'
-import { useDispatch } from 'react-redux'
 import { debounce } from 'lodash'
 
 type Props = NavigationProps<'discover'>;
@@ -42,20 +43,32 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	// const { data: listGameType } = useGetSettingQuery('game_type')
 	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
-	const dispatch = useDispatch()
 	const pageRef = useRef(1)
 	const [
 		getGames,
-		{ data: dataGames, isLoading: isLoadingGames }
+		{ data: dataGames, isLoading: isLoadingGames, isFetching }
 	] = useLazyGetGamesQuery()
 
+	const _emptyListComponent = useMemo(() => {
+		if (!isLoadingGames && !isFetching)
+			return (
+				<View style={ styles.emptyList }>
+					<Text
+						variant='paragraphDoubleExtraLargeRegular'
+						style={ styles.emptyListLabel }
+					>
+						No Game Found
+					</Text>
+				</View>
+			)
+	}, [isLoadingGames, isFetching])
+
 	const _onRefresh = useCallback(() => {
-		dispatch(gameApi.util.resetApiState())
 		pageRef.current = 1
 		_onFetchGame()
 	}, [])
 
-	const navigateToDetail = useCallback((game: Games) => {
+	const _navigateToDetail = useCallback((game: Games) => {
 		navigation.navigate('gameDetail', game)
 	}, [])
 
@@ -64,16 +77,22 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		pageRef.current += 1
 	}, [param])
 
+	const _onReachEnd = useCallback(() => {
+		if ((dataGames?.length ?? 0) % 20 === 0)
+			_onFetchGame()
+	}, [dataGames, _onFetchGame])
+
 	const _onResetFilter = useCallback(() => {
 		setFilterType([])
 		setFilterMechanic([])
 		setFilterLocation([])
-		setParam(defaultParam)
+		const newParam = { ...defaultParam, keyword: param.keyword }
+		setParam(newParam)
 		pageRef.current = 1
-		getGames({ ...defaultParam, page: pageRef.current })
+		getGames({ ...newParam, page: pageRef.current })
 		pageRef.current += 1
 		bottomSheetRef.current?.dismiss()
-	}, [])
+	}, [param])
 
 	const _onApplyFilter = useCallback(() => {
 		const obj: GameListParams = { ...param }
@@ -87,7 +106,10 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		delete obj.minimal_participant
 		delete obj.maximum_participant
 		if (filterPlayer.length) {
-			if (filterPlayer.includes('8+')) {
+			if (filterPlayer.includes('1')) {
+				obj.minimal_participant = 0
+				obj.maximum_participant = 1
+			} else if (filterPlayer.includes('8+')) {
 				obj.minimal_participant = 8
 			} else {
 				// filterPlayer = ["6 - 8", "2 - 4", "4 - 6"]
@@ -124,17 +146,30 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 		})
 	}, [])
 
-	const _onTypeSearch = useCallback((value: string) => {
-		dispatch(gameApi.util.resetApiState())
+	const _fetchSearch = useCallback((keyword: string, params: GameListParams) => {
 		pageRef.current = 1
-		getGames({ ...param, page: pageRef.current, keyword: value })
+		getGames({ ...params, page: pageRef.current, keyword })
+		pageRef.current += 1
+	}, [])
+
+	const debouncedSendRequest = useMemo(() => {
+		return debounce(_fetchSearch, 300)
+	}, [_fetchSearch])
+
+	const _onTypeSearch = (value: string): void => {
+		setParam({ ...param, keyword: value })
+		debouncedSendRequest(value, param)
+	}
+
+	const _onClearSearch = useCallback(() => {
+		pageRef.current = 1
+		getGames({ ...param, page: pageRef.current, keyword: '' })
+		setParam({ ...param, keyword: '' })
 		pageRef.current += 1
 	}, [param])
 
 	useEffect(() => {
 		_onFetchGame()
-
-		return () => { dispatch(gameApi.util.resetApiState()) }
 	}, [])
 
 	return (
@@ -147,12 +182,18 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			} }>
 				<TextInput
 					containerStyle={ { flex: 1, alignSelf: 'stretch' } }
-					prefix={ <SearchNormal size={ scaleWidth(16) } color={ theme.colors.gray } /> }
+					prefix={ <SearchNormal size={ scaleWidth(18) } color={ theme.colors.gray } /> }
+					suffix={ param.keyword && <CloseCircle
+						onTouchEnd={ _onClearSearch }
+						size={ scaleWidth(20) }
+						color={ theme.colors.gray } />
+					}
 					inputProps={ {
 						placeholder: t('discover-page.search-game'),
 						placeholderTextColor: theme.colors.gray,
 						enterKeyHint: 'search',
-						onChangeText: debounce(_onTypeSearch, 300)
+						onChangeText: _onTypeSearch,
+						value: param.keyword
 					} }
 				/>
 			</View>
@@ -192,16 +233,17 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 			<FlatList
 				data={ dataGames }
-				refreshing={ isLoadingGames }
+				refreshing={ isLoadingGames || isFetching }
 				onRefresh={ _onRefresh }
 				keyExtractor={ item => item.game_code }
-				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ navigateToDetail } /> }
+				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ _navigateToDetail } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 				style={ styles.list }
 				columnWrapperStyle={ styles.columnWrapper }
-				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight } }
+				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight, flexGrow: 1 } }
+				ListEmptyComponent={ _emptyListComponent }
 				numColumns={ 2 }
-				onEndReached={ _onFetchGame }
+				onEndReached={ _onReachEnd }
 				onEndReachedThreshold={ .7 }
 			/>
 
@@ -254,7 +296,8 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						onClick={ (_id, label) => {
 							setFilterPlayer(locs => {
 								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
-								return label ? [...locs, label] : locs
+								// return label ? [...locs, label] : locs
+								return label ? [label] : locs
 							})
 						}
 						}
