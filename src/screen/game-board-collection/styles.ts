@@ -1,10 +1,10 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 
 const styles = StyleSheet.create({
 	listGameWrapperStyle: {
 		marginTop: scaleVertical(16),
-		marginBottom: scaleVertical(42),
+		marginBottom: scaleVertical(Platform.OS === 'ios' ? 42 : 50),
 	},
 	boardGameItemStyle: {
 		width: scaleWidth(82),

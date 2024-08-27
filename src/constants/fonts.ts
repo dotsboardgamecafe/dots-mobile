@@ -36,7 +36,7 @@ export const headingConfigs = {
 	headingBoldJunegull: {
 		fontFamily: 'Junegull-Regular',
 		fontWeight: Platform.select({
-			android: '900',
+			android: '600',
 			ios: 'bold'
 		}),
 		lineHeight: scaleHeight(28),

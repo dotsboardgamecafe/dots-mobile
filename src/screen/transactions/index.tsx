@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { FlatList, type ListRenderItemInfo, View, TouchableOpacity } from 'react-native'
+import { type ListRenderItemInfo, View, TouchableOpacity } from 'react-native'
 import React, {
 	useCallback, useEffect, useMemo, useRef, useState
 } from 'react'
@@ -33,7 +33,7 @@ import useStorage from '../../hooks/useStorage'
 import { type StatusTransactionType, type Transaction } from '../../models/transaction'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
-import { RefreshControl } from 'react-native-gesture-handler'
+import { FlatList, RefreshControl } from 'react-native-gesture-handler'
 import moment from 'moment'
 
 type Props = NavigationProps<'transactions'>
@@ -121,6 +121,7 @@ const HistoryTab = ({ onPressHistoryItem, listTransactionData, isRefresh, onRefr
 			refreshControl={ <RefreshControl refreshing={ Boolean(isRefresh) } onRefresh={ onRefresh }/> }
 			onEndReached={ onReachEnd }
 			onEndReachedThreshold={ 0.8 }
+			contentContainerStyle={ styles.contentContainerStyle }
 		/>
 	)
 }

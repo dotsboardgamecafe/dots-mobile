@@ -1,25 +1,29 @@
 import React from 'react'
-import { BaseToast, ErrorToast } from 'react-native-toast-message'
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message'
 import colors from '../../constants/colors'
 import { scaleFont, scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 const toastConfig = {
 	success: (props: any) => (
-		<BaseToast
-			{ ...props }
-			style={ [styles.containerStyle, styles.successStyle] }
-			contentContainerStyle={ styles.contentContainerStyle }
-			text1Style={ styles.textStyle }
-		/>
+		<View onTouchEnd={ () => { Toast.hide() } }>
+			<BaseToast
+				{ ...props }
+				style={ [styles.containerStyle, styles.successStyle] }
+				contentContainerStyle={ styles.contentContainerStyle }
+				text1Style={ styles.textStyle }
+			/>
+		</View>
 	),
 	error: (props: any) => (
-		<ErrorToast
-			{ ...props }
-			style={ [styles.containerStyle, styles.errorStyle] }
-			contentContainerStyle={ styles.contentContainerStyle }
-			text1Style={ styles.textStyle }
-		/>
+		<View onTouchEnd={ () => { Toast.hide() } }>
+			<ErrorToast
+				{ ...props }
+				style={ [styles.containerStyle, styles.errorStyle] }
+				contentContainerStyle={ styles.contentContainerStyle }
+				text1Style={ styles.textStyle }
+			/>
+		</View>
 	)
 }
 

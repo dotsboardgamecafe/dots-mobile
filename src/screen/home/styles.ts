@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import {
 	fullWidth,
 	scaleFont, scaleHeight, scaleHorizontal, scaleVertical, scaleWidth
@@ -124,6 +124,9 @@ const styles = StyleSheet.create({
 	bannerStyle: {
 		width: fullWidth,
 		height: scaleHeight(180)
+	},
+	activityHighlightListStyle: {
+		paddingBottom: scaleHeight(Platform.OS === 'ios' ? 10 : 30)
 	}
 })
 

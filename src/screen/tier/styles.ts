@@ -136,6 +136,9 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		marginRight: scaleWidth(10),
 		marginTop: scaleHeight(7)
+	},
+	earnActivityListStyle: {
+		paddingBottom: scaleHeight(Platform.OS === 'ios' ? 20 : 50)
 	}
 })
 
