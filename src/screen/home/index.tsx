@@ -233,6 +233,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 				<FlatList
 					data={ activitiesHighlightData }
 					style={ styles.listGameStyle }
+					contentContainerStyle={ styles.activityHighlightListStyle }
 					scrollEnabled={ false }
 					renderItem={ ({ item }) => {
 						const description = t('home-page.activities-result-description', {

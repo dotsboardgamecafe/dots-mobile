@@ -63,6 +63,7 @@ const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] })
 		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle] }>
 			<FlatList
 				data={ pointActivity }
+				style={ styles.earnActivityListStyle }
 				renderItem={ _renderItem }
 				keyExtractor={ (_, index) => index.toString() }
 				scrollEnabled={ false }
@@ -80,6 +81,7 @@ const EarnPointActivityTab = (): React.ReactNode => {
 
 			<FlatList
 				data={ howToEarnPoint }
+				style={ styles.earnActivityListStyle }
 				renderItem={ ({ item, index }) => {
 					return (
 						<View style={ [styles.rowStyle] }>

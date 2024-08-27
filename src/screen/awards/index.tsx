@@ -208,13 +208,21 @@ const Awards = ({ t }: Props): React.ReactNode => {
 		)
 	}, [_onSelectedFilter, selectedFilter])
 
-	const _greyScaledImageItem = useCallback((image: string, shouldGrayScale: boolean) => {
+	const _greyScaledImageItem = useCallback((image: string, shouldGrayScale: boolean, isClaimed: boolean) => {
 		const imageStyle = shouldGrayScale ? styles.cardAwardUnClaimStyle :  styles.cardAwardItemImageStyle
 		if (shouldGrayScale) {
 			return (
 				<Grayscale style={ [styles.rowCenterStyle, styles.justifyCenterStyle] }>
 					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
 				</Grayscale>
+			)
+		}
+
+		if (isClaimed) {
+			return (
+				<RoundedBorder radius={ 100 } style={ { flex: 0 } } contentStyle={ styles.claimedBadgeStyle }>
+					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
+				</RoundedBorder>
 			)
 		}
 
@@ -238,7 +246,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 									item?.need_to_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImageItem(item?.badge_image_url, !(item?.is_claim || item.need_to_claim)) }
+								{ _greyScaledImageItem(item?.badge_image_url, !(item?.is_claim || item.need_to_claim), item.is_claim) }
 							</TouchableOpacity>
 						)
 					}

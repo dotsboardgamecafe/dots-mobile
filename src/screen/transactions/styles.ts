@@ -1,8 +1,11 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { colorsTheme } from '../../constants/theme'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 
 const styles = StyleSheet.create({
+	contentContainerStyle: {
+		paddingBottom: Platform.OS === 'android' ? scaleHeight(50) : scaleHeight(22)
+	},
 	rowStyle: {
 		flexDirection: 'row'
 	},

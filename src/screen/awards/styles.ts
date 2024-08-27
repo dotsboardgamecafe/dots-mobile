@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { scaleHeight, scaleHorizontal, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { colorsTheme } from '../../constants/theme'
 
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 	listGameWrapperStyle: {
 		marginTop: scaleVertical(16),
 		marginBottom: scaleVertical(21),
-		paddingBottom: scaleVertical(21),
+		paddingBottom: scaleVertical(Platform.OS === 'ios' ? 21 : 50),
 	},
 	boardGameItemStyle: {
 		width: scaleWidth(112),
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
 	},
 	vpPointStyle: {
 		marginLeft: scaleWidth(5)
-	}
+	},
+	claimedBadgeStyle: { flex: 0, width: scaleWidth(80), height: scaleWidth(80), paddingVertical: 0, paddingHorizontal: 0, margin: 0 }
 })
 
 export default styles
