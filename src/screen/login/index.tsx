@@ -10,7 +10,7 @@ import get from 'lodash/get'
 
 import { scaleWidth } from '../../utils/pixel.ratio'
 import Container from '../../components/container'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 import TextInput from '../../components/text-input'
 import useStorage from '../../hooks/useStorage'
 import ActionButton from '../../components/action-button'
@@ -124,7 +124,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 				keyboardShouldPersistTaps='handled'
 				enableOnAndroid
 			>
-				<Image source={ LOGO } style={ styles.headerImage } />
+				<Image source={ newLogo } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 				<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
 				<Controller

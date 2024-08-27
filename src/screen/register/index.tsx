@@ -11,7 +11,7 @@ import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import { openInbox } from 'react-native-email-link'
 
 import Container from '../../components/container'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
 import TextInput from '../../components/text-input'
 import ActionButton from '../../components/action-button'
@@ -159,7 +159,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 				enableOnAndroid
 			>
 
-				<Image source={ LOGO } style={ styles.headerImage } />
+				<Image source={ newLogo } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.title }>
 					{ t('register-page.title') }
 				</Text>
