@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 	},
 	headerImage: {
 		width: scaleWidth(72),
-		height: scaleHeight(64),
+		height: scaleHeight(80),
 		marginTop: scaleHeight(SCREEN_HEIGHT * .1)
 	},
 	headerTitle: {
