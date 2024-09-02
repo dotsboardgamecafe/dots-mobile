@@ -7,7 +7,7 @@ import { openInbox } from 'react-native-email-link'
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
 import { type NavigationProps } from '../../models/navigation'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 import Text from '../../components/text'
 import createStyle from './styles'
 import TextInput from '../../components/text-input'
@@ -58,7 +58,7 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 				keyboardShouldPersistTaps='handled'
 				enableOnAndroid
 			>
-				<Image source={ LOGO } style={ styles.headerImage } />
+				<Image source={ newLogo } style={ styles.headerImage } />
 
 				<Text variant='headingMedium' style={ styles.title }>
 					{ t('forgot-password-page.title') }

@@ -321,9 +321,20 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				style={ styles.listGameWrapperStyle }
 				data={ resultData }
 				renderItem={ ({ item, index }) => {
-					if (item) return <Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } />
-
-					return <View key={ index } style={ styles.boardGameItemStyle }/>
+					return (
+						<TouchableOpacity onPress={ () => {
+							navigation.navigate('gameDetail', {
+								game_code: item.game_code,
+								image_url: item.game_image_url
+							})
+						} }>
+							{
+								item ?
+									<Image source={ { uri: item.game_image_url } } style={ styles.boardGameItemStyle } /> :
+									<View key={ index } style={ styles.boardGameItemStyle }/>
+							}
+						</TouchableOpacity>
+					)
 				} }
 				keyExtractor={ (item, index) => item ? item.game_id.toString() : index.toString() }
 				numColumns={ numColumns }
