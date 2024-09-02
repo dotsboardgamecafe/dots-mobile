@@ -42,7 +42,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const isKeyboardShown = useKeyboardShown()
 	const bottomSheetRef = useRef<BottomSheetModal>(null)
 	// const { data: listGameType } = useGetSettingQuery('game_type')
-	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
+	const { data: listGameMechanic, refetch: _refetchMechanic } = useGetSettingQuery('game_mechanic')
 	const pageRef = useRef(1)
 	const [
 		getGames,
@@ -52,10 +52,10 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const _emptyListComponent = useMemo(() => {
 		if (!isLoadingGames && !isFetching)
 			return (
-				<View style={ styles.emptyList }>
+				<View style={styles.emptyList}>
 					<Text
 						variant='paragraphDoubleExtraLargeRegular'
-						style={ styles.emptyListLabel }
+						style={styles.emptyListLabel}
 					>
 						No Game Found
 					</Text>
@@ -66,6 +66,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 	const _onRefresh = useCallback(() => {
 		pageRef.current = 1
 		_onFetchGame()
+		_refetchMechanic()
 	}, [])
 
 	const _navigateToDetail = useCallback((game: Games) => {
@@ -174,45 +175,46 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 
 	return (
 		<Container>
-			<View style={ {
+			<View style={{
 				flexDirection: 'row',
 				alignItems: 'center',
 				marginHorizontal: scaleWidth(10),
 				marginTop: scaleHeight(16),
-			} }>
+			}}>
 				<TextInput
-					containerStyle={ { flex: 1, alignSelf: 'stretch' } }
-					prefix={ <SearchNormal size={ scaleWidth(18) } color={ theme.colors.gray } /> }
-					suffix={ param.keyword && <CloseCircle
-						onTouchEnd={ _onClearSearch }
-						size={ scaleWidth(20) }
-						color={ theme.colors.gray } />
+					containerStyle={{ flex: 1, alignSelf: 'stretch' }}
+					prefix={<SearchNormal size={scaleWidth(18)} color={theme.colors.gray} />}
+					suffix={param.keyword && <CloseCircle
+						onTouchEnd={_onClearSearch}
+						size={scaleWidth(20)}
+						color={theme.colors.gray} />
 					}
-					inputProps={ {
+					inputProps={{
 						placeholder: t('discover-page.search-game'),
 						placeholderTextColor: theme.colors.gray,
 						enterKeyHint: 'search',
 						onChangeText: _onTypeSearch,
 						value: param.keyword
-					} }
+					}}
 				/>
 			</View>
 
-			<View style={ styles.filterContainer }>
+			<View style={styles.filterContainer}>
 				<FilterItem
-					label={ t('discover-page.filter-game') }
+					label={t('discover-page.filter-game')}
 					prefix={
 						<Setting4
-							size={ scaleWidth(14) }
+							size={scaleWidth(14)}
 							variant='Linear'
-							color={ theme.colors.onBackground }
-							style={ { marginEnd: 4 } }
+							color={theme.colors.onBackground}
+							style={{ marginEnd: 4 }}
 						/>
 					}
-					onPress={ () => {
+					onPress={() => {
 						// setFilterSection(filterSections)
+						_refetchMechanic()
 						bottomSheetRef.current?.present()
-					} }
+					}}
 				/>
 
 				{ /* <FlatList
@@ -232,44 +234,44 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 			</View>
 
 			<FlatList
-				data={ dataGames }
-				refreshing={ isLoadingGames || isFetching }
-				onRefresh={ _onRefresh }
-				keyExtractor={ item => item.game_code }
-				renderItem={ ({ item }) => <CardGame style={ { flex: 1 / 2 } } item={ item } onPress={ _navigateToDetail } /> }
-				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
-				style={ styles.list }
-				columnWrapperStyle={ styles.columnWrapper }
-				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight, flexGrow: 1 } }
-				ListEmptyComponent={ _emptyListComponent }
-				numColumns={ 2 }
-				onEndReached={ _onReachEnd }
-				onEndReachedThreshold={ .7 }
+				data={dataGames}
+				refreshing={isLoadingGames || isFetching}
+				onRefresh={_onRefresh}
+				keyExtractor={item => item.game_code}
+				renderItem={({ item }) => <CardGame style={{ flex: 1 / 2 }} item={item} onPress={_navigateToDetail} />}
+				ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+				style={styles.list}
+				columnWrapperStyle={styles.columnWrapper}
+				contentContainerStyle={{ paddingBottom: isKeyboardShown ? 10 : tabBarHeight, flexGrow: 1 }}
+				ListEmptyComponent={_emptyListComponent}
+				numColumns={2}
+				onEndReached={_onReachEnd}
+				onEndReachedThreshold={.7}
 			/>
 
 			<BottomSheet
-				bsRef={ bottomSheetRef }
+				bsRef={bottomSheetRef}
 				// bsProps={ { onDismiss: _onFilterDismiss } }
-				viewProps={ { style: styles.bottomSheet } }
+				viewProps={{ style: styles.bottomSheet }}
 			>
-				<View style={ styles.bsHead }>
-					<Text style={ styles.bsTitle }>{ t('discover-page.filter-game') }</Text>
-					<Button onPress={ _onResetFilter } labelStyle={ styles.filterReset }>
+				<View style={styles.bsHead}>
+					<Text style={styles.bsTitle}>{t('discover-page.filter-game')}</Text>
+					<Button onPress={_onResetFilter} labelStyle={styles.filterReset}>
 						Reset
 					</Button>
 				</View>
 
-				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-location') }</Text>
+				<Text style={styles.filterSecTitle}>{t('discover-page.filter-game-location')}</Text>
 				<FlatList
-					data={ locations }
-					keyExtractor={ i => i.name }
-					extraData={ [filterLocation] }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.id }
-						code={ item.name }
-						label={ item.name }
-						active={ [...filterLocation].includes(item.name) }
-						onClick={ (_id, label) => {
+					data={locations}
+					keyExtractor={i => i.name}
+					extraData={[filterLocation]}
+					renderItem={({ item }) => <FilterTag
+						id={item.id}
+						code={item.name}
+						label={item.name}
+						active={[...filterLocation].includes(item.name)}
+						onClick={(_id, label) => {
 							setFilterLocation(locs => {
 								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
 								return label ? [...locs, label] : locs
@@ -278,22 +280,22 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						}
 					/>
 					}
-					contentContainerStyle={ styles.wrapList }
-					showsVerticalScrollIndicator={ false }
-					scrollEnabled={ false }
+					contentContainerStyle={styles.wrapList}
+					showsVerticalScrollIndicator={false}
+					scrollEnabled={false}
 				/>
 
-				<Text style={ styles.filterSecTitle }>Number of Player</Text>
+				<Text style={styles.filterSecTitle}>Number of Player</Text>
 				<FlatList
-					data={ rangeNumbers }
-					keyExtractor={ i => i.name }
-					extraData={ [filterPlayer] }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.id }
-						code={ item.name }
-						label={ item.name }
-						active={ [...filterPlayer].includes(item.name) }
-						onClick={ (_id, label) => {
+					data={rangeNumbers}
+					keyExtractor={i => i.name}
+					extraData={[filterPlayer]}
+					renderItem={({ item }) => <FilterTag
+						id={item.id}
+						code={item.name}
+						label={item.name}
+						active={[...filterPlayer].includes(item.name)}
+						onClick={(_id, label) => {
 							setFilterPlayer(locs => {
 								if (label && locs.includes(label)) return [...locs.filter(t => t !== label)]
 								// return label ? [...locs, label] : locs
@@ -303,9 +305,9 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 						}
 					/>
 					}
-					contentContainerStyle={ styles.wrapList }
-					showsVerticalScrollIndicator={ false }
-					scrollEnabled={ false }
+					contentContainerStyle={styles.wrapList}
+					showsVerticalScrollIndicator={false}
+					scrollEnabled={false}
 				/>
 
 				{ /* <Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-type') }</Text>
@@ -327,28 +329,28 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 					/>
 				*/ }
 
-				<Text style={ styles.filterSecTitle }>{ t('discover-page.filter-game-mechanics') }</Text>
+				<Text style={styles.filterSecTitle}>{t('discover-page.filter-game-mechanics')}</Text>
 				<FlatList
-					data={ listGameMechanic }
-					keyExtractor={ (i, id) => `${ id }-${ i.setting_code }` }
-					extraData={ [filterMechanic] }
-					renderItem={ ({ item }) => <FilterTag
-						id={ item.set_order }
-						code={ item.setting_code }
+					data={listGameMechanic}
+					keyExtractor={(i, id) => `${id}-${i.setting_code}`}
+					extraData={[filterMechanic]}
+					renderItem={({ item }) => <FilterTag
+						id={item.set_order}
+						code={item.setting_code}
 						// icon={ <FilterIcon { ...item } /> }
-						label={ item.content_value }
-						active={ [...filterMechanic].includes(item.content_value ?? '') }
-						onClick={ _onFilterGameMechanic }
-					/> }
-					contentContainerStyle={ styles.wrapList }
-					showsVerticalScrollIndicator={ false }
-					scrollEnabled={ false }
+						label={item.content_value}
+						active={[...filterMechanic].includes(item.content_value ?? '')}
+						onClick={_onFilterGameMechanic}
+					/>}
+					contentContainerStyle={styles.wrapList}
+					showsVerticalScrollIndicator={false}
+					scrollEnabled={false}
 				/>
 
 				<ActionButton
-					style={ styles.filterAction }
+					style={styles.filterAction}
 					label='Show Result'
-					onPress={ _onApplyFilter }
+					onPress={_onApplyFilter}
 				/>
 			</BottomSheet>
 		</Container>
