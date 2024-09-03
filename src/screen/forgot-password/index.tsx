@@ -60,7 +60,7 @@ const ForgotPassword = ({ theme, t, navigation }: Props): React.ReactNode => {
 			>
 				<Image source={ newLogo } style={ styles.headerImage } />
 
-				<Text variant='headingMedium' style={ styles.title }>
+				<Text variant='bodyDoubleExtraLargeJunegull' style={ styles.title }>
 					{ t('forgot-password-page.title') }
 				</Text>
 

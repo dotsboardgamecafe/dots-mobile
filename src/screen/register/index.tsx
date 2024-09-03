@@ -160,7 +160,7 @@ const Register = ({ t, theme, navigation, route }: Props): React.ReactNode => {
 			>
 
 				<Image source={ newLogo } style={ styles.headerImage } />
-				<Text variant='headingMedium' style={ styles.title }>
+				<Text variant='bodyDoubleExtraLargeJunegull' style={ styles.title }>
 					{ t('register-page.title') }
 				</Text>
 				<Text variant='bodyMiddleRegular' style={ styles.mt8 }>
