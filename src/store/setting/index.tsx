@@ -4,6 +4,7 @@ import { baseApi } from '../../utils/base.api'
 const defParam = {
 	status: 'active',
 	sort: 'asc',
+	limit: 1000,
 }
 
 export const settingApi = baseApi.injectEndpoints({

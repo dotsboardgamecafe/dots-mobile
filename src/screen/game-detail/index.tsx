@@ -355,11 +355,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							</>
 						}
 
-						{ data?.is_popular &&
+						{/* { data?.is_popular &&
 							<View style={ styles.popularContainer }>
 								<Text variant='bodySmallBold' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
 							</View>
-						}
+						} */}
 					</View>
 				</View>
 

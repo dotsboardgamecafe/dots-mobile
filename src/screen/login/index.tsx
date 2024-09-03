@@ -32,7 +32,7 @@ interface FormData extends FieldValues { email: string, password: string }
 
 const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 	const errModalRef = useRef<BottomSheetModal>(null)
-	const {  onSetUser, onSetLogin } = useStorage()
+	const { onSetUser, onSetLogin } = useStorage()
 	const { screenName } = navigationConstant
 	const [showPass, setShowPass] = useState(false)
 	const { control, handleSubmit, formState: { errors }, } = useForm<FormData>()
@@ -125,7 +125,7 @@ const Login = ({ theme, t, navigation, route }: Props): React.ReactNode => {
 				enableOnAndroid
 			>
 				<Image source={ newLogo } style={ styles.headerImage } />
-				<Text variant='headingMedium' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
+				<Text variant='bodyDoubleExtraLargeJunegull' style={ styles.headerTitle }>{ t('login-page.title') }</Text>
 				<Text variant='bodyMiddleRegular' style={ styles.emailLabel }>{ t('login-page.email-label') }</Text>
 				<Controller
 					control={ control }
