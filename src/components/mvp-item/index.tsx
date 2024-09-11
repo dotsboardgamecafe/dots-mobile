@@ -12,7 +12,7 @@ import styles from './styles'
 import { type MvpItemProps } from './type'
 import { type ThemeType } from '../../models/theme'
 import Image from '../image'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 
 const MvpItem = ({ item, index, showVP }: MvpItemProps): React.ReactNode => {
 	const theme = useTheme<ThemeType>()
@@ -34,7 +34,7 @@ const MvpItem = ({ item, index, showVP }: MvpItemProps): React.ReactNode => {
 				source={ { uri: item.user_img_url } }
 				resizeMode='cover'
 				style={ styles.mvpPlayerImage }
-				fallbackImg={ LOGO }
+				fallbackImg={ newLogo }
 			/>
 			<Text variant='bodyMiddleRegular' style={ styles.mvpPlayerName }>{ item.user_name }</Text>
 			<Text variant='bodyMiddleMedium' style={ styles.mvpVp }>{ showVP ? item.total_point : item.total_game_played }</Text>

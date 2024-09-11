@@ -29,7 +29,7 @@ import { type MostVPParam } from '../../models/champions'
 import Loading from '../../components/loading'
 import moment from 'moment'
 import Image from '../../components/image'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 
 type Props = NavigationProps<'mvp'>
 
@@ -82,7 +82,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 							source={ { uri: item.user_img_url } }
 							resizeMode='cover'
 							style={ [styles.topPlayerImg, styles.rank1Img] }
-							fallbackImg={ LOGO }
+							fallbackImg={ newLogo }
 						/>
 						<Medal1 width={ scaleWidth(32) } style={ styles.medal }/>
 					</View>
@@ -107,7 +107,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 							source={ { uri: item.user_img_url } }
 							resizeMode='cover'
 							style={ [styles.topPlayerImg, styles.rank2Img] }
-							fallbackImg={ LOGO }
+							fallbackImg={ newLogo }
 						/>
 						<Medal2 width={ scaleWidth(24) } style={ styles.medal }/>
 					</View>
@@ -132,7 +132,7 @@ const MVP = ({ theme, route, t }: Props): React.ReactNode => {
 							source={ { uri: item.user_img_url } }
 							resizeMode='cover'
 							style={ [styles.topPlayerImg, styles.rank3Img] }
-							fallbackImg={ LOGO }
+							fallbackImg={ newLogo }
 						/>
 						<Medal3 width={ scaleWidth(24) } style={ styles.medal }/>
 					</View>

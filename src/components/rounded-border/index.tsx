@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import styles from './styles'
@@ -9,6 +9,10 @@ import { colorsTheme } from '../../constants/theme'
 
 const colors = [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent]
 
+const defaultSpaceBorder = 3
+
+const intialSpaceBorder = Platform.OS === 'android' ? defaultSpaceBorder : defaultSpaceBorder / 2
+
 const RoundedBorder = ({
 	children,
 	radius,
@@ -16,7 +20,7 @@ const RoundedBorder = ({
 	contentStyle,
 	style: propStyle,
 	colors: colorProps = colors,
-	spaceBorder = 1.5
+	spaceBorder = intialSpaceBorder
 }: RoundedBorderProps): React.ReactNode => {
 
 	const contentRadius = useMemo(() => radius ? radius - (borderWidth ?? 0) : 0, [])

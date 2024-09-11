@@ -5,7 +5,7 @@ import Container from '../../components/container'
 import ImagePicker, { type ImageOrVideo, type Options } from 'react-native-image-crop-picker'
 import styles from './styles'
 import {
-	ImageBackground, TouchableOpacity, View, FlatList, ScrollView, Platform
+	ImageBackground, TouchableOpacity, View, FlatList, ScrollView
 } from 'react-native'
 import Text from '../../components/text'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
@@ -393,9 +393,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 						return (
 							<RoundedBorder
 								style={ styles.roundedGameFavStyle }
-								spaceBorder={ Platform.OS === 'ios' ? 0.5 : undefined }
 								radius={ 12 }
-								borderWidth={ 1 }
 								key={ item.game_category_id }
 								colors={ [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent] }
 								contentStyle={ [styles.rowStyle, styles.rowCenterStyle, styles.itemGameFavWrapperStyle] }

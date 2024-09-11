@@ -23,7 +23,6 @@ import { TabActions } from '@react-navigation/native'
 import { useGetUserProfileQuery } from '../../store/user'
 import Loading from '../../components/loading'
 import ReloadView from '../../components/reload-view'
-import { LOGO } from '../../assets/images'
 import { PageIndicator } from 'react-native-page-indicator'
 import { colorsTheme } from '../../constants/theme'
 import { useGetBannerPublishedQuery } from '../../store/banner'
@@ -144,7 +143,7 @@ const Home = ({ navigation, t }:Props): React.ReactNode => {
 			<View style={ [styles.sectionWrapperStyle, styles.headerWrapperStyle] }>
 				<View style={ styles.avatarWrapperStyle }>
 					<TouchableOpacity onPress={ _navigateToProfile }>
-						<Avatar.Image size={ scaleWidth(48) } source={  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
+						<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(48) } source={ { uri: userProfileData?.image_url }  }/>
 					</TouchableOpacity>
 					<View style={ styles.greetingWrapperStyle }>
 						<Text style={ styles.greetingTextStyle } variant='bodySmallRegular'>Hello 👋</Text>

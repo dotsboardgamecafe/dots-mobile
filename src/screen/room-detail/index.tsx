@@ -26,7 +26,7 @@ import { type Users } from '../../models/users'
 import Image from '../../components/image'
 import { type Rooms } from '../../models/rooms'
 import ErrorModal from '../../components/error-modal'
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 import Toast from 'react-native-toast-message'
 import { get } from 'lodash'
 
@@ -183,7 +183,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 						<Image
 							source={ { uri: item.user_image_url ?? '' } }
 							style={ styles.player }
-							fallbackImg={ LOGO }
+							fallbackImg={ newLogo }
 						/>
 					</Shadow>
 				</Shadow>

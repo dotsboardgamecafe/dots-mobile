@@ -10,9 +10,10 @@ const styles = StyleSheet.create({
 		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT + scaleHeight(24),
 	},
 	headerImage: {
-		width: scaleWidth(72),
+		width: scaleWidth(80),
 		height: scaleHeight(80),
-		marginTop: scaleHeight(SCREEN_HEIGHT * .1)
+		marginTop: scaleHeight(SCREEN_HEIGHT * .1),
+		resizeMode: 'contain',
 	},
 	headerTitle: {
 		marginTop: scaleHeight(12)
