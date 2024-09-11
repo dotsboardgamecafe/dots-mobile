@@ -10,7 +10,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		alignItems: 'stretch',
 		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
-		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT
+		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT + scaleHeight(24)
 	},
 	headerImage: {
 		width: scaleWidth(72),
