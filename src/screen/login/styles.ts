@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flexGrow: 1,
 		paddingHorizontal: scaleWidth(16),
-		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT
+		paddingBottom: SCREEN_HEIGHT - WINDOW_HEIGHT + scaleHeight(24),
 	},
 	headerImage: {
 		width: scaleWidth(80),
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		marginTop: scaleHeight(24),
-		// marginBottom: scaleHeight(24),
+		marginBottom: scaleHeight(24),
 	},
 	registerContainer: {
 		flexDirection: 'row',
