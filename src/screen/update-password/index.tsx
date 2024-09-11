@@ -5,7 +5,7 @@ import { Image, Keyboard } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type IconProps, Lock, Eye, EyeSlash } from 'iconsax-react-native'
 
-import { LOGO } from '../../assets/images'
+import { newLogo } from '../../assets/images'
 import ActionButton from '../../components/action-button'
 import Container from '../../components/container'
 import withCommon from '../../hoc/with-common'
@@ -112,7 +112,7 @@ const UpdatePassword = ({ theme, t, navigation, route }: Props): React.ReactNode
 				bounces={ false }
 				enableOnAndroid
 			>
-				<Image source={ LOGO } style={ styles.headerImage } />
+				<Image source={ newLogo } style={ styles.headerImage } />
 				<Text variant='headingMedium' style={ styles.title }>
 					{ t('update-password-page.title') }
 				</Text>

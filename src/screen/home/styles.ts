@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
+	avatarStyle: {
+		backgroundColor: colorsTheme.black
+	},
 	greetingTextStyle: {
 		fontSize: scaleFont(14)
 	},

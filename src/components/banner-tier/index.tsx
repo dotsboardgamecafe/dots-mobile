@@ -12,7 +12,6 @@ import VPIcon from '../../assets/svg/VP.svg'
 import PencilIcon from '../../assets/svg/pencil.svg'
 import TripleDotsIcon from '../../assets/svg/triple-dots.svg'
 import { Avatar } from 'react-native-paper'
-import { LOGO } from '../../assets/images'
 import { type StyleProps } from 'react-native-reanimated'
 import { useTranslation } from 'react-i18next'
 import { type NavigationProp, useNavigation } from '@react-navigation/native'
@@ -99,7 +98,7 @@ const BannerTier = ({
 						<View style={ styles.avatarUserWrapperStyle }>
 							<View>
 								<View style={ styles.imageBorderStyle }>
-									<Avatar.Image size={ scaleWidth(62) } source={ selectedImage ? { uri: selectedImage } : userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
+									<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(62) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
 								</View>
 								<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] } onPress={ onPressChangeAvatar }>
 									<PencilIcon/>
@@ -122,7 +121,7 @@ const BannerTier = ({
 					{
 						screen === 'tier' ?
 							<View style={ styles.imageBorderStyle } >
-								<Avatar.Image size={ scaleWidth(48) } source={ selectedImage ? { uri: selectedImage } :  userProfileData?.image_url ? { uri: userProfileData?.image_url } : LOGO }/>
+								<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(48) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
 							</View> :
 							screen === 'profile' ?
 								<TouchableOpacity style={ styles.tripleDotsWrapperStyle } onPress={ onPressTripleDot }>

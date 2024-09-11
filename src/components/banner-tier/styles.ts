@@ -27,6 +27,7 @@ const styles: StyleProps = {
 	rangeWrapperStyle: {
 		marginBottom: scaleVertical(12),
 		position: 'relative',
+		justifyContent: 'center'
 	},
 	neonWrapperStyle: (isHome: boolean) => ({
 		height: scaleHeight(isHome ? 10 : 11),
@@ -42,13 +43,12 @@ const styles: StyleProps = {
 		paddingVertical: isHome ? 3 : 4,
 		height: scaleHeight(isHome ? 5 : 6),
 		marginHorizontal: scaleHorizontal(2),
-		marginTop: isHome ? 2.3 : 1.3,
+		justifyContent: 'center'
 	}),
 	neonLineStyle: (isHome: boolean) => ({
 		height: scaleHeight(isHome ? 2 : 3),
 		backgroundColor: colorsTheme.background,
 		borderRadius: 24,
-		top: isHome ? -1 : -1.5
 	}),
 	textStyle: {
 		color: colorsTheme.background
@@ -86,6 +86,9 @@ const styles: StyleProps = {
 		alignItems: 'center',
 		paddingHorizontal: scaleWidth(16),
 		paddingTop: scaleVertical(24),
+	},
+	avatarStyle: {
+		backgroundColor: colorsTheme.black
 	},
 	avatarUsernameWrapperStyle: {
 		marginLeft: scaleHorizontal(16)

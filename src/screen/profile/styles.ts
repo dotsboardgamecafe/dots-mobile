@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 	gameCollectionBottomStyle: {
 		paddingBottom: scaleHeight(Platform.OS === 'android' ? 40 : 20)
 	},
-	claimedBadgeStyle: { flex: 0, width: scaleWidth(70), height: scaleWidth(70), paddingVertical: 0, paddingHorizontal: 0, margin: 0 }
+	claimedBadgeStyle: { flex: 0, width: scaleWidth(70), height: scaleWidth(70) }
 })
 
 export default styles
