@@ -25,8 +25,8 @@
 		A5C7A3CF2C2CBFC600016E55 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A5C7A3C82C2CBFC600016E55 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A8B8B961DBCA47ACB26EE89F /* FuturaPT-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */; };
 		C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0370F42E401A498D994BDC7C /* Poppins-Black.ttf */; };
-		FD56A8C587542C4B36713FAA /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C969D47F4D66E6F2057561A /* libPods-OneSignalNotificationServiceExtension.a */; };
 		D4378A7E60774E3DA102E98D /* Junegull-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */; };
+		FD56A8C587542C4B36713FAA /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C969D47F4D66E6F2057561A /* libPods-OneSignalNotificationServiceExtension.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +78,7 @@
 		3B47CF82A68C3A328CBC3A1B /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		3E4B971EB0774C028699B5B9 /* FuturaPT-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaPT-Bold.ttf"; path = "../src/assets/fonts/FuturaPT-Bold.ttf"; sourceTree = "<group>"; };
 		453BAF80A1DF49CFB57DB0FE /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = Dots/BootSplash.storyboard; sourceTree = "<group>"; };
+		4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Junegull-Regular.ttf"; path = "../src/assets/fonts/Junegull-Regular.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Dots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.release.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Dots-DotsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots-DotsTests.debug.xcconfig"; path = "Target Support Files/Pods-Dots-DotsTests/Pods-Dots-DotsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Dots.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Dots.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,7 +97,6 @@
 		A5C7A3CC2C2CBFC600016E55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5C7A3D42C2CC08900016E55 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */ = {isa = PBXFileReference; name = "Junegull-Regular.ttf"; path = "../src/assets/fonts/Junegull-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
