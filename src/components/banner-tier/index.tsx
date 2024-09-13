@@ -1,4 +1,4 @@
-import { View, Animated, TouchableOpacity, Platform } from 'react-native'
+import { View, Animated, TouchableOpacity } from 'react-native'
 import React, {
 	useEffect, lazy, Suspense, useCallback, useState,
 	useMemo,
@@ -82,7 +82,7 @@ const BannerTier = ({
 			useNativeDriver: false,
 			duration: 1500
 		}).start(() => {
-			setStarCount(Platform.OS === 'android' ? 100 : 300)
+			setStarCount(100)
 		})
 		return () => {
 			setStarCount(0)

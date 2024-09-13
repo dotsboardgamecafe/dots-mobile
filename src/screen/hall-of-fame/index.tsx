@@ -8,7 +8,7 @@ import FilterItem from '../../components/filter-item'
 import { ArrowDown2 } from 'iconsax-react-native'
 import { type NavigationProps } from '../../models/navigation'
 import CardHof from '../../components/card-hof'
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import { type BottomSheetModal } from '@gorhom/bottom-sheet'
 import BottomSheetList from '../../components/bottom-sheet-list'
 import FilterItemList from '../../components/filter-item-list'
@@ -80,6 +80,8 @@ const HallOfFame = ({ theme, t }: Props): React.ReactNode => {
 				renderItem={ ({ item }) => <CardHof { ...item } /> }
 				ItemSeparatorComponent={ () => <View style={ { height: 8 } } /> }
 				columnWrapperStyle={ { gap: scaleWidth(8) } }
+				contentContainerStyle={ { paddingBottom: scaleVertical(24) } }
+				showsVerticalScrollIndicator={ false }
 				numColumns={ 2 }
 			/>
 			<BottomSheetList

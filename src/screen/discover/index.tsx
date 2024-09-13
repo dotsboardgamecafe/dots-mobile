@@ -11,7 +11,7 @@ import Container from '../../components/container'
 import FilterItem from '../../components/filter-item'
 import CardGame from '../../components/card-game'
 import TextInput from '../../components/text-input'
-import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
+import { scaleHeight, scaleVertical, scaleWidth } from '../../utils/pixel.ratio'
 import styles from './styles'
 import { useKeyboardShown } from '../../utils/keyboard'
 import { locations, rangeNumbers } from './data'
@@ -242,7 +242,7 @@ const Discover = ({ theme, t, navigation }: Props): React.ReactNode => {
 				ItemSeparatorComponent={ () => <View style={ { height: 10 } } /> }
 				style={ styles.list }
 				columnWrapperStyle={ styles.columnWrapper }
-				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight, flexGrow: 1 } }
+				contentContainerStyle={ { paddingBottom: isKeyboardShown ? 10 : tabBarHeight + scaleVertical(24), flexGrow: 1 } }
 				ListEmptyComponent={ _emptyListComponent }
 				numColumns={ 2 }
 				onEndReached={ _onReachEnd }

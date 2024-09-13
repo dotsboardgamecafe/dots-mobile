@@ -108,6 +108,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	listContent: {
 		marginHorizontal: scaleHorizontal(16),
 		// marginBottom: scaleVertical(16),
+		paddingBottom: scaleVertical(24),
 		backgroundColor: colors.gray100,
 		borderBottomStartRadius: 16,
 		borderBottomEndRadius: 16,
