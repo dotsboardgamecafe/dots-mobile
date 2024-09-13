@@ -69,7 +69,7 @@ const Star: React.FC<StarProps> = props => {
 		<Circle
 			cx={ 0 }
 			cy={ 0 }
-			r={ 3 }
+			r={ 1.5 }
 			color={ colorsTheme.lightWhite }
 			transform={ animatedStyle }
 			strokeWidth={ 0.5 + Math.random() * 0.5 }
