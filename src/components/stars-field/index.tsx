@@ -77,13 +77,41 @@ const Star: React.FC<StarProps> = props => {
 	)
 }
 
-const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
+const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode => {
 	const timeVal = useSharedValue(0)
+	const listStar = getStars(starCount)
 
 	const _renderStars = useCallback(({ item }: any) => {
 		return <Star key={ item?.id } time={ timeVal } starCount={ starCount } { ...item } />
 	}, [starCount])
 
+	useEffect(() => {
+		timeVal.value = 0
+		timeVal.value = withRepeat(
+			withTiming(1, { duration: 8000, easing: Easing.linear }),
+			0,
+			false
+		)
+
+		return () => {
+			timeVal.value = 0
+		}
+	}, [starCount])
+	
+	return (
+		<Canvas style={ StyleSheet.absoluteFill }>
+			<Group blendMode='multiply'>
+				{
+					listStar.map(star => _renderStars({ item: star }))
+				}
+			</Group>
+		</Canvas>
+	)
+}
+
+const MemoizedStarField = React.memo(StarFieldComponent)
+
+const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
 	const _getSmokeImage = useMemo(() => {
 		if (tier) {
 			const smokeImage = {
@@ -122,31 +150,6 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 		)
 	}, [starCount, style, _getSmokeImage])
 
-	useEffect(() => {
-		timeVal.value = 0
-		timeVal.value = withRepeat(
-			withTiming(1, { duration: 8000, easing: Easing.linear }),
-			0,
-			false
-		)
-
-		return () => {
-			timeVal.value = 0
-		}
-	}, [starCount])
-
-	const _renderStarsField = useMemo(() => {
-		return (
-			<Canvas style={ StyleSheet.absoluteFill }>
-				<Group blendMode='multiply'>
-					{
-						getStars(starCount).map(star => _renderStars({ item: star }))
-					}
-				</Group>
-			</Canvas>
-		)
-	}, [starCount, _renderStars])
-
 	return (
 		<LinearGradient
 			colors={ _generateGradientColor }
@@ -155,7 +158,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage }
-			{ _renderStarsField }
+			<MemoizedStarField starCount={ starCount }/>
 			{ children }
 		</LinearGradient>
 	)
