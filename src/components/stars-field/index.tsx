@@ -2,19 +2,25 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { Canvas, Circle, Group } from '@shopify/react-native-skia'
 import {
 	Dimensions, StyleSheet, type StyleProp, type ViewStyle, Image, View,
+	Platform,
+	type ListRenderItem,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import {
+import Animated, {
 	useSharedValue,
 	withRepeat,
 	withTiming,
 	Easing,
 	type SharedValue,
 	useDerivedValue,
+	useAnimatedStyle,
 } from 'react-native-reanimated'
 import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
 import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
+import { FlatList } from 'react-native-gesture-handler'
+
+const isIOS = Platform.OS === 'ios'
 
 interface DefaultProps {
   time?:SharedValue<number>;
@@ -77,13 +83,87 @@ const Star: React.FC<StarProps> = props => {
 	)
 }
 
-const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode => {
-	const timeVal = useSharedValue(0)
-	const listStar = getStars(starCount)
+const StarIOS: React.FC<StarProps> = props => {
+	const animatedStyle = useAnimatedStyle(() => {
+		const t = props?.time?.value ?? 0
+		const { x, y } = props
+
+		const z = props.id / Number(props.starCount ?? 0)
+		const depth = (z + t) % 1
+		const invZp = 0.4 / (1 - depth)
+
+		return {
+			transform: [
+				{ translateX: windowWidth * (0.5 + x * invZp) },
+				{ translateY: windowHeight * (0.5 + y * invZp) },
+				{ scaleX: depth },
+				{ scaleY: depth },
+			],
+		}
+	})
+
+	return (
+		<Animated.View
+			style={ [
+				{
+					// the animation didnt work when the style in styles file
+					position: 'absolute',
+					backgroundColor: colorsTheme.lightWhite,
+					width: 3,
+					height: 3,
+					opacity: 0.5 + Math.random() * 0.5,
+					borderRadius: 100,
+					zIndex: 99
+				},
+				animatedStyle,
+			] }
+		/>
+	)
+}
+
+const StarFieldIOS = ({ starCount, timeVal }: {starCount: number, timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(starCount), [starCount])
+
+	const _renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
+		return <StarIOS key={ item.id } time={ timeVal } starCount={ starCount } { ...item } />
+	}, [starCount])
+
+	return (
+		<FlatList
+			style={ StyleSheet.absoluteFill }
+			scrollEnabled={ false }
+			initialNumToRender={ starCount }
+			data={ listStar }
+			renderItem={ _renderStars }
+			keyExtractor={ (_, index) => index.toString() }
+			getItemLayout={ (_, index) => (
+				{ length: 3, offset: 3 * index, index }
+			) }
+			contentContainerStyle={ styles.starWrapperStyle }
+		/>
+	)
+}
+
+const StarFieldAndroid = ({ starCount, timeVal }: {starCount: number, timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(starCount), [starCount])
 
 	const _renderStars = useCallback(({ item }: any) => {
 		return <Star key={ item?.id } time={ timeVal } starCount={ starCount } { ...item } />
 	}, [starCount])
+
+	return (
+		<Canvas style={ StyleSheet.absoluteFill }>
+			<Group blendMode='multiply'>
+				{
+					listStar.map(star => _renderStars({ item: star }))
+				}
+			</Group>
+		</Canvas>
+	)
+}
+
+const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode => {
+	const timeVal = useSharedValue(0)
 
 	useEffect(() => {
 		timeVal.value = 0
@@ -97,16 +177,10 @@ const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode
 			timeVal.value = 0
 		}
 	}, [starCount])
-	
-	return (
-		<Canvas style={ StyleSheet.absoluteFill }>
-			<Group blendMode='multiply'>
-				{
-					listStar.map(star => _renderStars({ item: star }))
-				}
-			</Group>
-		</Canvas>
-	)
+
+	return isIOS ?
+		<StarFieldIOS starCount={ starCount } timeVal={ timeVal } /> :
+		<StarFieldAndroid starCount={ starCount } timeVal={ timeVal } />
 }
 
 const MemoizedStarField = React.memo(StarFieldComponent)
