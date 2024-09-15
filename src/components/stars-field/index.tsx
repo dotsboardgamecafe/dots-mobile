@@ -4,6 +4,7 @@ import {
 	Dimensions, StyleSheet, type StyleProp, type ViewStyle, Image, View,
 	Platform,
 	type ListRenderItem,
+	NativeModules
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Animated, {
@@ -19,6 +20,8 @@ import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
 import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
 import { FlatList } from 'react-native-gesture-handler'
+
+const {Stars} = NativeModules
 
 const isIOS = Platform.OS === 'ios'
 
@@ -41,18 +44,7 @@ interface StarProps extends StarData {}
 const windowWidth = Dimensions.get('window').width
 const windowHeight = 150
 
-const getStars = (starCount: number): any[] => {
-	const stars: StarData[] = []
-
-	for (let i = 0; i < starCount; i++) {
-		stars.push({
-			id: i,
-			x: Math.random() - 0.5,
-			y: Math.random() - 0.5,
-		})
-	}
-	return stars
-}
+const getStars = (): any[] => Stars.generateRandomArraySync()
 
 const Star: React.FC<StarProps> = props => {
 	const animatedStyle = useDerivedValue(() => {
@@ -121,18 +113,18 @@ const StarIOS: React.FC<StarProps> = props => {
 	)
 }
 
-const StarFieldIOS = ({ starCount, timeVal }: {starCount: number, timeVal: any}): React.ReactNode => {
-	const listStar = useMemo(() => getStars(starCount), [starCount])
+const StarFieldIOS = ({ timeVal }: {timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(), [])
 
 	const _renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
-		return <StarIOS key={ item.id } time={ timeVal } starCount={ starCount } { ...item } />
-	}, [starCount])
+		return <StarIOS key={ item.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+	}, [listStar.length])
 
 	return (
 		<FlatList
 			style={ StyleSheet.absoluteFill }
 			scrollEnabled={ false }
-			initialNumToRender={ starCount }
+			initialNumToRender={ listStar.length }
 			data={ listStar }
 			renderItem={ _renderStars }
 			keyExtractor={ (_, index) => index.toString() }
@@ -144,18 +136,18 @@ const StarFieldIOS = ({ starCount, timeVal }: {starCount: number, timeVal: any})
 	)
 }
 
-const StarFieldAndroid = ({ starCount, timeVal }: {starCount: number, timeVal: any}): React.ReactNode => {
-	const listStar = useMemo(() => getStars(starCount), [starCount])
+const StarFieldAndroid = ({ timeVal }: {timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(), [])
 
 	const _renderStars = useCallback(({ item }: any) => {
-		return <Star key={ item?.id } time={ timeVal } starCount={ starCount } { ...item } />
-	}, [starCount])
+		return <Star key={ item?.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+	}, [listStar.length])
 
 	return (
 		<Canvas style={ StyleSheet.absoluteFill }>
 			<Group blendMode='multiply'>
 				{
-					listStar.map(star => _renderStars({ item: star }))
+					listStar?.map(star => _renderStars({ item: star }))
 				}
 			</Group>
 		</Canvas>
@@ -179,8 +171,8 @@ const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode
 	}, [starCount])
 
 	return isIOS ?
-		<StarFieldIOS starCount={ starCount } timeVal={ timeVal } /> :
-		<StarFieldAndroid starCount={ starCount } timeVal={ timeVal } />
+		<StarFieldIOS timeVal={ timeVal } /> :
+		<StarFieldAndroid timeVal={ timeVal } />
 }
 
 const MemoizedStarField = React.memo(StarFieldComponent)

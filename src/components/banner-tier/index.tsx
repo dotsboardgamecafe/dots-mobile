@@ -1,6 +1,6 @@
 import { View, Animated, TouchableOpacity } from 'react-native'
 import React, {
-	useEffect, lazy, Suspense, useCallback, useState,
+	useEffect, lazy, Suspense, useCallback,
 	useMemo,
 } from 'react'
 import { scaleHeight, scaleWidth } from '../../utils/pixel.ratio'
@@ -61,8 +61,6 @@ const BannerTier = ({
 	const { t } = useTranslation()
 	const navigation: NavigationProp<RootStackParamList> = useNavigation()
 
-	const [starCount, setStarCount] = useState(0)
-
 	const animatedValue = new Animated.Value(0)
 
 	const interpolatedValue = useMemo(() => {
@@ -81,11 +79,8 @@ const BannerTier = ({
 			toValue: getPercentage(userProfileData),
 			useNativeDriver: false,
 			duration: 1500
-		}).start(() => {
-			setStarCount(300)
-		})
+		}).start()
 		return () => {
-			setStarCount(0)
 			animatedValue.stopAnimation()
 		 }
 	}, [userProfileData, selectedImage])
@@ -178,7 +173,7 @@ const BannerTier = ({
 		<Suspense fallback={
 			<View style={ style } />
 		 } >
-			<LazyStarsField starCount={ starCount } style={ style } tier={ userProfileData?.latest_tier.toLowerCase() }>
+			<LazyStarsField style={ style } tier={ userProfileData?.latest_tier.toLowerCase() }>
 				<View style={ [starsFieldContentStyle] }>
 					{ _renderTopContent }
 					{ _renderBottomContent }
