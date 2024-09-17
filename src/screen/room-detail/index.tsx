@@ -81,8 +81,8 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data])
 
 	const schedule = useMemo(() => {
-		const d1 = moment(`${ data?.start_date } ${ data?.start_time }`)
-		const d2 = moment(`${ data?.end_date } ${ data?.end_time }`)
+		const d1 = moment(`${data?.start_date} ${data?.start_time}`)
+		const d2 = moment(`${data?.end_date} ${data?.end_time}`)
 		const startDate = d1.local()
 		const endDate = d2.local()
 		return startDate.format('MMM, Do [at] HH:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'HH:mm' : 'MMM, Do [at] HH:mm')
@@ -125,16 +125,16 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 	}, [data])
 
 	const gameInfoAction = useMemo(() => {
-		if (data?.room_type !== 'special_event')
-			return (
-				<ActionButton2
-					label='Game Info'
-					style={ styles.gameInfoAction }
-					onPress={ () => {
-						navigation.navigate('gameDetail', { game_code: data?.game_code })
-					} }
-				/>
-			)
+		// if (data?.room_type !== 'special_event')
+		return (
+			<ActionButton2
+				label='Game Info'
+				style={ styles.gameInfoAction }
+				onPress={ () => {
+					navigation.navigate('gameDetail', { game_code: data?.game_code })
+				} }
+			/>
+		)
 	}, [data])
 
 	const joinAction = useMemo(() => {
@@ -153,7 +153,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 			)
 		}
 
-		const vp = ` - Get ${ data?.tournament_code ? data?.participant_vp : data?.reward_point }`
+		const vp = ` - Get ${data?.tournament_code ? data?.participant_vp : data?.reward_point}`
 		return (
 			<View style={ styles.actionJoin }>
 				<ActionButton

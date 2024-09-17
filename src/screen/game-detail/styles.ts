@@ -9,6 +9,7 @@ const statusBarHeight = Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
 const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 	container: {
 		paddingTop: 0,
+		paddingBottom: scaleVertical(24)
 	},
 	contentTop: {
 		paddingHorizontal: scaleHorizontal(16),
