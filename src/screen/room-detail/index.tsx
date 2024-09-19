@@ -105,7 +105,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 				<View style={ styles.rowDetail }>
 					<Text variant='bodyMiddleMedium' style={ styles.detailKey }>{ t('room-detail.level') }</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ data?.difficulty }</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.detailVal }>{ _titleCase(data?.difficulty ?? '') }</Text>
 				</View>
 			</View>
 		)
@@ -200,6 +200,14 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		}
 		setRegModalVisible(false)
 	}, [data])
+
+	const _titleCase = useCallback((str: string): string => {
+		const splitStr = str.toLowerCase().split(' ')
+		for (let i = 0; i < splitStr.length; i++) {
+			splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
+		}
+		return splitStr.join(' ')
+	}, [])
 
 	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
@@ -345,7 +353,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 				<View style={ styles.bookingRow }>
 					<Text variant='bodyMiddleRegular' style={ styles.bookingKey }>{ t('room-detail.level') } :</Text>
-					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>{ data?.difficulty }</Text>
+					<Text variant='bodyMiddleMedium' style={ styles.bookingVal }>{ _titleCase(data?.difficulty ?? '') }</Text>
 				</View>
 				<ActionButton
 					label={ t('room-detail.pay') }
