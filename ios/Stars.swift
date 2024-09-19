@@ -16,7 +16,7 @@ class Stars: NSObject {
   func generateRandomArraySync() -> NSArray {
     var array = [NSDictionary]()
 
-    for i in 1...300 {
+    for i in 1...200 {
       let x = Float.random(in: 0...1) - 0.5
       let y = Float.random(in: 0...1) - 0.5
       

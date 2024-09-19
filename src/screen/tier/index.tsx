@@ -165,7 +165,6 @@ const Tier = ({ t }: Props): React.ReactNode => {
 					horizontal={ true }
 					bounces={ false }
 					showsHorizontalScrollIndicator={ false }
-					pagingEnabled
 					removeClippedSubviews
 				>
 					{

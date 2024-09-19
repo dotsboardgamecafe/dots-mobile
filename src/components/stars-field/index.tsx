@@ -21,7 +21,7 @@ import { colorsTheme } from '../../constants/theme'
 import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
 import { FlatList } from 'react-native-gesture-handler'
 
-const {Stars} = NativeModules
+const { Stars } = NativeModules
 
 const isIOS = Platform.OS === 'ios'
 
@@ -46,7 +46,7 @@ const windowHeight = 150
 
 const getStars = (): any[] => Stars.generateRandomArraySync()
 
-const Star: React.FC<StarProps> = props => {
+const StarAndroid: React.FC<StarProps> = props => {
 	const animatedStyle = useDerivedValue(() => {
 		const t = props?.time?.value ?? 0
 		const { x, y } = props
@@ -113,11 +113,19 @@ const StarIOS: React.FC<StarProps> = props => {
 	)
 }
 
+const MemoizeStarIOS = React.memo(StarIOS)
+
 const StarFieldIOS = ({ timeVal }: {timeVal: any}): React.ReactNode => {
 	const listStar = useMemo(() => getStars(), [])
 
+	const getKeyExtractor = useCallback((item: any) => item?.id?.toString(), [])
+
+	const getItemLayout = useCallback((data: any, index: number) => (
+		{ length: 3, offset: 3 * index, index }
+	), [])
+
 	const _renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
-		return <StarIOS key={ item.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+		return <MemoizeStarIOS key={ item.id } time={ timeVal } starCount={ listStar.length } { ...item } />
 	}, [listStar.length])
 
 	return (
@@ -127,10 +135,8 @@ const StarFieldIOS = ({ timeVal }: {timeVal: any}): React.ReactNode => {
 			initialNumToRender={ listStar.length }
 			data={ listStar }
 			renderItem={ _renderStars }
-			keyExtractor={ (_, index) => index.toString() }
-			getItemLayout={ (_, index) => (
-				{ length: 3, offset: 3 * index, index }
-			) }
+			keyExtractor={ getKeyExtractor }
+			getItemLayout={ getItemLayout }
 			contentContainerStyle={ styles.starWrapperStyle }
 		/>
 	)
@@ -140,7 +146,7 @@ const StarFieldAndroid = ({ timeVal }: {timeVal: any}): React.ReactNode => {
 	const listStar = useMemo(() => getStars(), [])
 
 	const _renderStars = useCallback(({ item }: any) => {
-		return <Star key={ item?.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+		return <StarAndroid key={ item?.id } time={ timeVal } starCount={ listStar.length } { ...item } />
 	}, [listStar.length])
 
 	return (
@@ -154,7 +160,7 @@ const StarFieldAndroid = ({ timeVal }: {timeVal: any}): React.ReactNode => {
 	)
 }
 
-const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode => {
+const StarFieldComponent = (): React.ReactNode => {
 	const timeVal = useSharedValue(0)
 
 	useEffect(() => {
@@ -168,7 +174,7 @@ const StarFieldComponent = ({ starCount }: {starCount: number}): React.ReactNode
 		return () => {
 			timeVal.value = 0
 		}
-	}, [starCount])
+	}, [])
 
 	return isIOS ?
 		<StarFieldIOS timeVal={ timeVal } /> :
@@ -207,9 +213,9 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 
 	const _renderSmokeImage = useMemo(() => {
 		return (
-			<View style={ StyleSheet.absoluteFill }>
+			<View style={ [StyleSheet.absoluteFill, { overflow: 'hidden' }] }>
 				<Image
-					style={ styles.smokeImageStyle(Number((style as any)?.height ?? 200)) }
+					style={ styles.smokeImageStyle }
 					source={ _getSmokeImage }
 				/>
 			</View>
@@ -224,13 +230,12 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage }
-			<MemoizedStarField starCount={ starCount }/>
+			<MemoizedStarField/>
 			{ children }
 		</LinearGradient>
 	)
 }
 
 export default React.memo(Starfield, (prevProps, nextProps) => {
-	return prevProps.starCount === nextProps.starCount
-		&& prevProps.children === nextProps.children
+	return prevProps.children === nextProps.children
 })
