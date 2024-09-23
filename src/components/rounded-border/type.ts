@@ -5,5 +5,6 @@ export type RoundedBorderProps = ViewProps & {
   radius?: number | undefined,
   borderWidth?: number | undefined,
   colors?: string[],
-  spaceBorder?: number
+  spaceBorder?: number,
+  withBackgroundImage?: boolean
 }

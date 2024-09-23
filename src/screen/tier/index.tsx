@@ -32,12 +32,11 @@ const LazyBannerTier = lazy(async() => await import('../../components/banner-tie
 type Props = NavigationProps<'tier'>
 
 const howToEarnPoint = [
-	'Smashing it in a regular game: No need for fancy rooms, just jump in and play!',
-	'Joining the party in a special event: We\'ve got awesome limited-time games, come join the fun!',
-	'Battling it out in a tournament: Feeling competitive? Tournaments are your jam!',
-	'Snagging a badge: Show off your skills and collect cool badges!',
-	'Grabbing a new board game: Gotta love that new game smell!',
-	'Fueling up with food and drinks: Gotta stay energized for all that winning, right?',
+	'Completing a Session with a Game Master (GM)',
+	'Completing a Special Event',
+	'Competing in a Tournament (Top 3 of a Tournament Earns Extra VP)',
+	'Completing requirements stated on each exclusive DOTS badge!',
+	'Spending at DOTS whether it is from food and drinks or retail purchases (excluding All-Day Pass purchases)',
 ]
 
 const PointActivityTab = ({ pointActivity }: { pointActivity: PointActivity[] }): React.ReactNode => {
@@ -77,7 +76,7 @@ const EarnPointActivityTab = (): React.ReactNode => {
 
 	return (
 		<View style={ [styles.flexStyle, styles.midContentHorizontalStyle, styles.filterCardRedeemWrapperStyle] }>
-			<Text style={ styles.pointActivityContentTitleStyle } variant='bodyLargeBold'>Earn sweet loot by:</Text>
+			<Text style={ styles.pointActivityContentTitleStyle } variant='bodyLargeBold'>Ways to earn Victory Points (VP)</Text>
 
 			<FlatList
 				data={ howToEarnPoint }
@@ -165,7 +164,6 @@ const Tier = ({ t }: Props): React.ReactNode => {
 					horizontal={ true }
 					bounces={ false }
 					showsHorizontalScrollIndicator={ false }
-					pagingEnabled
 					removeClippedSubviews
 				>
 					{

@@ -1,4 +1,4 @@
-import { fullWidth, scaleHeight } from '../../utils/pixel.ratio'
+import { fullWidth } from '../../utils/pixel.ratio'
 import { type StyleProps } from 'react-native-reanimated'
 
 const styles: StyleProps = {
@@ -7,11 +7,11 @@ const styles: StyleProps = {
 		position: 'relative',
 		overflow: 'hidden'
 	},
-	smokeImageStyle: (height: number) => ({
+	smokeImageStyle: {
 		width: fullWidth,
-		height: scaleHeight(height),
+		height: '100%',
 		opacity: 0.3
-	}),
+	},
 	starWrapperStyle: {
 		flexGrow: 1,
 		borderWidth: 1,

@@ -220,7 +220,7 @@ const Awards = ({ t }: Props): React.ReactNode => {
 
 		if (isClaimed) {
 			return (
-				<RoundedBorder radius={ 100 } style={ { flex: 0 } } contentStyle={ styles.claimedBadgeStyle }>
+				<RoundedBorder withBackgroundImage radius={ 100 } style={ { flex: 0 } } contentStyle={ styles.claimedBadgeStyle }>
 					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
 				</RoundedBorder>
 			)

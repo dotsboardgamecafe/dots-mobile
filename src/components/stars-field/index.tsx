@@ -2,19 +2,28 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { Canvas, Circle, Group } from '@shopify/react-native-skia'
 import {
 	Dimensions, StyleSheet, type StyleProp, type ViewStyle, Image, View,
+	Platform,
+	type ListRenderItem,
+	NativeModules
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import {
+import Animated, {
 	useSharedValue,
 	withRepeat,
 	withTiming,
 	Easing,
 	type SharedValue,
 	useDerivedValue,
+	useAnimatedStyle,
 } from 'react-native-reanimated'
 import styles from './styles'
 import { colorsTheme } from '../../constants/theme'
 import { smokeIntermediateIllu, smokeLegendIllu, smokeMasterIllu, smokeNoviceIllu } from '../../assets/images'
+import { FlatList } from 'react-native-gesture-handler'
+
+const { Stars } = NativeModules
+
+const isIOS = Platform.OS === 'ios'
 
 interface DefaultProps {
   time?:SharedValue<number>;
@@ -35,20 +44,9 @@ interface StarProps extends StarData {}
 const windowWidth = Dimensions.get('window').width
 const windowHeight = 150
 
-const getStars = (starCount: number): any[] => {
-	const stars: StarData[] = []
+const getStars = (): any[] => Stars.generateRandomArraySync()
 
-	for (let i = 0; i < starCount; i++) {
-		stars.push({
-			id: i,
-			x: Math.random() - 0.5,
-			y: Math.random() - 0.5,
-		})
-	}
-	return stars
-}
-
-const Star: React.FC<StarProps> = props => {
+const StarAndroid: React.FC<StarProps> = props => {
 	const animatedStyle = useDerivedValue(() => {
 		const t = props?.time?.value ?? 0
 		const { x, y } = props
@@ -77,13 +75,115 @@ const Star: React.FC<StarProps> = props => {
 	)
 }
 
-const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
-	const timeVal = useSharedValue(0)
+const StarIOS: React.FC<StarProps> = props => {
+	const animatedStyle = useAnimatedStyle(() => {
+		const t = props?.time?.value ?? 0
+		const { x, y } = props
+
+		const z = props.id / Number(props.starCount ?? 0)
+		const depth = (z + t) % 1
+		const invZp = 0.4 / (1 - depth)
+
+		return {
+			transform: [
+				{ translateX: windowWidth * (0.5 + x * invZp) },
+				{ translateY: windowHeight * (0.5 + y * invZp) },
+				{ scaleX: depth },
+				{ scaleY: depth },
+			],
+		}
+	})
+
+	return (
+		<Animated.View
+			style={ [
+				{
+					// the animation didnt work when the style in styles file
+					position: 'absolute',
+					backgroundColor: colorsTheme.lightWhite,
+					width: 3,
+					height: 3,
+					opacity: 0.5 + Math.random() * 0.5,
+					borderRadius: 100,
+					zIndex: 99
+				},
+				animatedStyle,
+			] }
+		/>
+	)
+}
+
+const MemoizeStarIOS = React.memo(StarIOS)
+
+const StarFieldIOS = ({ timeVal }: {timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(), [])
+
+	const getKeyExtractor = useCallback((item: any) => item?.id?.toString(), [])
+
+	const getItemLayout = useCallback((data: any, index: number) => (
+		{ length: 3, offset: 3 * index, index }
+	), [])
+
+	const _renderStars: ListRenderItem<React.ReactNode> = useCallback(({ item }: any) => {
+		return <MemoizeStarIOS key={ item.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+	}, [listStar.length])
+
+	return (
+		<FlatList
+			style={ StyleSheet.absoluteFill }
+			scrollEnabled={ false }
+			initialNumToRender={ listStar.length }
+			data={ listStar }
+			renderItem={ _renderStars }
+			keyExtractor={ getKeyExtractor }
+			getItemLayout={ getItemLayout }
+			contentContainerStyle={ styles.starWrapperStyle }
+		/>
+	)
+}
+
+const StarFieldAndroid = ({ timeVal }: {timeVal: any}): React.ReactNode => {
+	const listStar = useMemo(() => getStars(), [])
 
 	const _renderStars = useCallback(({ item }: any) => {
-		return <Star key={ item?.id } time={ timeVal } starCount={ starCount } { ...item } />
-	}, [starCount])
+		return <StarAndroid key={ item?.id } time={ timeVal } starCount={ listStar.length } { ...item } />
+	}, [listStar.length])
 
+	return (
+		<Canvas style={ StyleSheet.absoluteFill }>
+			<Group blendMode='multiply'>
+				{
+					listStar?.map(star => _renderStars({ item: star }))
+				}
+			</Group>
+		</Canvas>
+	)
+}
+
+const StarFieldComponent = (): React.ReactNode => {
+	const timeVal = useSharedValue(0)
+
+	useEffect(() => {
+		timeVal.value = 0
+		timeVal.value = withRepeat(
+			withTiming(1, { duration: 8000, easing: Easing.linear }),
+			0,
+			false
+		)
+
+		return () => {
+			timeVal.value = 0
+		}
+	}, [])
+
+	return isIOS ?
+		<StarFieldIOS timeVal={ timeVal } /> :
+		<StarFieldAndroid timeVal={ timeVal } />
+}
+
+const MemoizedStarField = React.memo(StarFieldComponent)
+
+const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
 	const _getSmokeImage = useMemo(() => {
 		if (tier) {
 			const smokeImage = {
@@ -113,39 +213,14 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 
 	const _renderSmokeImage = useMemo(() => {
 		return (
-			<View style={ StyleSheet.absoluteFill }>
+			<View style={ [StyleSheet.absoluteFill, { overflow: 'hidden' }] }>
 				<Image
-					style={ styles.smokeImageStyle(Number((style as any)?.height ?? 200)) }
+					style={ styles.smokeImageStyle }
 					source={ _getSmokeImage }
 				/>
 			</View>
 		)
 	}, [starCount, style, _getSmokeImage])
-
-	useEffect(() => {
-		timeVal.value = 0
-		timeVal.value = withRepeat(
-			withTiming(1, { duration: 8000, easing: Easing.linear }),
-			0,
-			false
-		)
-
-		return () => {
-			timeVal.value = 0
-		}
-	}, [starCount])
-
-	const _renderStarsField = useMemo(() => {
-		return (
-			<Canvas style={ StyleSheet.absoluteFill }>
-				<Group blendMode='multiply'>
-					{
-						getStars(starCount).map(star => _renderStars({ item: star }))
-					}
-				</Group>
-			</Canvas>
-		)
-	}, [starCount, _renderStars])
 
 	return (
 		<LinearGradient
@@ -155,13 +230,12 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage }
-			{ _renderStarsField }
+			<MemoizedStarField/>
 			{ children }
 		</LinearGradient>
 	)
 }
 
 export default React.memo(Starfield, (prevProps, nextProps) => {
-	return prevProps.starCount === nextProps.starCount
-		&& prevProps.children === nextProps.children
+	return prevProps.children === nextProps.children
 })

@@ -23,6 +23,8 @@
 		A589706F2BDA22DF00DE3189 /* ExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A589706E2BDA22DF00DE3189 /* ExitApp.m */; };
 		A5C7A3CB2C2CBFC600016E55 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C7A3CA2C2CBFC600016E55 /* NotificationService.swift */; };
 		A5C7A3CF2C2CBFC600016E55 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A5C7A3C82C2CBFC600016E55 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A5E7CD2B2C96B7E000E39255 /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E7CD2A2C96B7E000E39255 /* Stars.swift */; };
+		A5E7CD2D2C96B81600E39255 /* Stars.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E7CD2C2C96B81600E39255 /* Stars.m */; };
 		A8B8B961DBCA47ACB26EE89F /* FuturaPT-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01034AC5941C4ADD9F31D7D1 /* FuturaPT-Book.ttf */; };
 		C11F06B2FA0543E9A9137648 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0370F42E401A498D994BDC7C /* Poppins-Black.ttf */; };
 		D4378A7E60774E3DA102E98D /* Junegull-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */; };
@@ -78,7 +80,7 @@
 		3B47CF82A68C3A328CBC3A1B /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		3E4B971EB0774C028699B5B9 /* FuturaPT-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaPT-Bold.ttf"; path = "../src/assets/fonts/FuturaPT-Bold.ttf"; sourceTree = "<group>"; };
 		453BAF80A1DF49CFB57DB0FE /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = Dots/BootSplash.storyboard; sourceTree = "<group>"; };
-		4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Junegull-Regular.ttf"; path = "../src/assets/fonts/Junegull-Regular.ttf"; sourceTree = "<group>"; };
+		4692719C1A734977ADEA2D51 /* Junegull-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Junegull-Regular.ttf"; path = "../src/assets/fonts/Junegull-Regular.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Dots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots.release.xcconfig"; path = "Target Support Files/Pods-Dots/Pods-Dots.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Dots-DotsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dots-DotsTests.debug.xcconfig"; path = "Target Support Files/Pods-Dots-DotsTests/Pods-Dots-DotsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Dots.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Dots.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +98,9 @@
 		A5C7A3CA2C2CBFC600016E55 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		A5C7A3CC2C2CBFC600016E55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5C7A3D42C2CC08900016E55 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
+		A5E7CD292C96B7DF00E39255 /* Dots-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Dots-Bridging-Header.h"; sourceTree = "<group>"; };
+		A5E7CD2A2C96B7E000E39255 /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
+		A5E7CD2C2C96B81600E39255 /* Stars.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Stars.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -156,6 +161,9 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				453BAF80A1DF49CFB57DB0FE /* BootSplash.storyboard */,
+				A5E7CD2A2C96B7E000E39255 /* Stars.swift */,
+				A5E7CD292C96B7DF00E39255 /* Dots-Bridging-Header.h */,
+				A5E7CD2C2C96B81600E39255 /* Stars.m */,
 			);
 			name = Dots;
 			sourceTree = "<group>";
@@ -331,7 +339,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1430;
 					};
 					A5C7A3C72C2CBFC600016E55 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -559,9 +567,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E7CD2D2C96B81600E39255 /* Stars.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A589706F2BDA22DF00DE3189 /* ExitApp.m in Sources */,
+				A5E7CD2B2C96B7E000E39255 /* Stars.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +603,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-Dots-DotsTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -620,6 +631,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-Dots-DotsTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = DotsTests/Info.plist;
@@ -664,6 +676,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Dots;
+				SWIFT_OBJC_BRIDGING_HEADER = "Dots-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -693,6 +706,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Dots;
+				SWIFT_OBJC_BRIDGING_HEADER = "Dots-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -767,10 +781,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -838,10 +849,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
