@@ -106,6 +106,11 @@ const styles = StyleSheet.create({
 	gamefavTitleStyle: {
 		marginLeft: scaleHorizontal(8)
 	},
+	backgroundFavTitleStyle: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: colorsTheme.background,
+		opacity: 0.6
+	},
 	roundedGameFavStyle: {
 		marginRight: scaleVertical(16),
 	},

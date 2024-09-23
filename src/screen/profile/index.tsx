@@ -5,7 +5,7 @@ import Container from '../../components/container'
 import ImagePicker, { type ImageOrVideo, type Options } from 'react-native-image-crop-picker'
 import styles from './styles'
 import {
-	ImageBackground, TouchableOpacity, View, FlatList, ScrollView
+	ImageBackground, TouchableOpacity, View, FlatList, ScrollView,
 } from 'react-native'
 import Text from '../../components/text'
 import { BG, neonCircleIllu, rackIllu } from '../../assets/images'
@@ -44,7 +44,6 @@ import ActionButton from '../../components/action-button'
 import Modal from '../../components/modal'
 import { Avatar } from 'react-native-paper'
 import { Grayscale } from 'react-native-color-matrix-image-filters'
-import FilterIcon from '../../components/filter-icon'
 import { useDispatch } from 'react-redux'
 import Toast from 'react-native-toast-message'
 import { baseApi } from '../../utils/base.api'
@@ -388,20 +387,23 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
 					gameFavouriteData?.map(item => {
-						const codeGame = item.game_category_name.toLowerCase().split(' ')
-							.join('_')
-						return (
-							<RoundedBorder
-								style={ styles.roundedGameFavStyle }
-								radius={ 12 }
-								key={ item.game_category_id }
-								colors={ [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent] }
-								contentStyle={ [styles.rowStyle, styles.rowCenterStyle, styles.itemGameFavWrapperStyle] }
-							>
-								<FilterIcon set_group='game_mechanic' set_key={ codeGame }  />
-								<Text style={ styles.gamefavTitleStyle } variant='bodyMiddleRegular'>{ item.game_category_name }</Text>
-							</RoundedBorder>
-						)
+						if (item.game_category_name) {
+							return (
+								<RoundedBorder
+									style={ styles.roundedGameFavStyle }
+									radius={ 12 }
+									key={ item.game_category_id }
+									colors={ [colorsTheme.blueAccent, colorsTheme.yellowAccent, colorsTheme.redAccent] }
+									contentStyle={ [styles.rowStyle, styles.rowCenterStyle, styles.itemGameFavWrapperStyle] }
+									withBackgroundImage
+								>
+									<View style={ styles.backgroundFavTitleStyle }/>
+									<Text style={ styles.gamefavTitleStyle } variant='bodyMiddleRegular'>{ item.game_category_name }</Text>
+								</RoundedBorder>
+							)
+						}
+
+						return null
 					})
 				) }
 			</View>
