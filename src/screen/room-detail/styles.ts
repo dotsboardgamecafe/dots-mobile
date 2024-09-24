@@ -185,7 +185,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		marginHorizontal: scaleHorizontal(16),
 		marginTop: scaleVertical(16),
 		marginBottom: SCREEN_HEIGHT - WINDOW_HEIGHT - scaleHeight(24),
-		paddingBottom: scaleVertical(32),
+		paddingBottom: scaleVertical(54),
 		flex: 1,
 		justifyContent: 'flex-end'
 	},
