@@ -126,7 +126,7 @@ const createStyle = ({ colors }: ThemeType) => StyleSheet.create({
 		paddingBottom: scaleVertical(16)
 	},
 	sectionTitle: {
-		marginTop: scaleVertical(32)
+		marginTop: scaleVertical(16)
 	},
 	sectionTitleHowTo: {
 		marginHorizontal: scaleHorizontal(16),
