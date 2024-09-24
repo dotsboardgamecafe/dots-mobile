@@ -33,5 +33,5 @@ export const gameApi = baseApi.injectEndpoints({
 export const {
 	useGetListGameQuery,
 	useGetDetailGameQuery,
-	useLazyGetGamesQuery
+	useLazyGetGamesQuery,
 } = gameApi

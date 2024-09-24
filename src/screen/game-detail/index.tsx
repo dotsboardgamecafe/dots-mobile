@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
 	ImageBackground, type ListRenderItemInfo, ScrollView, View, FlatList, type NativeSyntheticEvent, type NativeScrollEvent,
 	TouchableOpacity
@@ -35,7 +35,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 	const styles = createStyle(theme)
 	const [blushOp, setBlushOp] = useState(1)
 	const [gamePlayIndex, setGamePlayIndex] = useState(0)
-	const { data, error } = useGetDetailGameQuery(game.game_code ?? '')
+	const { data, error, refetch } = useGetDetailGameQuery(game.game_code ?? '')
 	const { data: listGameMechanic } = useGetSettingQuery('game_mechanic')
 
 	const _descriptionSection = useMemo(() => {
@@ -61,7 +61,7 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 						<Text variant='bodyLargeBold'>Mechanics</Text>
 						<FlatList
 							data={ list }
-							keyExtractor={ (i, idx) => `${ idx }-${ i.setting_code }` }
+							keyExtractor={ (i, idx) => `${idx}-${i.setting_code}` }
 							renderItem={ ({ item }) => <FilterTag
 								id={ item.set_order ?? 0 }
 								code={ item.setting_code ?? '' }
@@ -276,6 +276,10 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 		navigation.push('gameDetail', game)
 	}, [])
 
+	useEffect(() => {
+		refetch()
+	}, [])
+
 	return (
 		<Container contentStyle={ styles.container }>
 			<Blush
@@ -355,11 +359,11 @@ const GameDetail = ({ route, theme, navigation, t }: Props): React.ReactNode => 
 							</>
 						}
 
-						{/* { data?.is_popular &&
+						{ /* { data?.is_popular &&
 							<View style={ styles.popularContainer }>
 								<Text variant='bodySmallBold' style={ styles.popularTag }>{ t('main-page.popular') }</Text>
 							</View>
-						} */}
+						} */ }
 					</View>
 				</View>
 

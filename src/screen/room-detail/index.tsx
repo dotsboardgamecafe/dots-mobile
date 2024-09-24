@@ -88,6 +88,14 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		return startDate.format('MMM, Do [at] HH:mm') + ' - ' + endDate.format(startDate.isSame(endDate, 'date') ? 'HH:mm' : 'MMM, Do [at] HH:mm')
 	}, [data])
 
+	const _titleCase = useCallback((str: string): string => {
+		const splitStr = str.toLowerCase().split(' ')
+		for (let i = 0; i < splitStr.length; i++) {
+			splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
+		}
+		return splitStr.join(' ')
+	}, [])
+
 	const detail = useMemo(() => {
 		return (
 			<View style={ [styles.ph, styles.mt16] }>
@@ -109,7 +117,7 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 				</View>
 			</View>
 		)
-	}, [data, schedule])
+	}, [data, schedule, _titleCase])
 
 	const tourneyDesc = useMemo(() => {
 		if (data?.tournament_rules) {
@@ -200,14 +208,6 @@ const RoomDetail = ({ route, navigation, theme, t }: Props): React.ReactNode => 
 		}
 		setRegModalVisible(false)
 	}, [data])
-
-	const _titleCase = useCallback((str: string): string => {
-		const splitStr = str.toLowerCase().split(' ')
-		for (let i = 0; i < splitStr.length; i++) {
-			splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
-		}
-		return splitStr.join(' ')
-	}, [])
 
 	const hideRegModal = useCallback(() => { setRegModalVisible(false) }, [])
 
