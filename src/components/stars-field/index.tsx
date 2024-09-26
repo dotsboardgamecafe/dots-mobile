@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Canvas, Circle, Group } from '@shopify/react-native-skia'
 import {
 	Dimensions, StyleSheet, type StyleProp, type ViewStyle, Image, View,
 	Platform,
 	type ListRenderItem,
-	NativeModules
+	NativeModules,
+	InteractionManager
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Animated, {
@@ -184,6 +185,8 @@ const StarFieldComponent = (): React.ReactNode => {
 const MemoizedStarField = React.memo(StarFieldComponent)
 
 const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tier }) => {
+	const [isNavigationDone, setIsNavigationDone] = useState(false)
+
 	const _getSmokeImage = useMemo(() => {
 		if (tier) {
 			const smokeImage = {
@@ -211,6 +214,12 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 		return ['#000', '#000']
 	}, [tier])
 
+	useEffect(() => {
+		InteractionManager.runAfterInteractions(() => {
+			setIsNavigationDone(true)
+		})
+	}, [])
+
 	const _renderSmokeImage = useMemo(() => {
 		return (
 			<View style={ [StyleSheet.absoluteFill, { overflow: 'hidden' }] }>
@@ -222,6 +231,14 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 		)
 	}, [starCount, style, _getSmokeImage])
 
+	const _renderStarField = useMemo(() => {
+		if (isNavigationDone) {
+			return <MemoizedStarField/>
+		}
+
+		return <React.Fragment/>
+	}, [isNavigationDone])
+
 	return (
 		<LinearGradient
 			colors={ _generateGradientColor }
@@ -230,7 +247,7 @@ const Starfield: React.FC<DefaultProps> = ({ starCount = 0, style, children, tie
 			angle={ 100 }
 		>
 			{ _renderSmokeImage }
-			<MemoizedStarField/>
+			{ _renderStarField }
 			{ children }
 		</LinearGradient>
 	)

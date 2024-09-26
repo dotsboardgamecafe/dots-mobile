@@ -7,10 +7,10 @@ const styles: StyleProps = {
 		padding: scaleWidth(24),
 		overflow: 'hidden'
 	},
-	topContentWrapperStyle: {
+	topContentWrapperStyle: (isTierScreen: boolean) => ({
 		paddingHorizontal: scaleWidth(24),
-		paddingTop: scaleVertical(24),
-	},
+		paddingTop: scaleVertical(isTierScreen ? 0 : 24),
+	}),
 	starsFieldTopContentStyle: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
@@ -107,7 +107,9 @@ const styles: StyleProps = {
 	},
 	tripeDotsIconStyle: {
 		position: 'absolute'
-	}
+	},
+	headerStyle: { marginTop: scaleHeight(10), paddingBottom: scaleHeight(5) },
+	headerTitleStyle: { flex: 0, color: colorsTheme.background }
 }
 
 export default styles
