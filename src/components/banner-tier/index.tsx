@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { type NavigationProp, useNavigation } from '@react-navigation/native'
 import { type RootStackParamList } from '../../models/navigation'
 import { type UserProfile } from '../../models/user'
+import Header from '../header'
 
 const LazyStarsField = lazy(async() => await import('../stars-field'))
 
@@ -87,44 +88,65 @@ const BannerTier = ({
 
 	const _renderTopContent = useMemo(() => {
 		return (
-			<View style={ styles.starsFieldTopContentStyle }>
+			<View>
 				{
-					screen === 'profile' ?
-						<View style={ styles.avatarUserWrapperStyle }>
-							<View>
-								<View style={ styles.imageBorderStyle }>
-									<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(62) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
-								</View>
-								<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] } onPress={ onPressChangeAvatar }>
-									<PencilIcon/>
-								</TouchableOpacity>
-							</View>
-							<View style={ styles.avatarUsernameWrapperStyle }>
-								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyLargeBold'>{ userProfileData?.fullname }</Text>
-								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: userProfileData?.member_since }) }</Text>
-							</View>
-						</View> :
-						<View style={ styles.topContentWrapperStyle }>
-							<Text style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>{ t('components.banner-tier.tier', { tier: userProfileData?.latest_tier }) }</Text>
-				 			{ screen === 'tier' ?
-								<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyMiddleRegular'>{ userProfileData?.fullname }</Text> :
-						 		null
-							}
-						</View>
+					screen === 'tier' ?
+						<Header
+							title={ t('components.banner-tier.tier', { tier: userProfileData?.latest_tier }) }
+							onPressBack={ () => { navigation.goBack() } }
+							titleStyle={ styles.headerTitleStyle }
+							arrowColor={ colorsTheme.lightWhite }
+							style={ styles.headerStyle }
+						/>
+						: null
 				}
-				<View style={ styles.topContentWrapperStyle }>
+				<View style={ styles.starsFieldTopContentStyle }>
 					{
-						screen === 'tier' ?
-							<View style={ styles.imageBorderStyle } >
-								<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(48) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
+						screen === 'profile' ?
+							<View style={ styles.avatarUserWrapperStyle }>
+								<View>
+									<View style={ styles.imageBorderStyle }>
+										<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(62) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
+									</View>
+									<TouchableOpacity style={ [styles.iconPencilWrapperStyle, styles.imageBorderStyle] } onPress={ onPressChangeAvatar }>
+										<PencilIcon/>
+									</TouchableOpacity>
+								</View>
+								<View style={ styles.avatarUsernameWrapperStyle }>
+									<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyLargeBold'>{ userProfileData?.fullname }</Text>
+									<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: userProfileData?.member_since }) }</Text>
+								</View>
 							</View> :
-							screen === 'profile' ?
-								<TouchableOpacity style={ styles.tripleDotsWrapperStyle } onPress={ onPressTripleDot }>
-									<View style={ styles.tripeDotsIconWrapperStyle } />
-									<TripleDotsIcon style={ styles.tripeDotsIconStyle }/>
-								</TouchableOpacity> :
-								<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: userProfileData?.member_since }) }</Text>
+							<View style={ styles.topContentWrapperStyle(screen === 'tier') }>
+								{
+									screen !== 'tier' ?
+										<Text
+											style={ styles.textStyle } variant={ screen === 'home' ? 'bodySmallBold' : 'bodyMiddleBold' }>
+											{ t('components.banner-tier.tier', { tier: userProfileData?.latest_tier }) }
+										</Text>
+										:
+										null
+								}
+				 			{ screen === 'tier' ?
+									<Text style={ [styles.textStyle, styles.tierUsernameSpaceStyle] } variant='bodyMiddleRegular'>{ userProfileData?.fullname }</Text> :
+						 		null
+								}
+							</View>
+					}
+					<View style={ styles.topContentWrapperStyle(screen === 'tier') }>
+						{
+							screen === 'tier' ?
+								<View style={ styles.imageBorderStyle } >
+									<Avatar.Image style={ styles.avatarStyle } size={ scaleWidth(48) } source={ { uri: selectedImage ?? userProfileData?.image_url } }/>
+								</View> :
+								screen === 'profile' ?
+									<TouchableOpacity style={ styles.tripleDotsWrapperStyle } onPress={ onPressTripleDot }>
+										<View style={ styles.tripeDotsIconWrapperStyle } />
+										<TripleDotsIcon style={ styles.tripeDotsIconStyle }/>
+									</TouchableOpacity> :
+									<Text style={ styles.textStyle } variant='bodyExtraSmallRegular'>{ t('components.banner-tier.joined-date', { since: userProfileData?.member_since }) }</Text>
 				 	}
+					</View>
 				</View>
 			</View>
 		)

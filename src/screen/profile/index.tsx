@@ -50,6 +50,7 @@ import { baseApi } from '../../utils/base.api'
 import { useUploadMutation } from '../../store/upload'
 import { type UploadType } from '../../models/upload'
 import { type UserProfile } from '../../models/user'
+import { uniqBy } from 'lodash'
 
 type Props = NavigationProps<'profile'>
 
@@ -225,21 +226,13 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 		return isError
 	}, [isErrorUser, isErrorBadges, isErrorGameFavourite, isErrorGameBoardCollection])
 
-	const _greyScaledImage = useCallback((image: string, shouldGrayScale: boolean, isClaimed: boolean) => {
+	const _greyScaledImage = useCallback((image: string, shouldGrayScale: boolean) => {
 		const imageStyle = shouldGrayScale ? styles.cardAwardUnClaimStyle :  styles.cardAwardItemImageStyle
 		if (shouldGrayScale) {
 			return (
 				<Grayscale style={ [styles.rowCenterStyle, styles.justifyCenterStyle] }>
 					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
 				</Grayscale>
-			)
-		}
-
-		if (isClaimed) {
-			return (
-				<RoundedBorder withBackgroundImage radius={ 100 } style={ { flex: 0 } } contentStyle={ styles.claimedBadgeStyle }>
-					<Image style={ [imageStyle, styles.cardAwardAbsoluteStyle] } source={ { uri: image  } }  />
-				</RoundedBorder>
 			)
 		}
 
@@ -372,7 +365,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 									item?.need_to_claim ?
 										<Image style={ [styles.cardAwardItemImageNeonStyle] } source={ neonCircleIllu }  /> : null
 								}
-								{ _greyScaledImage(item?.badge_image_url, !(item?.is_claim || item.need_to_claim), item.is_claim) }
+								{ _greyScaledImage(item?.badge_image_url, !(item?.is_claim || item.need_to_claim)) }
 							</View>
 						)
 					})
@@ -382,11 +375,13 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 	}, [badgesData])
 
 	const _renderFavoriteGame = useMemo((): React.ReactNode => {
+		const filteredGameFavourite = uniqBy(gameFavouriteData, 'game_category_name')
+		
 		return (
 			<View style={ [styles.awardWrapperStyle, styles.gameCollectionBottomStyle] }>
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
 				{ _renderScrollView(
-					gameFavouriteData?.map(item => {
+					filteredGameFavourite?.map(item => {
 						if (item.game_category_name) {
 							return (
 								<RoundedBorder
