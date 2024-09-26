@@ -294,7 +294,6 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 				horizontal={ true }
 				bounces={ false }
 				showsHorizontalScrollIndicator={ false }
-				pagingEnabled
 				decelerationRate='fast'
 				removeClippedSubviews
 				scrollEventThrottle={ 16 }
@@ -376,7 +375,7 @@ const Profile = ({ navigation, theme, t }: Props):React.ReactNode => {
 
 	const _renderFavoriteGame = useMemo((): React.ReactNode => {
 		const filteredGameFavourite = uniqBy(gameFavouriteData, 'game_category_name')
-		
+
 		return (
 			<View style={ [styles.awardWrapperStyle, styles.gameCollectionBottomStyle] }>
 				{ _renderTitle(t('profile-page.favorite-game-title'), 'awards', false) }
